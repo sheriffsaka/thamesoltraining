@@ -39,9 +39,9 @@ export function Home() {
   return (
     <div className="overflow-hidden bg-brand-dark">
       {/* Hero Section */}
-      <section className="relative min-h-[95vh] flex items-center pt-20 hero-gradient overflow-hidden border-b border-slate-200">
+      <section className="relative min-h-[95vh] flex items-center pt-20 hero-gradient overflow-hidden border-b border-white/5">
         <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-white/40 backdrop-blur-[1px] z-10" />
+          <div className="absolute inset-0 bg-brand-dark/40 backdrop-blur-[1px] z-10" />
           <AnimatePresence mode="wait">
             <motion.video
               key={currentVideo}
@@ -68,11 +68,11 @@ export function Home() {
             className="max-w-4xl"
           >
             <div className="w-20 h-1 bg-brand-teal mb-10" />
-            <h1 className="text-6xl md:text-8xl font-bold leading-[1.05] mb-10 text-slate-900 tracking-tighter">
+            <h1 className="text-6xl md:text-8xl font-bold leading-[1.05] mb-10 text-white tracking-tighter">
               Professional <br/>
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-teal to-brand-accent italic font-serif">Excellence</span>
             </h1>
-            <p className="text-xl text-slate-700 mb-12 leading-relaxed max-w-2xl font-medium">
+            <p className="text-xl text-slate-300 mb-12 leading-relaxed max-w-2xl font-medium">
               High-performance training and consultancy for professionals and institutions. Accredited courses in Healthcare, IT, and Business Management.
             </p>
             <div className="flex flex-col sm:flex-row gap-6">
@@ -85,7 +85,7 @@ export function Home() {
               </Link>
               <Link
                 to="/contact"
-                className="bg-white border border-slate-200 text-slate-900 px-12 py-5 rounded-lg font-black text-xs uppercase tracking-widest hover:bg-brand-surface transition-all text-center"
+                className="bg-white/5 border border-white/10 text-white px-12 py-5 rounded-lg font-black text-xs uppercase tracking-widest hover:bg-white/10 transition-all text-center"
               >
                 Apply Now
               </Link>
@@ -110,8 +110,8 @@ export function Home() {
                 transition={{ delay: i * 0.1 }}
                 className="flex items-center gap-6 group"
               >
-                <div className="text-4xl font-black text-slate-900 group-hover:text-brand-teal transition-colors tracking-tighter">{stat.value}</div>
-                <div className="text-[10px] text-slate-600 font-black uppercase tracking-[0.2em] max-w-[80px]">{stat.label}</div>
+                <div className="text-4xl font-black text-white group-hover:text-brand-teal transition-colors tracking-tighter">{stat.value}</div>
+                <div className="text-[10px] text-slate-400 font-black uppercase tracking-[0.2em] max-w-[80px]">{stat.label}</div>
               </motion.div>
             ))}
           </div>
@@ -124,9 +124,9 @@ export function Home() {
           <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-24 gap-8">
             <div className="max-w-2xl">
               <h2 className="text-xs font-black text-brand-teal uppercase tracking-[0.4em] mb-4">Core Competencies</h2>
-              <h3 className="text-5xl font-bold text-slate-900 tracking-tighter">Elite Training Categories</h3>
+              <h3 className="text-5xl font-bold text-white tracking-tighter">Elite Training Categories</h3>
             </div>
-            <p className="text-slate-600 text-lg max-w-md font-medium leading-relaxed">
+            <p className="text-slate-400 text-lg max-w-md font-medium leading-relaxed">
               We specialize in providing industry-standard training across key sectors driving the modern economy.
             </p>
           </div>
@@ -172,7 +172,7 @@ export function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center max-w-3xl mx-auto mb-20">
             <h2 className="text-xs font-black text-brand-teal uppercase tracking-[0.4em] mb-4">Support & Info</h2>
-            <h3 className="text-5xl font-bold text-slate-900 tracking-tighter font-serif">Critical Intelligence</h3>
+            <h3 className="text-5xl font-bold text-white tracking-tighter font-serif">Critical Intelligence</h3>
           </div>
 
           <div className="max-w-4xl mx-auto space-y-6">
@@ -188,13 +188,13 @@ export function Home() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="bg-white rounded-[2rem] p-10 border border-slate-200 hover:border-brand-teal/30 transition-all group overflow-hidden relative shadow-lg"
+                className="bg-brand-surface rounded-[2rem] p-10 border border-white/5 hover:border-brand-teal/30 transition-all group overflow-hidden relative shadow-2xl"
               >
                 <div className="absolute top-0 left-0 w-1 h-full bg-brand-teal scale-y-0 group-hover:scale-y-100 transition-transform origin-top" />
-                <h4 className="text-xl font-bold text-slate-900 mb-4 flex gap-4 font-serif leading-tight">
+                <h4 className="text-xl font-bold text-white mb-4 flex gap-4 font-serif leading-tight">
                   <span className="text-brand-teal">Q.</span> {faq.q}
                 </h4>
-                <p className="text-slate-600 leading-relaxed pl-10 font-medium">
+                <p className="text-slate-400 leading-relaxed pl-10 font-medium">
                   {faq.a}
                 </p>
               </motion.div>
@@ -206,16 +206,16 @@ export function Home() {
       {/* CTA Section */}
       <section className="py-32 px-4 bg-brand-dark">
         <div className="max-w-7xl mx-auto">
-          <div className="relative rounded-[4rem] bg-white p-12 lg:p-24 overflow-hidden text-center shadow-2xl border border-slate-200 group">
+          <div className="relative rounded-[4rem] bg-brand-surface p-12 lg:p-24 overflow-hidden text-center shadow-2xl border border-white/5 group">
             {/* Decoration */}
             <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-brand-teal/5 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2 group-hover:bg-brand-teal/10 transition-all duration-1000" />
             
             <div className="relative z-10 max-w-3xl mx-auto">
               <h2 className="text-xs font-black text-brand-teal uppercase tracking-[0.4em] mb-8">Ready to Advance?</h2>
-              <h3 className="text-5xl lg:text-7xl font-bold text-slate-900 mb-10 tracking-tighter leading-[1.1] font-serif">
+              <h3 className="text-5xl lg:text-7xl font-bold text-white mb-10 tracking-tighter leading-[1.1] font-serif">
                 Forge Your <span className="italic text-brand-teal">Future</span> 
               </h3>
-              <p className="text-xl text-slate-600 mb-14 leading-relaxed font-medium">
+              <p className="text-xl text-slate-400 mb-14 leading-relaxed font-medium">
                 Join thousands of students who have advanced their careers through our practical and accredited training programs.
               </p>
               <Link

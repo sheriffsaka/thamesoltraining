@@ -17,14 +17,17 @@ const navLinks = [
   },
   {
     name: 'Courses',
-    children: [
+      children: [
       { name: 'All Courses', path: '/courses' },
-      { name: 'Health & Social Care', path: '/courses?category=health-and-social-care' },
-      { name: 'Assessor Courses', path: '/courses?category=assessor-courses' },
-      { name: 'Functional Skills', path: '/courses?category=functional-skills' },
-      { name: 'Mandatory Training', path: '/courses?category=mandatory-training' },
-      { name: 'GDPR & Safety', path: '/courses?category=gdpr' },
-      { name: 'Care Certificate', path: '/courses?category=care-certificate' },
+      { name: 'Health & Social Care L2 & L3', path: '/courses?category=health-and-social-care' },
+      { name: 'Leadership & Management L5', path: '/courses?category=leadership' },
+      { name: 'Child Care L3', path: '/courses?category=child-care' },
+      { name: 'Assessor (CAVA) L3', path: '/courses?category=assessor' },
+      { name: 'IQA (Internal Quality Assurance) L4', path: '/courses?category=iqa' },
+      { name: 'Functional Skills (Maths/English/ICT)', path: '/courses?category=functional-skills' },
+      { name: 'Mandatory Training', path: '/courses?category=mandatory' },
+      { name: 'GDPR & Data Protection', path: '/courses?category=gdpr' },
+      { name: 'Care Certificate (15 Standards)', path: '/courses?category=care-certificate' },
     ],
   },
   {
@@ -64,7 +67,7 @@ export function Navbar() {
                 onMouseLeave={() => setActiveDropdown(null)}
               >
                 {link.children ? (
-                  <button className="flex items-center gap-1 text-[13px] font-bold tracking-tight text-slate-600 hover:text-brand-teal transition-colors py-2 uppercase">
+                  <button className="flex items-center gap-1 text-[13px] font-bold tracking-tight text-slate-300 hover:text-brand-teal transition-colors py-2 uppercase">
                     {link.name}
                     <ChevronDown size={14} className={cn("transition-transform opacity-50", activeDropdown === link.name && "rotate-180")} />
                   </button>
@@ -73,7 +76,7 @@ export function Navbar() {
                     to={link.path!}
                     className={cn(
                       "text-[13px] font-bold tracking-tight transition-colors py-2 uppercase",
-                      location.pathname === link.path ? "text-brand-teal" : "text-slate-600 hover:text-brand-teal"
+                      location.pathname === link.path ? "text-brand-teal" : "text-slate-300 hover:text-brand-teal"
                     )}
                   >
                     {link.name}
@@ -86,13 +89,13 @@ export function Navbar() {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 10 }}
-                      className="absolute left-0 mt-2 w-72 bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden z-50 p-2"
+                      className="absolute left-0 mt-2 w-80 bg-brand-surface rounded-2xl shadow-2xl border border-white/5 overflow-hidden z-50 p-2"
                     >
                       {link.children.map((child) => (
                         <Link
                           key={child.name}
                           to={child.path}
-                          className="block px-6 py-4 text-xs font-bold uppercase tracking-tight text-slate-600 hover:bg-brand-surface hover:text-brand-teal rounded-xl transition-all"
+                          className="block px-6 py-4 text-xs font-bold uppercase tracking-tight text-slate-400 hover:bg-white/5 hover:text-brand-teal rounded-xl transition-all"
                         >
                           {child.name}
                         </Link>
@@ -114,7 +117,7 @@ export function Navbar() {
           <div className="lg:hidden flex items-center">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="text-slate-900 hover:text-brand-teal p-2 transition-colors"
+              className="text-white hover:text-brand-teal p-2 transition-colors"
             >
               {isOpen ? <X size={28} /> : <Menu size={28} />}
             </button>
@@ -129,7 +132,7 @@ export function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden bg-white border-t border-slate-200 overflow-hidden"
+            className="lg:hidden bg-brand-dark border-t border-white/5 overflow-hidden"
           >
             <div className="px-4 pt-4 pb-12 space-y-2">
               {navLinks.map((link) => (
@@ -142,7 +145,7 @@ export function Navbar() {
                           key={child.name}
                           to={child.path}
                           onClick={() => setIsOpen(false)}
-                          className="block px-8 py-3 text-sm font-bold text-slate-600 hover:text-brand-teal transition-colors"
+                          className="block px-8 py-3 text-sm font-bold text-slate-400 hover:text-brand-teal transition-colors"
                         >
                           {child.name}
                         </Link>
@@ -154,7 +157,7 @@ export function Navbar() {
                       onClick={() => setIsOpen(false)}
                       className={cn(
                         "block px-3 py-4 text-sm font-bold uppercase tracking-widest transition-colors",
-                        location.pathname === link.path ? "text-brand-teal" : "text-slate-800 hover:text-brand-teal"
+                        location.pathname === link.path ? "text-brand-teal" : "text-slate-300 hover:text-brand-teal"
                       )}
                     >
                       {link.name}

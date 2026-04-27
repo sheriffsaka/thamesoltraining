@@ -1,12 +1,12 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brand-dark: #ffffff;
-  --color-brand-teal: #0ea5e9; /* Sky Blue */
-  --color-brand-accent: #0284c7; /* Deeper Blue */
-  --color-brand-surface: #f0f9ff; /* Very light sky blue */
-  --color-brand-card: #ffffff;
-  --color-brand-light: #e0f2fe;
+  --color-brand-dark: #0f172a; /* Deep Navy Blue */
+  --color-brand-teal: #38bdf8; /* Vibrant Sky Blue for highlights */
+  --color-brand-accent: #0ea5e9; /* Sky Blue accent */
+  --color-brand-surface: #1e293b; /* Slate surface */
+  --color-brand-card: #1e293b;
+  --color-brand-light: #334155;
   
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Playfair Display", ui-serif, Georgia, serif;
@@ -14,26 +14,26 @@
 
 @layer base {
   body {
-    @apply font-sans text-slate-800 bg-brand-dark antialiased;
+    @apply font-sans text-slate-300 bg-brand-dark antialiased;
   }
   
   h1, h2, h3, h4 {
-    @apply tracking-tight text-slate-900;
+    @apply tracking-tight text-white;
   }
 }
 
 .glass-nav {
-  @apply sticky top-0 z-50 bg-brand-dark/80 backdrop-blur-md border-b border-slate-200;
+  @apply sticky top-0 z-50 bg-brand-dark/80 backdrop-blur-md border-b border-white/5;
 }
 
 .hero-gradient {
-  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
 }
 
 .card-light {
-  @apply bg-brand-card border border-slate-200 rounded-[2rem] shadow-xl transition-all hover:border-brand-teal/30;
+  @apply bg-brand-card border border-white/5 rounded-[2rem] shadow-2xl transition-all hover:border-brand-teal/30;
 }
 
 .input-light {
-  @apply bg-white border border-slate-200 rounded-2xl py-4 px-6 text-slate-900 outline-none focus:border-brand-teal transition-all placeholder:text-slate-400;
+  @apply bg-brand-dark border border-white/10 rounded-2xl py-4 px-6 text-white outline-none focus:border-brand-teal transition-all placeholder:text-slate-500;
 }

@@ -14,7 +14,7 @@ export function Logo({ className, showText = true }: LogoProps) {
       </div>
       {showText && (
         <div className="flex flex-col leading-none">
-          <span className="font-bold text-slate-900 text-lg tracking-tighter uppercase">Thames <span className="opacity-60 font-light">Solution</span></span>
+          <span className="font-bold text-white text-lg tracking-tighter uppercase">Thames <span className="opacity-60 font-light">Solution</span></span>
           <span className="text-slate-500 text-[9px] font-bold uppercase tracking-[0.2em] mt-1">Training & Consultancy Ltd</span>
         </div>
       )}
