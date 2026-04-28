@@ -1,5 +1,6 @@
 import { BookOpen, Users, Plus, Upload, MoreVertical, Edit, Trash } from 'lucide-react';
 import { motion } from 'motion/react';
+import { cn } from '@/src/lib/utils';
 
 const myCourses = [
   { id: '1', title: 'Health & Social Care L3', students: 156, modules: 12, status: 'Active' },
@@ -89,7 +90,7 @@ export function InstructorDashboard() {
             <div key={item} className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-6 border border-white/5 rounded-2xl hover:border-brand-teal/20 transition-all gap-4 bg-white/5">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 bg-white/5 border border-white/10 rounded-full flex items-center justify-center text-slate-500">
-                  <User size={24} />
+                  <UserIcon size={24} />
                 </div>
                 <div>
                   <div className="font-bold text-slate-200">Sarah Miller</div>
@@ -110,8 +111,4 @@ export function InstructorDashboard() {
   );
 }
 
-const User = ({ size, className }: { size?: number, className?: string }) => <Users size={size} className={className} />;
-
-function cn(...inputs: any[]) {
-  return inputs.filter(Boolean).join(' ');
-}
+const UserIcon = ({ size, className }: { size?: number, className?: string }) => <Users size={size} className={className} />;

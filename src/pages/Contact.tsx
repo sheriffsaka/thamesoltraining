@@ -38,7 +38,7 @@ export function Contact() {
                   <div>
                     <h4 className="text-white font-bold mb-2">Phone</h4>
                     <p className="text-slate-400 text-sm">07426566335</p>
-                    <p className="text-slate-500 text-xs mt-1">Mon-Fri: 9am - 5pm</p>
+                    <p className="text-slate-400 text-xs mt-1">Mon-Fri: 9am - 5pm</p>
                   </div>
                 </div>
 

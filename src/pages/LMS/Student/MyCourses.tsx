@@ -1,5 +1,6 @@
 import { BookOpen, Search, Filter } from 'lucide-react';
 import { motion } from 'motion/react';
+import { cn } from '@/src/lib/utils';
 
 const courses = [
   { id: '1', title: 'Health and Social Care Level 3', progress: 45, status: 'In Progress' },
@@ -58,6 +59,3 @@ export function MyCourses() {
   );
 }
 
-function cn(...inputs: any[]) {
-  return inputs.filter(Boolean).join(' ');
-}

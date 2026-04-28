@@ -1,7 +1,8 @@
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowRight, BookOpen, Users, Award, ShieldCheck } from 'lucide-react';
+import { ArrowRight, BookOpen, Users, Award, ShieldCheck, CheckCircle2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { cn } from '@/src/lib/utils';
 
 const stats = [
   { label: 'Courses', value: '50+', icon: BookOpen },
@@ -12,28 +13,55 @@ const stats = [
 
 const categories = [
   { 
-    title: 'Healthcare', 
-    desc: 'Professional clinical and care-giving training for healthcare specialists.', 
+    title: 'Health & Social Care', 
+    desc: 'Elite clinical and administrative training for modern healthcare sectors.', 
     image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80&w=800' 
   },
   { 
-    title: 'Business', 
-    desc: 'Leadership, management and administrative excellence for small and large enterprises.', 
-    image: 'https://images.unsplash.com/photo-1454165833767-02a6e3099033?auto=format&fit=crop&q=80&w=800' 
+    title: 'Professional Compliance', 
+    desc: 'GDPR, Fire Safety, and Mandatory training for institutional standards.', 
+    image: 'https://images.unsplash.com/photo-1507537243993-c0a35bb06f0e?auto=format&fit=crop&q=80&w=800' 
   },
   { 
-    title: 'IT & Digital', 
-    desc: 'Essential tech skills from cybersecurity to software management.', 
-    image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80&w=800' 
+    title: 'Teacher Training', 
+    desc: 'Assessors (CAVA) and Quality Assurance (IQA) vocational qualifications.', 
+    image: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&q=80&w=800' 
   },
 ];
 
 export function Home() {
-  const [currentVideo, setCurrentVideo] = useState(0);
-  const videos = [
-    "https://cdn.pixabay.com/video/2019/11/24/29326-375549007_large.mp4", // Medical/Healthcare
-    "https://cdn.pixabay.com/video/2020/09/23/50917-463870685_large.mp4", // Business/Office
-    "https://cdn.pixabay.com/video/2021/04/12/70868-537452601_large.mp4", // Technology/Learning
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  // Auto-play effect
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, 8000);
+    return () => clearInterval(timer);
+  }, []);
+  
+  const slides = [
+    {
+      title: "Healthcare Excellence",
+      subtitle: "Elevate Patient Care",
+      desc: "Empowering the next generation of healthcare professionals with accredited clinical and vocational training designed for modern care standards.",
+      video: "https://cdn.pixabay.com/video/2019/11/24/29326-375549007_large.mp4",
+      link: "/courses?category=health-and-social-care"
+    },
+    {
+      title: "Leadership & Strategy",
+      subtitle: "Lead with Authority",
+      desc: "Master the art of strategic management and clinical leadership with our Level 5 Diploma programs, tailored for aspiring health and social care managers.",
+      video: "https://cdn.pixabay.com/video/2020/09/23/50917-463870685_large.mp4",
+      link: "/courses?category=leadership"
+    },
+    {
+      title: "Digital Intelligence",
+      subtitle: "Master the Digital Landscape",
+      desc: "Future-proof your career with professional training in GDPR, data protection, and essential IT skills required in today's competitive job market.",
+      video: "https://cdn.pixabay.com/video/2021/04/12/70868-537452601_large.mp4",
+      link: "/courses?category=gdpr"
+    }
   ];
 
   return (
@@ -41,56 +69,107 @@ export function Home() {
       {/* Hero Section */}
       <section className="relative min-h-[95vh] flex items-center pt-20 hero-gradient overflow-hidden border-b border-white/5">
         <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-brand-dark/40 backdrop-blur-[1px] z-10" />
+          <div className="absolute inset-0 bg-brand-dark/50 backdrop-blur-[1px] z-10" />
           <AnimatePresence mode="wait">
             <motion.video
-              key={currentVideo}
+              key={currentSlide}
               initial={{ opacity: 0 }}
               animate={{ opacity: 0.35 }}
               exit={{ opacity: 0 }}
+              transition={{ duration: 1.5 }}
               autoPlay
               loop
               muted
               playsInline
-              onEnded={() => setCurrentVideo((prev) => (prev + 1) % videos.length)}
               className="w-full h-full object-cover"
             >
-              <source src={videos[currentVideo]} type="video/mp4" />
+              <source src={slides[currentSlide].video} type="video/mp4" />
             </motion.video>
           </AnimatePresence>
         </div>
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="max-w-4xl"
-          >
-            <div className="w-20 h-1 bg-brand-teal mb-10" />
-            <h1 className="text-6xl md:text-8xl font-bold leading-[1.05] mb-10 text-white tracking-tighter">
-              Professional <br/>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-teal to-brand-accent italic font-serif">Excellence</span>
-            </h1>
-            <p className="text-xl text-slate-300 mb-12 leading-relaxed max-w-2xl font-medium">
-              High-performance training and consultancy for professionals and institutions. Accredited courses in Healthcare, IT, and Business Management.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-6">
-              <Link
-                to="/courses"
-                className="bg-brand-teal text-white px-12 py-5 rounded-lg font-black text-xs uppercase tracking-widest hover:bg-brand-accent transition-all flex items-center justify-center gap-3 group shadow-2xl shadow-brand-teal/20"
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 w-full">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+            <motion.div
+              key={`content-${currentSlide}`}
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+            >
+              <div className="w-20 h-1.5 bg-brand-teal mb-10" />
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="text-xs font-black text-brand-teal uppercase tracking-[0.5em] mb-6"
               >
-                Explore Courses
-                <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-              </Link>
-              <Link
-                to="/contact"
-                className="bg-white/5 border border-white/10 text-white px-12 py-5 rounded-lg font-black text-xs uppercase tracking-widest hover:bg-white/10 transition-all text-center"
-              >
-                Apply Now
-              </Link>
+                {slides[currentSlide].subtitle}
+              </motion.div>
+              <h1 className="text-6xl md:text-8xl font-bold leading-[1.05] mb-10 text-white tracking-tighter">
+                {slides[currentSlide].title.split(' ')[0]} <br/>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-teal to-brand-accent italic font-serif">
+                  {slides[currentSlide].title.split(' ').slice(1).join(' ')}
+                </span>
+              </h1>
+              <p className="text-xl text-slate-300 mb-12 leading-relaxed max-w-xl font-medium">
+                {slides[currentSlide].desc}
+              </p>
+              <div className="flex flex-col sm:flex-row gap-6">
+                <Link
+                  to={slides[currentSlide].link}
+                  className="bg-brand-teal text-white px-12 py-5 rounded-lg font-black text-xs uppercase tracking-widest hover:bg-brand-accent transition-all flex items-center justify-center gap-3 group shadow-2xl shadow-brand-teal/20"
+                >
+                  View Category
+                  <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                </Link>
+                <Link
+                  to="/contact"
+                  className="bg-white/5 border border-white/10 text-white px-12 py-5 rounded-lg font-black text-xs uppercase tracking-widest hover:bg-white/10 transition-all text-center"
+                >
+                  Book Consultation
+                </Link>
+              </div>
+            </motion.div>
+
+            {/* Slide Indicators / Navigation */}
+            <div className="hidden lg:flex flex-col gap-6 justify-self-end">
+              {slides.map((slide, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setCurrentSlide(idx)}
+                  className="group flex items-center gap-6 text-left transition-all"
+                >
+                  <div className={cn(
+                    "w-12 h-12 rounded-xl flex items-center justify-center font-black text-sm transition-all border",
+                    currentSlide === idx 
+                      ? "bg-brand-teal text-white border-brand-teal shadow-lg shadow-brand-teal/20" 
+                      : "bg-white/5 text-slate-400 border-white/10 group-hover:bg-white/10"
+                  )}>
+                    0{idx + 1}
+                  </div>
+                  <div className={cn(
+                    "transition-all",
+                    currentSlide === idx ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4 pointer-events-none"
+                  )}>
+                    <div className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-teal">{slide.subtitle}</div>
+                    <div className="text-xs font-bold text-white uppercase">{slide.title}</div>
+                  </div>
+                </button>
+              ))}
             </div>
-          </motion.div>
+          </div>
+        </div>
+
+        {/* Accreditations / Partners Ribbon */}
+        <div className="absolute bottom-0 left-0 w-full bg-brand-surface/40 backdrop-blur-md border-t border-white/5 py-8 z-20">
+          <div className="max-w-7xl mx-auto px-4 flex flex-wrap justify-center items-center gap-12 grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all duration-700">
+            <div className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 border-r border-white/10 pr-12 hidden md:block">Accredited By</div>
+            <div className="text-xl font-bold text-white/50 tracking-tighter">CPD<span className="text-brand-teal">UK</span></div>
+            <div className="text-xl font-black text-white/50 tracking-tighter">TQUK</div>
+            <div className="text-xl font-serif italic text-white/50 tracking-tighter">NCFE</div>
+            <div className="text-xl font-bold text-white/50 tracking-tighter">Cache</div>
+            <div className="text-xl font-black text-white/50 tracking-tighter">Skills<span className="text-brand-teal">For</span>Care</div>
+          </div>
         </div>
 
         {/* Abstract Glows */}
@@ -162,6 +241,77 @@ export function Home() {
                 </div>
               </motion.div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Why Choose Us Section */}
+      <section className="py-32 bg-brand-dark relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+            <div className="relative">
+              <div className="relative rounded-[4rem] overflow-hidden aspect-square shadow-2xl border border-white/5">
+                <img 
+                  src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=800" 
+                  alt="Students learning" 
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-brand-teal/20 mix-blend-overlay" />
+              </div>
+              {/* Floating Stat Card */}
+              <motion.div 
+                initial={{ opacity: 0, x: 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                className="absolute -bottom-10 -right-10 bg-brand-surface p-10 rounded-[2.5rem] border border-white/10 shadow-2xl z-20 max-w-[300px]"
+              >
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-12 h-12 bg-brand-teal/20 rounded-2xl flex items-center justify-center text-brand-teal">
+                    <CheckCircle2 size={24} />
+                  </div>
+                  <div className="font-black text-2xl text-white tracking-tighter">100%</div>
+                </div>
+                <div className="text-xs font-black text-slate-400 uppercase tracking-widest leading-relaxed">
+                  Compliance and quality assurance guaranteed across all programs.
+                </div>
+              </motion.div>
+            </div>
+
+            <div className="space-y-12">
+              <div>
+                <h2 className="text-xs font-black text-brand-teal uppercase tracking-[0.4em] mb-4">The TMS Advantage</h2>
+                <h3 className="text-5xl font-bold text-white tracking-tighter mb-8 font-serif leading-tight">
+                  Why Leading Institutions <br/>
+                  <span className="italic text-brand-teal">Choose TMS</span>
+                </h3>
+                <p className="text-slate-400 text-lg leading-relaxed font-medium">
+                  At Thames Solution Training, we don't just provide courses; we forge pathways to professional mastery through rigorous standards and innovative pedagogy.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 gap-8">
+                {[
+                  { title: 'Industry Expert Tutors', desc: 'Our instructors bring years of frontline experience in London\'s premier healthcare and business institutions.' },
+                  { title: 'Fully Accredited Modules', desc: 'All certifications are recognized by official UK awarding bodies, ensuring portable professional value.' },
+                  { title: 'Strategic LMS Platform', desc: 'Access your learning 24/7 with our state-of-the-art Learning Management System designed for modern learners.' }
+                ].map((item, i) => (
+                  <motion.div 
+                    key={i}
+                    initial={{ opacity: 0, x: 30 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.1 }}
+                    className="flex gap-6 group"
+                  >
+                    <div className="w-6 h-6 rounded-full border-2 border-brand-teal flex items-center justify-center shrink-0 mt-1 transition-colors group-hover:bg-brand-teal">
+                      <div className="w-2 h-2 bg-brand-teal rounded-full group-hover:bg-white" />
+                    </div>
+                    <div>
+                      <h4 className="text-lg font-bold text-white mb-2 tracking-tight">{item.title}</h4>
+                      <p className="text-slate-400 text-sm leading-relaxed">{item.desc}</p>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>

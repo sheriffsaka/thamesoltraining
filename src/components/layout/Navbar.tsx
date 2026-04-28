@@ -17,17 +17,41 @@ const navLinks = [
   },
   {
     name: 'Courses',
-      children: [
-      { name: 'All Courses', path: '/courses' },
-      { name: 'Health & Social Care L2 & L3', path: '/courses?category=health-and-social-care' },
-      { name: 'Leadership & Management L5', path: '/courses?category=leadership' },
-      { name: 'Child Care L3', path: '/courses?category=child-care' },
-      { name: 'Assessor (CAVA) L3', path: '/courses?category=assessor' },
-      { name: 'IQA (Internal Quality Assurance) L4', path: '/courses?category=iqa' },
-      { name: 'Functional Skills (Maths/English/ICT)', path: '/courses?category=functional-skills' },
-      { name: 'Mandatory Training', path: '/courses?category=mandatory' },
-      { name: 'GDPR & Data Protection', path: '/courses?category=gdpr' },
-      { name: 'Care Certificate (15 Standards)', path: '/courses?category=care-certificate' },
+    isMega: true,
+    children: [
+      {
+        title: 'Health & Social Care',
+        items: [
+          { name: 'Adult Care L2 & L3', path: '/courses?category=health-and-social-care' },
+          { name: 'Leadership & Management L5', path: '/courses?category=leadership' },
+          { name: 'Care Certificate (15 Standards)', path: '/courses?category=care-certificate' },
+          { name: 'Mandatory Training', path: '/courses?category=mandatory' },
+        ]
+      },
+      {
+        title: 'Education & Training',
+        items: [
+          { name: 'Assessor (CAVA) L3', path: '/courses?category=assessor' },
+          { name: 'IQA (Internal Quality Assurance) L4', path: '/courses?category=iqa' },
+          { name: 'Functional Skills (Maths/English/ICT)', path: '/courses?category=functional-skills' },
+        ]
+      },
+      {
+        title: 'Specialized Training',
+        items: [
+          { name: 'Child Care L3', path: '/courses?category=child-care' },
+          { name: 'GDPR & Data Protection', path: '/courses?category=gdpr' },
+          { name: 'Employability Skills', path: '/employability' },
+        ]
+      },
+      {
+        title: 'Professional Support',
+        items: [
+          { name: 'Apprenticeships', path: '/about' },
+          { name: 'Consultancy Services', path: '/about' },
+          { name: 'Safeguarding Hub', path: '/safeguarding' },
+        ]
+      },
     ],
   },
   {
@@ -38,7 +62,6 @@ const navLinks = [
       { name: 'British Values', path: '/british-values' },
     ],
   },
-  { name: 'Employability', path: '/employability' },
   { name: 'Contact Us', path: '/contact' },
 ];
 
@@ -89,17 +112,41 @@ export function Navbar() {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 10 }}
-                      className="absolute left-0 mt-2 w-80 bg-brand-surface rounded-2xl shadow-2xl border border-white/5 overflow-hidden z-50 p-2"
+                      className={cn(
+                        "absolute left-0 mt-2 bg-brand-surface rounded-2xl shadow-2xl border border-white/5 overflow-hidden z-50 p-2",
+                        link.isMega ? "w-[1000px] -left-[400px] p-10" : "w-80"
+                      )}
                     >
-                      {link.children.map((child) => (
-                        <Link
-                          key={child.name}
-                          to={child.path}
-                          className="block px-6 py-4 text-xs font-bold uppercase tracking-tight text-slate-400 hover:bg-white/5 hover:text-brand-teal rounded-xl transition-all"
-                        >
-                          {child.name}
-                        </Link>
-                      ))}
+                      {link.isMega ? (
+                        <div className="grid grid-cols-4 gap-10">
+                          {link.children.map((section: any) => (
+                            <div key={section.title} className="space-y-6">
+                              <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-teal border-b border-white/5 pb-4">{section.title}</h4>
+                              <div className="flex flex-col gap-4">
+                                {section.items.map((item: any) => (
+                                  <Link
+                                    key={item.name}
+                                    to={item.path}
+                                    className="text-[12px] font-bold text-slate-400 hover:text-white transition-colors leading-tight"
+                                  >
+                                    {item.name}
+                                  </Link>
+                                ))}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        link.children.map((child: any) => (
+                          <Link
+                            key={child.name}
+                            to={child.path}
+                            className="block px-6 py-4 text-xs font-bold uppercase tracking-tight text-slate-400 hover:bg-white/5 hover:text-brand-teal rounded-xl transition-all"
+                          >
+                            {child.name}
+                          </Link>
+                        ))
+                      )}
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -138,18 +185,38 @@ export function Navbar() {
               {navLinks.map((link) => (
                 <div key={link.name}>
                   {link.children ? (
-                    <div className="space-y-1 mb-4">
-                      <div className="px-3 py-2 text-xs font-black text-brand-teal uppercase tracking-[0.2em]">{link.name}</div>
-                      {link.children.map((child) => (
-                        <Link
-                          key={child.name}
-                          to={child.path}
-                          onClick={() => setIsOpen(false)}
-                          className="block px-8 py-3 text-sm font-bold text-slate-400 hover:text-brand-teal transition-colors"
-                        >
-                          {child.name}
-                        </Link>
-                      ))}
+                    <div className="space-y-1 mb-6">
+                      <div className="px-3 py-2 text-[10px] font-black text-brand-teal uppercase tracking-[0.3em] opacity-80 border-b border-white/5 mb-4">{link.name}</div>
+                      {link.isMega ? (
+                        <div className="space-y-6">
+                          {link.children.map((section: any) => (
+                            <div key={section.title} className="pl-4 space-y-3">
+                              <div className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">{section.title}</div>
+                              {section.items.map((item: any) => (
+                                <Link
+                                  key={item.name}
+                                  to={item.path}
+                                  onClick={() => setIsOpen(false)}
+                                  className="block px-4 py-2 text-[13px] font-bold text-slate-400 hover:text-brand-teal transition-colors"
+                                >
+                                  {item.name}
+                                </Link>
+                              ))}
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        link.children.map((child: any) => (
+                          <Link
+                            key={child.name}
+                            to={child.path}
+                            onClick={() => setIsOpen(false)}
+                            className="block px-8 py-3 text-sm font-bold text-slate-400 hover:text-brand-teal transition-colors"
+                          >
+                            {child.name}
+                          </Link>
+                        ))
+                      )}
                     </div>
                   ) : (
                     <Link

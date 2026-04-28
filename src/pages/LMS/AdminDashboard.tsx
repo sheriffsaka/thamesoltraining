@@ -1,5 +1,6 @@
 import { Users, BookOpen, Clock, CheckCircle, Search, Filter } from 'lucide-react';
 import { motion } from 'motion/react';
+import { cn } from '@/src/lib/utils';
 
 const applications = [
   { id: '1', name: 'Alice Johnson', email: 'alice@example.com', course: 'Health & Social Care L3', date: '2026-04-26', status: 'pending' },
@@ -119,7 +120,3 @@ export function AdminDashboard() {
   );
 }
 
-// Helper needed inside this file
-function cn(...inputs: any[]) {
-  return inputs.filter(Boolean).join(' ');
-}
