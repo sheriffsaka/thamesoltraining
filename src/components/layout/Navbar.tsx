@@ -54,6 +54,7 @@ const navLinks = [
       },
     ],
   },
+  { name: 'Employability', path: '/employability' },
   {
     name: 'Safeguard & Prevent',
     children: [

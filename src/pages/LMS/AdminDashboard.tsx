@@ -1,6 +1,8 @@
 import { Users, BookOpen, Clock, CheckCircle, Search, Filter } from 'lucide-react';
 import { motion } from 'motion/react';
 import { cn } from '@/src/lib/utils';
+import { useState } from 'react';
+import { SiteContentCMS } from './Admin/SiteContentCMS';
 
 const applications = [
   { id: '1', name: 'Alice Johnson', email: 'alice@example.com', course: 'Health & Social Care L3', date: '2026-04-26', status: 'pending' },
@@ -9,15 +11,41 @@ const applications = [
 ];
 
 export function AdminDashboard() {
+  const [activeTab, setActiveTab] = useState<'overview' | 'cms'>('overview');
+
   return (
     <div className="space-y-10">
-      <header>
-        <h1 className="text-3xl font-bold text-white mb-2 font-serif">Admin Command Center</h1>
-        <p className="text-slate-400">System-wide overview and management for Thames Solution.</p>
+      <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+        <div>
+          <h1 className="text-3xl font-bold text-white mb-2 font-serif">Admin Hub</h1>
+          <p className="text-slate-400">System-wide overview and site content management.</p>
+        </div>
+        <div className="flex bg-white/5 p-1 rounded-2xl border border-white/10">
+          <button 
+            onClick={() => setActiveTab('overview')}
+            className={cn(
+              "px-6 py-2.5 rounded-xl text-xs font-bold transition-all",
+              activeTab === 'overview' ? "bg-brand-teal text-white shadow-lg" : "text-slate-400 hover:text-white"
+            )}
+          >
+            Overview
+          </button>
+          <button 
+            onClick={() => setActiveTab('cms')}
+            className={cn(
+              "px-6 py-2.5 rounded-xl text-xs font-bold transition-all",
+              activeTab === 'cms' ? "bg-brand-teal text-white shadow-lg" : "text-slate-400 hover:text-white"
+            )}
+          >
+            Site Content (CMS)
+          </button>
+        </div>
       </header>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {activeTab === 'overview' ? (
+        <>
+          {/* Stats Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
           { label: 'Total Users', value: '1,280', icon: Users, color: 'text-blue-400', bg: 'bg-blue-400/10' },
           { label: 'Courses', value: '42', icon: BookOpen, color: 'text-brand-teal', bg: 'bg-brand-teal/10' },
@@ -116,7 +144,11 @@ export function AdminDashboard() {
           </div>
         </div>
       </div>
-    </div>
+    </>
+  ) : (
+    <SiteContentCMS />
+  )}
+</div>
   );
 }
 
