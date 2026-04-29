@@ -17,15 +17,15 @@ export function AdminDashboard() {
     <div className="space-y-10">
       <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2 font-serif">Admin Hub</h1>
-          <p className="text-slate-400">System-wide overview and site content management.</p>
+          <h1 className="text-4xl font-bold text-slate-900 mb-2 font-serif tracking-tight">Admin Hub</h1>
+          <p className="text-slate-500 font-medium">System-wide overview and site content management.</p>
         </div>
-        <div className="flex bg-white/5 p-1 rounded-2xl border border-white/10">
+        <div className="flex bg-slate-100 p-1.5 rounded-2xl border border-slate-200 shadow-inner">
           <button 
             onClick={() => setActiveTab('overview')}
             className={cn(
-              "px-6 py-2.5 rounded-xl text-xs font-bold transition-all",
-              activeTab === 'overview' ? "bg-brand-teal text-white shadow-lg" : "text-slate-400 hover:text-white"
+              "px-8 py-3 rounded-xl text-xs font-bold transition-all",
+              activeTab === 'overview' ? "bg-brand-teal text-white shadow-xl shadow-brand-teal/20" : "text-slate-500 hover:text-slate-900"
             )}
           >
             Overview
@@ -33,8 +33,8 @@ export function AdminDashboard() {
           <button 
             onClick={() => setActiveTab('cms')}
             className={cn(
-              "px-6 py-2.5 rounded-xl text-xs font-bold transition-all",
-              activeTab === 'cms' ? "bg-brand-teal text-white shadow-lg" : "text-slate-400 hover:text-white"
+              "px-8 py-3 rounded-xl text-xs font-bold transition-all",
+              activeTab === 'cms' ? "bg-brand-teal text-white shadow-xl shadow-brand-teal/20" : "text-slate-500 hover:text-slate-900"
             )}
           >
             Site Content (CMS)
@@ -45,100 +45,97 @@ export function AdminDashboard() {
       {activeTab === 'overview' ? (
         <>
           {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         {[
-          { label: 'Total Users', value: '1,280', icon: Users, color: 'text-blue-400', bg: 'bg-blue-400/10' },
-          { label: 'Courses', value: '42', icon: BookOpen, color: 'text-brand-teal', bg: 'bg-brand-teal/10' },
-          { label: 'Pending Apps', value: '12', icon: Clock, color: 'text-amber-400', bg: 'bg-amber-400/10' },
-          { label: 'Enrollments', value: '850', icon: CheckCircle, color: 'text-emerald-400', bg: 'bg-emerald-400/10' },
+          { label: 'Total Users', value: '1,280', icon: Users, color: 'text-blue-600', bg: 'bg-blue-50', border: 'border-blue-100' },
+          { label: 'Courses', value: '42', icon: BookOpen, color: 'text-brand-teal', bg: 'bg-brand-teal/5', border: 'border-brand-teal/10' },
+          { label: 'Pending Apps', value: '12', icon: Clock, color: 'text-amber-600', bg: 'bg-amber-50', border: 'border-amber-100' },
+          { label: 'Enrollments', value: '850', icon: CheckCircle, color: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-100' },
         ].map((stat, i) => (
-          <div key={i} className="bg-brand-card p-8 rounded-3xl border border-white/5 shadow-2xl">
-            <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center mb-6 border border-white/5", stat.bg)}>
-              <stat.icon className={stat.color} size={24} />
+          <div key={i} className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-2xl relative overflow-hidden group">
+            <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center mb-6 border shadow-sm group-hover:scale-110 transition-transform", stat.bg, stat.border)}>
+              <stat.icon className={stat.color} size={28} />
             </div>
-            <div className="text-2xl font-bold text-white">{stat.value}</div>
-            <div className="text-sm font-medium text-slate-500 mt-1 uppercase tracking-wider">{stat.label}</div>
+            <div className="text-3xl font-bold text-slate-900">{stat.value}</div>
+            <div className="text-xs font-black text-slate-400 mt-2 uppercase tracking-[0.2em]">{stat.label}</div>
           </div>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
         {/* Recent Applications */}
         <div className="lg:col-span-2 space-y-6">
           <div className="flex justify-between items-center">
-            <h2 className="text-xl font-bold text-white font-serif">Recent Applications</h2>
+            <h2 className="text-2xl font-bold text-slate-900 font-serif">Recent Applications</h2>
             <div className="flex gap-2">
-              <button className="p-2.5 bg-white/5 rounded-xl border border-white/10 shadow-sm hover:bg-white/10 transition-all text-slate-400">
+              <button className="p-3 bg-white rounded-xl border border-slate-100 shadow-sm hover:bg-slate-50 transition-all text-slate-500">
                 <Search size={18} />
               </button>
-              <button className="p-2.5 bg-white/5 rounded-xl border border-white/10 shadow-sm hover:bg-white/10 transition-all text-slate-400">
+              <button className="p-3 bg-white rounded-xl border border-slate-100 shadow-sm hover:bg-slate-50 transition-all text-slate-500">
                 <Filter size={18} />
               </button>
             </div>
           </div>
 
-          <div className="bg-brand-card rounded-[2.5rem] overflow-hidden border border-white/5 shadow-2xl">
+          <div className="bg-white rounded-[3rem] overflow-hidden border border-slate-100 shadow-2xl">
             <div className="overflow-x-auto">
               <table className="w-full text-left">
-                <thead className="bg-white/5 text-[10px] font-bold text-slate-500 uppercase tracking-widest border-b border-white/5">
+                <thead className="bg-slate-50 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] border-b border-slate-100">
                   <tr>
-                    <th className="px-8 py-5">Applicant</th>
-                    <th className="px-8 py-5">Course</th>
-                    <th className="px-8 py-5">Date</th>
-                    <th className="px-8 py-5">Status</th>
-                    <th className="px-8 py-5">Actions</th>
+                    <th className="px-10 py-6">Applicant</th>
+                    <th className="px-10 py-6">Course</th>
+                    <th className="px-10 py-6">Date</th>
+                    <th className="px-10 py-6">Status</th>
+                    <th className="px-10 py-6 text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-white/5">
+                <tbody className="divide-y divide-slate-50">
                   {applications.map((app) => (
-                    <tr key={app.id} className="hover:bg-white/5 transition-all">
-                      <td className="px-8 py-6">
-                        <div className="font-bold text-slate-200">{app.name}</div>
-                        <div className="text-xs text-slate-500">{app.email}</div>
+                    <tr key={app.id} className="hover:bg-slate-50/50 transition-all group">
+                      <td className="px-10 py-6">
+                        <div className="font-bold text-slate-900 group-hover:text-brand-teal transition-colors">{app.name}</div>
+                        <div className="text-xs text-slate-400 font-medium">{app.email}</div>
                       </td>
-                      <td className="px-8 py-6 text-sm font-medium text-slate-400">{app.course}</td>
-                      <td className="px-8 py-6 text-sm text-slate-500">{app.date}</td>
-                      <td className="px-8 py-6">
+                      <td className="px-10 py-6 text-sm font-bold text-slate-600">{app.course}</td>
+                      <td className="px-10 py-6 text-sm text-slate-400 font-medium">{app.date}</td>
+                      <td className="px-10 py-6">
                         <span className={cn(
-                          "px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider",
-                          app.status === 'pending' ? "bg-amber-400/10 text-amber-400 border border-amber-400/20" : "bg-emerald-400/10 text-emerald-400 border border-emerald-400/20"
+                          "px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest",
+                          app.status === 'pending' ? "bg-amber-50 text-amber-600 border border-amber-100" : "bg-emerald-50 text-emerald-600 border border-emerald-100"
                         )}>
                           {app.status}
                         </span>
                       </td>
-                      <td className="px-8 py-6">
-                        <button className="text-brand-teal font-bold text-xs hover:underline decoration-2 underline-offset-4">Review</button>
+                      <td className="px-10 py-6 text-right font-serif italic text-slate-500">
+                        <button className="text-brand-teal font-black text-[10px] uppercase tracking-widest hover:bg-brand-teal/5 px-4 py-2 rounded-lg transition-all">Review</button>
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
-            <div className="p-6 bg-white/5 text-center border-t border-white/5">
-              <button className="text-sm font-bold text-brand-teal hover:underline decoration-2 underline-offset-4">View All Applications</button>
+            <div className="p-8 bg-slate-50/50 text-center border-t border-slate-100">
+              <button className="text-sm font-black text-brand-teal hover:text-brand-accent uppercase tracking-widest transition-all">View All Applications</button>
             </div>
           </div>
         </div>
 
         {/* Quick Tools */}
         <div className="space-y-6">
-          <h2 className="text-xl font-bold text-white font-serif">Admin Tools</h2>
-          <div className="bg-brand-surface rounded-[2.5rem] p-4 text-white overflow-hidden shadow-2xl border border-white/5 relative group">
-             <div className="absolute top-0 right-0 w-32 h-32 bg-brand-teal/10 rounded-full blur-[40px] -translate-y-1/2 translate-x-1/2 group-hover:bg-brand-teal/20 transition-all" />
-             <div className="relative z-10 p-4 space-y-4">
-                <button className="w-full text-left p-4 rounded-2xl hover:bg-white/5 transition-all group">
-                  <div className="font-bold text-sm mb-1 group-hover:text-brand-teal transition-colors">Create Announcement</div>
-                  <div className="text-[10px] text-slate-500">Broadcast message to all students</div>
+          <h2 className="text-2xl font-bold text-slate-900 font-serif">Admin Tools</h2>
+          <div className="bg-white rounded-[3rem] p-6 text-slate-900 overflow-hidden shadow-2xl border border-slate-100 relative group">
+             <div className="relative z-10 space-y-4">
+                <button className="w-full text-left p-6 rounded-[2rem] hover:bg-slate-50 transition-all group border border-transparent hover:border-slate-100">
+                  <div className="font-bold text-base mb-1 group-hover:text-brand-teal transition-colors font-serif">Create Announcement</div>
+                  <div className="text-xs text-slate-500 font-medium">Broadcast message to all students</div>
                 </button>
-                <div className="h-px bg-white/5 mx-4" />
-                <button className="w-full text-left p-4 rounded-2xl hover:bg-white/5 transition-all group">
-                  <div className="font-bold text-sm mb-1 group-hover:text-brand-teal transition-colors">Assign Instructor</div>
-                  <div className="text-[10px] text-slate-500">Manage course permissions</div>
+                <button className="w-full text-left p-6 rounded-[2rem] hover:bg-slate-50 transition-all group border border-transparent hover:border-slate-100">
+                  <div className="font-bold text-base mb-1 group-hover:text-brand-teal transition-colors font-serif">Assign Instructor</div>
+                  <div className="text-xs text-slate-500 font-medium">Manage course permissions</div>
                 </button>
-                <div className="h-px bg-white/5 mx-4" />
-                <button className="w-full text-left p-4 rounded-2xl hover:bg-white/5 transition-all group">
-                  <div className="font-bold text-sm mb-1 group-hover:text-brand-teal transition-colors">System Logs</div>
-                  <div className="text-[10px] text-slate-500">View security & error events</div>
+                <button className="w-full text-left p-6 rounded-[2rem] hover:bg-slate-50 transition-all group border border-transparent hover:border-slate-100">
+                  <div className="font-bold text-base mb-1 group-hover:text-brand-teal transition-colors font-serif">System Logs</div>
+                  <div className="text-xs text-slate-500 font-medium">View security & error events</div>
                 </button>
              </div>
           </div>

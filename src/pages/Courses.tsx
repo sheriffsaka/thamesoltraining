@@ -60,15 +60,15 @@ export function Courses() {
   });
 
   return (
-    <div className="bg-brand-dark min-h-screen pt-20">
+    <div className="bg-slate-50 min-h-screen pt-20">
       {/* Header */}
-      <section className="bg-brand-surface py-20 border-b border-white/5 relative overflow-hidden">
+      <section className="bg-white py-20 border-b border-slate-100 relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-teal rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2" />
         </div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white relative z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-slate-900 relative z-10">
           <h1 className="text-4xl md:text-5xl font-bold mb-6 font-serif">Our Course Catalog</h1>
-          <p className="text-slate-400 text-lg max-w-2xl mx-auto">
+          <p className="text-slate-600 text-lg max-w-2xl mx-auto font-medium">
             Browse our wide range of professional courses designed to help you succeed in today's competitive job market.
           </p>
         </div>
@@ -76,14 +76,14 @@ export function Courses() {
 
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 -mt-10 mb-20 relative z-20">
         {/* Filters */}
-        <div className="bg-brand-surface rounded-[2.5rem] shadow-2xl p-8 mb-12 border border-white/5">
+        <div className="bg-white rounded-[2.5rem] shadow-2xl p-8 mb-12 border border-slate-50">
           <div className="flex flex-col lg:flex-row gap-6 items-center">
             <div className="w-full lg:flex-1 relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={20} />
+              <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
               <input
                 type="text"
                 placeholder="Search courses..."
-                className="w-full pl-12 pr-4 py-4 rounded-2xl bg-brand-dark border border-white/10 focus:border-brand-teal outline-none text-white transition-all placeholder:text-slate-500"
+                className="w-full pl-14 pr-4 py-4.5 rounded-2xl bg-slate-50 border border-slate-100 focus:border-brand-teal outline-none text-slate-900 transition-all placeholder:text-slate-400 font-medium"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -94,10 +94,10 @@ export function Courses() {
                   key={cat.id}
                   onClick={() => setSearchParams(cat.id === 'all' ? {} : { category: cat.id })}
                   className={cn(
-                    "px-6 py-4 rounded-2xl font-bold text-sm whitespace-nowrap transition-all border",
+                    "px-6 py-4 rounded-2xl font-bold text-xs whitespace-nowrap transition-all border",
                     currentCategory === cat.id
                       ? "bg-brand-teal text-white shadow-lg shadow-brand-teal/20 border-brand-teal"
-                      : "bg-white/5 text-slate-400 border-white/5 hover:bg-white/10"
+                      : "bg-slate-50 text-slate-500 border-slate-100 hover:bg-slate-100"
                   )}
                 >
                   {cat.name}
@@ -115,7 +115,7 @@ export function Courses() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.05 }}
-              className="group bg-brand-surface rounded-[2.5rem] overflow-hidden shadow-xl hover:shadow-brand-teal/5 transition-all border border-white/5 hover:border-white/10 flex flex-col h-full"
+              className="group bg-white rounded-[2.5rem] overflow-hidden shadow-xl hover:shadow-2xl transition-all border border-slate-100 flex flex-col h-full"
             >
               <div className="relative h-60 overflow-hidden">
                 <img
@@ -123,38 +123,38 @@ export function Courses() {
                   alt={course.title}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-brand-surface via-transparent to-transparent opacity-60" />
+                <div className="absolute inset-0 bg-gradient-to-t from-white/20 via-transparent to-transparent opacity-60" />
                 <div className="absolute top-4 left-4 flex flex-col gap-2">
-                  <span className="px-4 py-2 bg-brand-teal/90 backdrop-blur rounded-full text-[10px] font-black text-white uppercase tracking-widest border border-white/5">
+                  <span className="px-4 py-2 bg-brand-teal/90 backdrop-blur rounded-full text-[10px] font-black text-white uppercase tracking-widest border border-white/10">
                     {course.category.replace(/-/g, ' ')}
                   </span>
                   {course.level && (
-                    <span className="px-4 py-2 bg-brand-accent/90 backdrop-blur rounded-full text-[10px] font-black text-white uppercase tracking-widest border border-white/5">
+                    <span className="px-4 py-2 bg-brand-accent/90 backdrop-blur rounded-full text-[10px] font-black text-white uppercase tracking-widest border border-white/10">
                       {course.level}
                     </span>
                   )}
                 </div>
               </div>
               <div className="p-8 flex flex-col flex-1">
-                <h3 className="text-xl font-bold text-white mb-4 group-hover:text-brand-teal transition-colors line-clamp-2 font-serif leading-tight">
+                <h3 className="text-xl font-bold text-slate-900 mb-4 group-hover:text-brand-teal transition-colors line-clamp-2 font-serif leading-tight">
                   {course.title}
                 </h3>
-                <p className="text-slate-400 text-sm mb-6 flex-1 line-clamp-3 leading-relaxed">
+                <p className="text-slate-500 text-sm mb-6 flex-1 line-clamp-3 leading-relaxed font-medium">
                   {course.desc}
                 </p>
-                <div className="flex items-center justify-between mb-8 pt-6 border-t border-white/5">
-                  <div className="flex items-center gap-2 text-slate-400 text-xs font-bold uppercase tracking-wider">
+                <div className="flex items-center justify-between mb-8 pt-6 border-t border-slate-100">
+                  <div className="flex items-center gap-2 text-slate-400 text-[10px] font-black uppercase tracking-[0.2em]">
                     <Clock size={14} className="text-brand-teal" />
                     <span>{course.duration}</span>
                   </div>
-                  <div className="flex items-center gap-2 text-slate-400 text-xs font-bold uppercase tracking-wider">
+                  <div className="flex items-center gap-2 text-slate-400 text-[10px] font-black uppercase tracking-[0.2em]">
                     <GraduationCap size={16} className="text-brand-teal" />
                     <span>Accredited</span>
                   </div>
                 </div>
                 <Link
                   to={`/courses/${course.id}`}
-                  className="w-full py-4 text-center bg-brand-teal/10 text-brand-teal border border-brand-teal/20 font-bold rounded-2xl hover:bg-brand-teal hover:text-white transition-all flex items-center justify-center gap-2 group/btn shadow-lg shadow-brand-teal/5"
+                  className="w-full py-4.5 text-center bg-slate-50 text-slate-900 border border-slate-100 font-bold rounded-2xl hover:bg-brand-teal hover:text-white transition-all flex items-center justify-center gap-2 group/btn shadow-md"
                 >
                   View Details
                   <ChevronRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
@@ -165,12 +165,12 @@ export function Courses() {
         </div>
 
         {filteredCourses.length === 0 && (
-          <div className="text-center py-24 bg-brand-surface rounded-[3rem] border border-white/5 shadow-22xl">
-            <div className="w-24 h-24 bg-brand-dark rounded-full flex items-center justify-center mx-auto mb-8 border border-white/10 text-slate-600">
+          <div className="text-center py-24 bg-white rounded-[3rem] border border-slate-100 shadow-2xl">
+            <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-8 border border-slate-100 text-slate-300">
               <Search size={48} />
             </div>
-            <h3 className="text-2xl font-bold text-white mb-4 font-serif">No courses found</h3>
-            <p className="text-slate-400">Try adjusting your search or filter results.</p>
+            <h3 className="text-2xl font-bold text-slate-900 mb-4 font-serif">No courses found</h3>
+            <p className="text-slate-500 font-medium">Try adjusting your search or filter results.</p>
           </div>
         )}
       </section>

@@ -48,33 +48,33 @@ export function CourseDetail() {
   };
 
   return (
-    <div className="bg-brand-dark min-h-screen pt-20">
+    <div className="bg-slate-50 min-h-screen pt-20">
       {/* Hero Header */}
       <section className="relative h-[500px] flex items-end overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img src={mockCourse.image} alt={mockCourse.title} className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-brand-dark via-brand-dark/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent" />
         </div>
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 text-white">
           <motion.button 
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             onClick={() => navigate(-1)}
-            className="flex items-center gap-2 text-slate-300 hover:text-brand-teal transition-colors mb-8 font-bold text-xs uppercase tracking-widest bg-white/5 backdrop-blur px-4 py-2 rounded-full border border-white/10 shadow-sm"
+            className="flex items-center gap-2 text-white hover:text-brand-teal transition-colors mb-8 font-bold text-[10px] uppercase tracking-[0.2em] bg-white/10 backdrop-blur-md px-6 py-2.5 rounded-full border border-white/20 shadow-xl"
           >
             <ArrowLeft size={16} />
             Back to Courses
           </motion.button>
           <div className="flex flex-col gap-6">
-            <span className="px-4 py-1.5 bg-brand-teal text-white rounded-full text-[10px] font-bold w-fit uppercase tracking-widest">
+            <span className="px-6 py-2 bg-brand-teal text-white rounded-full text-[10px] font-black w-fit uppercase tracking-[0.2em] shadow-lg shadow-brand-teal/20">
               {mockCourse.category}
             </span>
-            <h1 className="text-4xl md:text-6xl font-bold max-w-4xl font-serif leading-tight select-none">{mockCourse.title}</h1>
+            <h1 className="text-4xl md:text-7xl font-bold max-w-4xl font-serif leading-tight select-none tracking-tight">{mockCourse.title}</h1>
           </div>
         </div>
       </section>
 
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-20">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-16">
@@ -83,11 +83,11 @@ export function CourseDetail() {
                whileInView={{ opacity: 1, y: 0 }}
                viewport={{ once: true }}
             >
-              <h2 className="text-xl font-bold text-white mb-8 font-serif flex items-center gap-4">
-                <div className="w-10 h-1 bg-brand-teal rounded-full" />
+              <h2 className="text-2xl font-bold text-slate-900 mb-8 font-serif flex items-center gap-6">
+                <div className="w-12 h-1 bg-brand-teal rounded-full" />
                 Course Description
               </h2>
-              <p className="text-slate-400 text-lg leading-relaxed whitespace-pre-line font-medium">
+              <p className="text-slate-600 text-lg leading-relaxed whitespace-pre-line font-medium">
                 {mockCourse.longDesc}
               </p>
             </motion.div>
@@ -97,15 +97,15 @@ export function CourseDetail() {
                whileInView={{ opacity: 1, y: 0 }}
                viewport={{ once: true }}
             >
-              <h2 className="text-xl font-bold text-white mb-8 font-serif flex items-center gap-4">
-                <div className="w-10 h-1 bg-brand-teal rounded-full" />
+              <h2 className="text-2xl font-bold text-slate-900 mb-8 font-serif flex items-center gap-6">
+                <div className="w-12 h-1 bg-brand-teal rounded-full" />
                 What You Will Learn
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {mockCourse.outcomes.map((outcome, i) => (
-                  <div key={i} className="flex gap-4 p-5 rounded-2xl bg-brand-surface border border-white/5 hover:border-brand-teal/20 transition-all group shadow-2xl">
+                  <div key={i} className="flex gap-4 p-6 rounded-[2rem] bg-white border border-slate-100 hover:border-brand-teal/30 transition-all group shadow-xl">
                     <CheckCircle2 className="text-brand-teal shrink-0 group-hover:scale-110 transition-transform" size={20} />
-                    <span className="text-slate-300 font-medium text-sm">{outcome}</span>
+                    <span className="text-slate-700 font-bold text-sm leading-tight">{outcome}</span>
                   </div>
                 ))}
               </div>
@@ -117,14 +117,14 @@ export function CourseDetail() {
                  whileInView={{ opacity: 1, x: 0 }}
                  viewport={{ once: true }}
               >
-                <h2 className="text-xl font-bold text-white mb-8 font-serif flex items-center gap-4">
-                  <div className="w-10 h-1 bg-brand-teal rounded-full" />
+                <h2 className="text-2xl font-bold text-slate-900 mb-8 font-serif flex items-center gap-6">
+                  <div className="w-12 h-1 bg-brand-teal rounded-full" />
                   Requirements
                 </h2>
-                <ul className="space-y-4">
+                <ul className="space-y-5">
                   {mockCourse.requirements.map((req, i) => (
-                    <li key={i} className="flex items-center gap-4 text-slate-400 font-medium">
-                      <div className="w-2 h-2 rounded-full border border-brand-teal bg-brand-teal/20" />
+                    <li key={i} className="flex items-center gap-4 text-slate-600 font-bold text-sm">
+                      <div className="w-2.5 h-2.5 rounded-full border-2 border-brand-teal bg-white" />
                       {req}
                     </li>
                   ))}
@@ -134,25 +134,25 @@ export function CourseDetail() {
                  initial={{ opacity: 0, x: 20 }}
                  whileInView={{ opacity: 1, x: 0 }}
                  viewport={{ once: true }}
-                 className="bg-brand-surface rounded-[2.5rem] p-10 border border-white/5 self-start shadow-2xl space-y-8"
+                 className="bg-white rounded-[3rem] p-12 border border-slate-100 self-start shadow-2xl space-y-10"
               >
                 <div className="flex gap-6 items-center">
-                  <div className="w-14 h-14 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center text-brand-teal shadow-sm">
-                    <Award size={28} />
+                  <div className="w-16 h-16 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center text-brand-teal shadow-inner">
+                    <Award size={32} />
                   </div>
                   <div>
-                    <h4 className="font-bold text-slate-400 uppercase tracking-widest text-[10px] mb-1.5">Certification</h4>
-                    <p className="text-white font-bold leading-tight font-serif">{mockCourse.certification}</p>
+                    <h4 className="font-black text-slate-400 uppercase tracking-[0.2em] text-[10px] mb-2">Certification</h4>
+                    <p className="text-slate-900 font-bold leading-tight font-serif text-lg">{mockCourse.certification}</p>
                   </div>
                 </div>
-                <div className="h-px bg-white/10" />
+                <div className="h-px bg-slate-100" />
                 <div className="flex gap-6 items-center">
-                  <div className="w-14 h-14 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center text-brand-teal shadow-sm">
-                    <Shield size={28} />
+                  <div className="w-16 h-16 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center text-brand-teal shadow-inner">
+                    <Shield size={32} />
                   </div>
                   <div>
-                    <h4 className="font-bold text-slate-400 uppercase tracking-widest text-[10px] mb-1.5">Accreditation</h4>
-                    <p className="text-white font-bold leading-tight font-serif">Nationally Recognized (RQF)</p>
+                    <h4 className="font-black text-slate-400 uppercase tracking-[0.2em] text-[10px] mb-2">Accreditation</h4>
+                    <p className="text-slate-900 font-bold leading-tight font-serif text-lg">Nationally Recognized (RQF)</p>
                   </div>
                 </div>
               </motion.div>
@@ -161,18 +161,18 @@ export function CourseDetail() {
 
           {/* Sidebar / CTA */}
           <aside className="space-y-8">
-            <div className="sticky top-28 bg-brand-surface border border-white/5 rounded-[3rem] p-10 shadow-2xl relative overflow-hidden group">
+            <div className="sticky top-32 bg-white border border-slate-100 rounded-[3.5rem] p-12 shadow-2xl relative overflow-hidden group">
               <div className="absolute top-0 right-0 w-32 h-32 bg-brand-teal/5 rounded-full blur-[40px] -translate-y-1/2 translate-x-1/2 group-hover:bg-brand-teal/10 transition-all" />
               
               <div className="relative z-10 text-center">
-                <div className="mb-10">
-                  <div className="flex justify-center mb-6">
-                    <div className="w-20 h-20 bg-brand-dark border border-white/5 rounded-3xl flex items-center justify-center text-brand-teal">
-                      <Clock size={36} />
+                <div className="mb-12">
+                  <div className="flex justify-center mb-8">
+                    <div className="w-24 h-24 bg-slate-50 border border-slate-100 rounded-[2rem] flex items-center justify-center text-brand-teal shadow-inner">
+                      <Clock size={40} />
                     </div>
                   </div>
-                  <h3 className="text-sm font-bold text-slate-400 uppercase tracking-[0.2em] mb-2 text-center">Duration</h3>
-                  <p className="text-3xl font-bold text-white font-serif">{mockCourse.duration}</p>
+                  <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-3 text-center">Duration</h3>
+                  <p className="text-4xl font-bold text-slate-900 font-serif">{mockCourse.duration}</p>
                 </div>
 
                 <div className="space-y-6">
@@ -182,7 +182,7 @@ export function CourseDetail() {
                   >
                     Enroll Now
                   </button>
-                  <p className="text-xs text-slate-400 font-bold uppercase tracking-widest pt-6 border-t border-white/5">
+                  <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.3em] pt-8 border-t border-slate-50">
                     Limited Seats Available
                   </p>
                 </div>
@@ -202,80 +202,79 @@ export function CourseDetail() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsApplying(false)}
-              className="absolute inset-0 bg-slate-900/40 backdrop-blur-md"
+              className="absolute inset-0 bg-slate-900/60 backdrop-blur-lg"
             />
             <motion.div
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              className="relative w-full max-w-xl max-h-[90vh] overflow-y-auto bg-brand-surface rounded-[2.5rem] shadow-2xl border border-white/5 scrollbar-hide"
+              className="relative w-full max-w-xl max-h-[90vh] overflow-y-auto bg-white rounded-[3rem] shadow-3xl border border-slate-100 scrollbar-hide"
             >
               {formStatus === 'success' ? (
-                <div className="p-10 lg:p-16 text-center">
-                  <div className="w-20 h-20 bg-brand-teal/10 text-brand-teal rounded-full flex items-center justify-center mx-auto mb-8 border border-brand-teal/20">
-                    <CheckCircle2 size={40} />
+                <div className="p-12 lg:p-20 text-center">
+                  <div className="w-24 h-24 bg-brand-teal/10 text-brand-teal rounded-full flex items-center justify-center mx-auto mb-10 border border-brand-teal/20">
+                    <CheckCircle2 size={48} />
                   </div>
-                  <h2 className="text-2xl font-bold text-white mb-4 font-serif">Application Received!</h2>
-                  <p className="text-slate-400 mb-8 text-base leading-relaxed">
+                  <h2 className="text-3xl font-bold text-slate-900 mb-6 font-serif">Application Received!</h2>
+                  <p className="text-slate-600 mb-10 text-lg leading-relaxed font-medium">
                     Thank you for applying for the <strong>{mockCourse.title}</strong>. Our admissions team will review your application and contact you within 48 hours.
                   </p>
                   <button 
                     onClick={() => setIsApplying(false)}
-                    className="w-full bg-brand-teal text-white py-4 rounded-xl font-bold text-base hover:bg-brand-accent transition-all"
+                    className="w-full bg-brand-teal text-white py-5 rounded-2xl font-bold text-lg hover:bg-brand-accent transition-all"
                   >
                     Back to Course
                   </button>
                 </div>
               ) : (
-                <div className="p-8 lg:p-12">
+                <div className="p-8 lg:p-10">
                   <div className="mb-8">
-                    <h2 className="text-2xl font-bold text-white font-serif mb-2">Apply for Course</h2>
-                    <p className="text-brand-teal font-bold text-[10px] uppercase tracking-widest">Submit your details to get started</p>
+                    <h2 className="text-2xl font-bold text-slate-900 font-serif mb-1">Apply for Course</h2>
+                    <p className="text-brand-teal font-black text-[9px] uppercase tracking-widest">Submit your details to get started</p>
                   </div>
 
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="space-y-4">
                       <div className="relative">
-                        <User className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+                        <User className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
                         <input
                           required
                           type="text"
                           placeholder="Your Full Name"
-                          className="w-full pl-14 pr-6 py-4 bg-brand-dark border border-white/10 rounded-xl focus:border-brand-teal outline-none text-white transition-all placeholder:text-slate-500"
+                          className="w-full pl-14 pr-5 py-3.5 bg-slate-50 border border-slate-100 rounded-xl focus:border-brand-teal outline-none text-slate-900 transition-all placeholder:text-slate-400 font-medium text-sm"
                         />
                       </div>
                       <div className="relative">
-                        <Mail className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+                        <Mail className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
                         <input
                           required
                           type="email"
                           placeholder="Email Address"
-                          className="w-full pl-14 pr-6 py-4 bg-brand-dark border border-white/10 rounded-xl focus:border-brand-teal outline-none text-white transition-all placeholder:text-slate-500"
+                          className="w-full pl-14 pr-5 py-3.5 bg-slate-50 border border-slate-100 rounded-xl focus:border-brand-teal outline-none text-slate-900 transition-all placeholder:text-slate-400 font-medium text-sm"
                         />
                       </div>
                       <div className="relative">
-                        <Phone className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+                        <Phone className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
                         <input
                           required
                           type="tel"
                           placeholder="Phone Number"
-                          className="w-full pl-14 pr-6 py-4 bg-brand-dark border border-white/10 rounded-xl focus:border-brand-teal outline-none text-white transition-all placeholder:text-slate-500"
+                          className="w-full pl-14 pr-5 py-3.5 bg-slate-50 border border-slate-100 rounded-xl focus:border-brand-teal outline-none text-slate-900 transition-all placeholder:text-slate-400 font-medium text-sm"
                         />
                       </div>
                       <div className="relative">
-                        <MessageSquare className="absolute left-5 top-5 text-slate-500" size={18} />
+                        <MessageSquare className="absolute left-5 top-4.5 text-slate-400" size={16} />
                         <textarea
                           placeholder="Any specific questions or goals?"
                           rows={3}
-                          className="w-full pl-14 pr-6 py-4 bg-brand-dark border border-white/10 rounded-xl focus:border-brand-teal outline-none text-white transition-all placeholder:text-slate-500 resize-none"
+                          className="w-full pl-14 pr-5 py-3.5 bg-slate-50 border border-slate-100 rounded-xl focus:border-brand-teal outline-none text-slate-900 transition-all placeholder:text-slate-400 resize-none font-medium text-sm"
                         />
                       </div>
                     </div>
 
-
                     <button
                       disabled={formStatus === 'submitting'}
-                      className="w-full bg-brand-teal text-white py-4 rounded-xl font-bold text-base hover:bg-brand-accent transition-all disabled:opacity-50 flex items-center justify-center gap-3"
+                      className="w-full bg-brand-teal text-white py-4 rounded-xl font-bold text-base hover:bg-brand-accent transition-all disabled:opacity-50 flex items-center justify-center gap-3 shadow-xl shadow-brand-teal/20"
                     >
                       {formStatus === 'submitting' ? (
                         <>
@@ -285,7 +284,7 @@ export function CourseDetail() {
                       ) : 'Submit Application'}
                     </button>
                     
-                    <p className="text-[10px] text-center text-slate-500 font-bold uppercase tracking-widest">
+                    <p className="text-[10px] text-center text-slate-400 font-black uppercase tracking-[0.2em]">
                       Secure Application • Privacy Guaranteed
                     </p>
                   </form>

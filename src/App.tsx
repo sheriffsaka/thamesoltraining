@@ -10,6 +10,8 @@ import { About } from './pages/About';
 import { Contact } from './pages/Contact';
 import { Policy } from './pages/Info/Policy';
 import { Disclaimer } from './pages/Info/Disclaimer';
+import { Privacy } from './pages/Info/Privacy';
+import { Terms } from './pages/Info/Terms';
 import { DashboardLayout } from './components/layout/DashboardLayout';
 import { StudentDashboard } from './pages/LMS/StudentDashboard';
 import { MyCourses as StudentCourses } from './pages/LMS/Student/MyCourses';
@@ -32,12 +34,12 @@ import {
 
 // Placeholder Pages
 const PlaceholderPage = ({ title }: { title: string }) => (
-  <div className="min-h-screen pt-40 px-4 text-center bg-brand-dark">
-    <h1 className="text-4xl lg:text-6xl font-bold text-white mb-6 font-serif">{title}</h1>
-    <p className="text-xl text-slate-400 max-w-2xl mx-auto mb-10">
+  <div className="min-h-screen pt-40 px-4 text-center bg-slate-50">
+    <h1 className="text-4xl lg:text-7xl font-bold text-slate-900 mb-6 font-serif tracking-tight">{title}</h1>
+    <p className="text-xl text-slate-600 max-w-2xl mx-auto mb-12 font-medium leading-relaxed">
       We are currently finalizing the content for this section. Thames Solution is committed to providing accurate and high-quality information.
     </p>
-    <div className="w-20 h-1 bg-brand-teal mx-auto rounded-full" />
+    <div className="w-20 h-1.5 bg-brand-teal mx-auto rounded-full shadow-lg shadow-brand-teal/20" />
   </div>
 );
 
@@ -74,6 +76,8 @@ export default function App() {
         <Route path="about" element={<About />} />
         <Route path="policy" element={<Policy />} />
         <Route path="disclaimer" element={<Disclaimer />} />
+        <Route path="privacy" element={<Privacy />} />
+        <Route path="terms" element={<Terms />} />
         <Route path="courses" element={<Courses />} />
         <Route path="courses/:id" element={<CourseDetail />} />
         <Route path="safeguarding" element={<Safeguarding />} />
