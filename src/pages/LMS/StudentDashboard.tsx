@@ -1,33 +1,16 @@
 import { BookOpen, Clock, Calendar, ChevronRight, Award, MessageCircle, User } from 'lucide-react';
 import { motion } from 'motion/react';
-
-const enrolledCourses = [
-  {
-    id: '1',
-    title: 'Health and Social Care Level 3',
-    progress: 45,
-    nextLesson: 'Communication in Care Settings',
-    instructor: 'Dr. Jane Smith',
-    lastAccessed: '2 hours ago'
-  },
-  {
-    id: '2',
-    title: 'Workplace Health & Safety',
-    progress: 82,
-    nextLesson: 'Risk Assessment Protocols',
-    instructor: 'Mr. David Evans',
-    lastAccessed: '1 day ago'
-  }
-];
-
-import { BookOpen, Clock, Calendar, ChevronRight, Award, MessageCircle, User } from 'lucide-react';
-import { motion } from 'motion/react';
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/src/lib/supabase';
 import { getEnrollments } from '@/src/services/courseService';
+import { getAnnouncements } from '@/src/services/contentService';
+import { cn } from '@/src/lib/utils';
 
 export function StudentDashboard() {
+  const navigate = useNavigate();
   const [enrollments, setEnrollments] = useState<any[]>([]);
+  const [announcements, setAnnouncements] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [username, setUsername] = useState('John');
 
@@ -42,13 +25,19 @@ export function StudentDashboard() {
           .eq('id', user.id)
           .single();
         
-        if (profile?.full_name) {
-          setUsername(profile.full_name.split(' ')[0]);
+        const profileData = profile as any;
+        if (profileData?.full_name) {
+          setUsername(profileData.full_name.split(' ')[0]);
         }
 
-        // Fetch enrollments
-        const data = await getEnrollments(user.id);
-        setEnrollments(data);
+        // Parallel fetch
+        const [enrollData, announcementData] = await Promise.all([
+          getEnrollments(user.id),
+          getAnnouncements()
+        ]);
+        
+        setEnrollments(enrollData);
+        setAnnouncements(announcementData);
       }
       setLoading(false);
     }
@@ -184,16 +173,17 @@ export function StudentDashboard() {
             <div className="absolute top-0 right-0 w-40 h-40 bg-brand-teal/5 rounded-full blur-[50px] -translate-y-1/2 translate-x-1/2 group-hover:bg-brand-teal/10 transition-all" />
             <h3 className="text-xl font-bold text-slate-900 mb-8 font-serif relative z-10 border-b border-slate-50 pb-4">Announcements</h3>
             <div className="space-y-8 relative z-10">
-              <div className="space-y-3">
-                <div className="text-[10px] font-black text-brand-teal uppercase tracking-[0.25em]">Global Admin</div>
-                <div className="font-bold text-sm leading-relaxed text-slate-700 font-serif">System maintenance scheduled for Saturday at 10 PM.</div>
-                <div className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Yesterday</div>
-              </div>
-              <div className="space-y-3 pt-8 border-t border-slate-50">
-                <div className="text-[10px] font-black text-brand-teal uppercase tracking-[0.25em]">Course Update</div>
-                <div className="font-bold text-sm leading-relaxed text-slate-700 font-serif">New resources added to 'Communication' module.</div>
-                <div className="text-[10px] text-slate-400 font-black uppercase tracking-widest">2 Days Ago</div>
-              </div>
+              {announcements.length > 0 ? announcements.map((item, idx) => (
+                <div key={item.id} className={cn("space-y-3", idx > 0 && "pt-8 border-t border-slate-50")}>
+                  <div className="text-[10px] font-black text-brand-teal uppercase tracking-[0.25em]">{item.category || 'System'}</div>
+                  <div className="font-bold text-sm leading-relaxed text-slate-700 font-serif">{item.content}</div>
+                  <div className="text-[10px] text-slate-400 font-black uppercase tracking-widest">
+                    {new Date(item.created_at).toLocaleDateString()}
+                  </div>
+                </div>
+              )) : (
+                <p className="text-slate-400 text-sm font-medium">No new announcements at this time.</p>
+              )}
             </div>
           </section>
         </div>

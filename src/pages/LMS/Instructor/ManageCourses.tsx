@@ -1,4 +1,5 @@
 import { BookOpen, Plus, Search } from 'lucide-react';
+import { cn } from '@/src/lib/utils';
 
 const courses = [
   { id: '1', title: 'Health & Social Care L3', students: 156, modules: 12, status: 'Active' },

@@ -32,8 +32,9 @@ export function Login() {
         .eq('id', data.user.id)
         .single();
       
-      if (profile?.role === 'admin') navigate('/admin');
-      else if (profile?.role === 'instructor') navigate('/instructor');
+      const role = (profile as any)?.role;
+      if (role === 'admin') navigate('/admin');
+      else if (role === 'instructor') navigate('/instructor');
       else navigate('/dashboard');
     }
   };

@@ -48,6 +48,76 @@ CREATE TABLE IF NOT EXISTS public.enrollments (
   UNIQUE(user_id, course_id)
 );
 
+-- ANNOUNCEMENTS: Global system messages
+CREATE TABLE IF NOT EXISTS public.announcements (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  title TEXT NOT NULL,
+  content TEXT NOT NULL,
+  category TEXT DEFAULT 'general',
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+  created_by UUID REFERENCES public.profiles(id)
+);
+
+-- NOTIFICATIONS: User-specific alerts
+CREATE TABLE IF NOT EXISTS public.notifications (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
+  title TEXT NOT NULL,
+  message TEXT NOT NULL,
+  is_read BOOLEAN DEFAULT false,
+  link TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- FAQS: Help and support questions
+CREATE TABLE IF NOT EXISTS public.faqs (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  question TEXT NOT NULL,
+  answer TEXT NOT NULL,
+  category TEXT DEFAULT 'general',
+  order_index INTEGER DEFAULT 0,
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- SITE_CONTENTS: Dynamic content for pages (Hero banners, About text, etc)
+CREATE TABLE IF NOT EXISTS public.site_contents (
+  id TEXT PRIMARY KEY, -- e.g., 'home_hero_title'
+  section TEXT NOT NULL, -- e.g., 'home'
+  content JSONB NOT NULL, -- Flexible structure for different content types
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
+);
+
+-- 2. Row Level Security (RLS) Policies (Continued)
+
+-- Announcements: Publicly viewable, Admin only write
+ALTER TABLE public.announcements ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Announcements viewable by everyone." ON public.announcements FOR SELECT USING (true);
+
+-- Notifications: Private to user
+ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users view own notifications." ON public.notifications FOR SELECT USING (auth.uid() = user_id);
+
+-- FAQs: Public viewable
+ALTER TABLE public.faqs ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "FAQs viewable by everyone." ON public.faqs FOR SELECT USING (true);
+
+-- Site Contents: Public viewable, Admin only write
+ALTER TABLE public.site_contents ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Site contents viewable by everyone." ON public.site_contents FOR SELECT USING (true);
+
+-- 4. Initial Seed Data
+INSERT INTO public.announcements (title, content, category)
+VALUES 
+('System Maintenance', 'System maintenance scheduled for Saturday at 10 PM.', 'Global Admin'),
+('New Resources', 'New resources added to Communication module.', 'Course Update');
+
+INSERT INTO public.faqs (question, answer, category, order_index)
+VALUES 
+('How do I enroll in a course?', 'To enroll, simply browse our courses and click Apply Now.', 'General', 1),
+('Are the certificates recognized?', 'Yes, all our courses are accredited by leading UK awarding bodies.', 'General', 2);
+
 -- 2. Row Level Security (RLS) Policies
 
 -- Profiles

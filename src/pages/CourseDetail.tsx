@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { CheckCircle2, Clock, Award, Shield, ArrowLeft, Mail, Phone, User, MessageSquare } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { supabase } from '@/src/lib/supabase';
+import { getCourseById } from '@/src/services/courseService';
 
 const mockCourse = {
   id: '1',
@@ -31,13 +33,6 @@ Learners will develop advanced communication skills, understand person-centred c
   certification: 'Level 3 Diploma (RQF) Accredited by TQUK / NCFE',
   image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80&w=1200',
 };
-
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { CheckCircle2, Clock, Award, Shield, ArrowLeft, Mail, Phone, User, MessageSquare } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
-import { supabase } from '@/src/lib/supabase';
-import { getCourseById } from '@/src/services/courseService';
 
 export function CourseDetail() {
   const { id } = useParams();
@@ -76,6 +71,7 @@ export function CourseDetail() {
         .insert({
           user_id: user.id,
           course_id: course.id,
+          progress: 0,
           status: 'active'
         });
         

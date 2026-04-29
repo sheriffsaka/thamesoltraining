@@ -1,8 +1,9 @@
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowRight, BookOpen, Users, Award, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { ArrowRight, BookOpen, Users, Award, ShieldCheck, CheckCircle2, ChevronDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { cn } from '@/src/lib/utils';
+import { getFAQs } from '@/src/services/contentService';
 
 const stats = [
   { label: 'Courses', value: '50+', icon: BookOpen },
@@ -31,6 +32,25 @@ const categories = [
 
 export function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [faqs, setFaqs] = useState<any[]>([]);
+
+  useEffect(() => {
+    async function loadFaqs() {
+      const data = await getFAQs();
+      if (data && data.length > 0) {
+        setFaqs(data);
+      } else {
+        // Fallback to static if no data yet
+        setFaqs([
+          { question: 'How do I enroll in a course?', answer: 'To enroll, simply browse our courses, click "View Details", and fill out the "Apply Now" form. Our team will contact you within 48 hours to finalize your application.' },
+          { question: 'Are the certificates recognized?', answer: 'Yes, all our courses are accredited by leading UK awarding bodies including TQUK and NCFE, providing you with nationally recognized qualifications.' },
+          { question: 'Can I study while working?', answer: 'Absolutely! Our courses are designed with flexibility in mind, offering a mix of online resources and blended learning to fit your busy schedule.' },
+          { question: 'What are the entry requirements?', answer: 'Requirements vary by course. Generally, you need to be over 18 and have a basic level of literacy/numeracy. Specifics are listed on each course page.' }
+        ]);
+      }
+    }
+    loadFaqs();
+  }, []);
 
   // Auto-play effect
   useEffect(() => {
@@ -323,14 +343,9 @@ export function Home() {
           </div>
 
           <div className="max-w-4xl mx-auto space-y-6">
-            {[
-              { q: 'How do I enroll in a course?', a: 'To enroll, simply browse our courses, click "View Details", and fill out the "Apply Now" form. Our team will contact you within 48 hours to finalize your application.' },
-              { q: 'Are the certificates recognized?', a: 'Yes, all our courses are accredited by leading UK awarding bodies including TQUK and NCFE, providing you with nationally recognized qualifications.' },
-              { q: 'Can I study while working?', a: 'Absolutely! Our courses are designed with flexibility in mind, offering a mix of online resources and blended learning to fit your busy schedule.' },
-              { q: 'What are the entry requirements?', a: 'Requirements vary by course. Generally, you need to be over 18 and have a basic level of literacy/numeracy. Specifics are listed on each course page.' }
-            ].map((faq, i) => (
+            {faqs.map((faq, i) => (
               <motion.div
-                key={i}
+                key={faq.id || i}
                 initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
@@ -339,10 +354,10 @@ export function Home() {
               >
                 <div className="absolute top-0 left-0 w-1 h-full bg-brand-teal scale-y-0 group-hover:scale-y-100 transition-transform origin-top" />
                 <h4 className="text-xl font-bold text-slate-900 mb-4 flex gap-4 font-serif leading-tight">
-                  <span className="text-brand-teal">Q.</span> {faq.q}
+                  <span className="text-brand-teal">Q.</span> {faq.question}
                 </h4>
                 <p className="text-slate-500 leading-relaxed pl-10 font-medium">
-                  {faq.a}
+                  {faq.answer}
                 </p>
               </motion.div>
             ))}

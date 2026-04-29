@@ -125,6 +125,113 @@ export interface Database {
           enrolled_at?: string
         }
       }
+      announcements: {
+        Row: {
+          id: string
+          title: string
+          content: string
+          category: string | null
+          is_active: boolean
+          created_at: string
+          created_by: string | null
+        }
+        Insert: {
+          id?: string
+          title: string
+          content: string
+          category?: string | null
+          is_active?: boolean
+          created_at?: string
+          created_by?: string | null
+        }
+        Update: {
+          id?: string
+          title?: string
+          content?: string
+          category?: string | null
+          is_active?: boolean
+          created_at?: string
+          created_by?: string | null
+        }
+      }
+      notifications: {
+        Row: {
+          id: string
+          user_id: string
+          title: string
+          message: string
+          is_read: boolean
+          link: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          title: string
+          message: string
+          is_read?: boolean
+          link?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          title?: string
+          message?: string
+          is_read?: boolean
+          link?: string | null
+          created_at?: string
+        }
+      }
+      faqs: {
+        Row: {
+          id: string
+          question: string
+          answer: string
+          category: string | null
+          order_index: number
+          is_active: boolean
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          question: string
+          answer: string
+          category?: string | null
+          order_index?: number
+          is_active?: boolean
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          question?: string
+          answer?: string
+          category?: string | null
+          order_index?: number
+          is_active?: boolean
+          created_at?: string
+        }
+      }
+      site_contents: {
+        Row: {
+          id: string
+          section: string
+          content: Json
+          updated_at: string | null
+        }
+        Insert: {
+          id: string
+          section: string
+          content: Json
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          section?: string
+          content?: Json
+          updated_at?: string | null
+        }
+      }
     }
     Views: {
       [_ in never]: never

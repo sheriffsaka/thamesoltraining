@@ -16,6 +16,7 @@ import { DashboardLayout } from './components/layout/DashboardLayout';
 import { StudentDashboard } from './pages/LMS/StudentDashboard';
 import { MyCourses as StudentCourses } from './pages/LMS/Student/MyCourses';
 import { Resources as StudentResources } from './pages/LMS/Student/Resources';
+import { Profile } from './pages/LMS/Profile';
 import { InstructorDashboard } from './pages/LMS/InstructorDashboard';
 import { ManageCourses as InstructorManageCourses } from './pages/LMS/Instructor/ManageCourses';
 import { ManageStudents as InstructorManageStudents } from './pages/LMS/Instructor/ManageStudents';
@@ -94,14 +95,14 @@ export default function App() {
       <Route path="/dashboard/courses" element={<DashboardLayout userRole="Student" menuItems={studentMenu}><StudentCourses /></DashboardLayout>} />
       <Route path="/dashboard/resources" element={<DashboardLayout userRole="Student" menuItems={studentMenu}><StudentResources /></DashboardLayout>} />
       <Route path="/dashboard/news" element={<DashboardLayout userRole="Student" menuItems={studentMenu}><PlaceholderPage title="Announcements" /></DashboardLayout>} />
-      <Route path="/dashboard/profile" element={<DashboardLayout userRole="Student" menuItems={studentMenu}><PlaceholderPage title="My Profile" /></DashboardLayout>} />
+      <Route path="/dashboard/profile" element={<DashboardLayout userRole="Student" menuItems={studentMenu}><Profile /></DashboardLayout>} />
       <Route path="/dashboard/settings" element={<DashboardLayout userRole="Student" menuItems={studentMenu}><PlaceholderPage title="Settings" /></DashboardLayout>} />
       
       <Route path="/instructor" element={<DashboardLayout userRole="Instructor" menuItems={instructorMenu}><InstructorDashboard /></DashboardLayout>} />
       <Route path="/instructor/courses" element={<DashboardLayout userRole="Instructor" menuItems={instructorMenu}><InstructorManageCourses /></DashboardLayout>} />
       <Route path="/instructor/students" element={<DashboardLayout userRole="Instructor" menuItems={instructorMenu}><InstructorManageStudents /></DashboardLayout>} />
       <Route path="/instructor/uploads" element={<DashboardLayout userRole="Instructor" menuItems={instructorMenu}><PlaceholderPage title="Upload Resources" /></DashboardLayout>} />
-      <Route path="/instructor/profile" element={<DashboardLayout userRole="Instructor" menuItems={instructorMenu}><PlaceholderPage title="Instructor Profile" /></DashboardLayout>} />
+      <Route path="/instructor/profile" element={<DashboardLayout userRole="Instructor" menuItems={instructorMenu}><Profile /></DashboardLayout>} />
       
       <Route path="/admin" element={<DashboardLayout userRole="Admin" menuItems={adminMenu}><AdminDashboard /></DashboardLayout>} />
       <Route path="/admin/users" element={<DashboardLayout userRole="Admin" menuItems={adminMenu}><PlaceholderPage title="Manage Users" /></DashboardLayout>} />
