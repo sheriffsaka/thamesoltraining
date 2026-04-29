@@ -39,17 +39,17 @@ export function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-brand-light flex items-center justify-center p-4">
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
       <div className="max-w-md w-full">
         <div className="text-center mb-10">
           <Link to="/" className="inline-block transform hover:scale-105 transition-all">
-            <Logo className="flex-col !gap-3" />
+            <Logo dark={true} className="flex-col !gap-3" />
           </Link>
-          <h2 className="mt-8 text-3xl font-bold text-brand-dark">LMS Portal Login</h2>
-          <p className="mt-2 text-gray-500">Access your courses and training resources</p>
+          <h2 className="mt-8 text-3xl font-bold text-slate-900 font-serif">LMS Portal Login</h2>
+          <p className="mt-2 text-slate-500 font-medium">Access your courses and training resources</p>
         </div>
 
-        <div className="bg-white rounded-[2.5rem] p-10 shadow-2xl shadow-brand-dark/10 border border-white">
+        <div className="bg-white rounded-[2.5rem] p-10 shadow-2xl shadow-slate-200/50 border border-slate-100">
           <form onSubmit={handleLogin} className="space-y-6">
             {error && (
               <div className="bg-red-50 border border-red-100 text-red-600 px-4 py-3 rounded-xl flex items-center gap-3 text-sm">

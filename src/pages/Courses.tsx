@@ -1,10 +1,12 @@
 import { Link, useSearchParams } from 'react-router-dom';
 import { Search, Filter, Clock, GraduationCap, ChevronRight } from 'lucide-react';
 import { motion } from 'motion/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { cn } from '@/src/lib/utils';
+import { getCourses } from '@/src/services/courseService';
+import { Course } from '@/src/lib/supabase';
 
-const mockCourses = [
+const mockCourses: any[] = [
   // HEALTH AND SOCIAL CARE
   { id: 'hsc-l2-1', title: 'Level 2 Adult Social Care Certificate', category: 'health-and-social-care', level: 'Level 2', desc: 'Entry-level certification for adult social care professionals.', image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80&w=600', duration: '6 Months' },
   { id: 'hsc-l3-1', title: 'Level 3 Diploma in Adult Care', category: 'health-and-social-care', level: 'Level 3', desc: 'Advanced skills for senior care roles and team leading.', image: 'https://images.unsplash.com/photo-1516549221187-df9bd638dfd1?auto=format&fit=crop&q=80&w=600', duration: '12 Months' },
@@ -52,11 +54,29 @@ export function Courses() {
   const [searchParams, setSearchParams] = useSearchParams();
   const currentCategory = searchParams.get('category') || 'all';
   const [searchQuery, setSearchQuery] = useState('');
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const filteredCourses = mockCourses.filter(course => {
-    const matchesCategory = currentCategory === 'all' || course.category === currentCategory;
+  useEffect(() => {
+    async function loadCourses() {
+      setIsLoading(true);
+      const data = await getCourses(currentCategory);
+      // If no data in Supabase yet, we can use mock data for demo purposes
+      // But in a real PRD app, we'd just show an empty state or the fetched data
+      if (data && data.length > 0) {
+        setCourses(data);
+      } else {
+        // Fallback to mock data if DB is empty (optional)
+        setCourses(mockCourses.filter(c => currentCategory === 'all' || c.category === currentCategory) as any);
+      }
+      setIsLoading(false);
+    }
+    loadCourses();
+  }, [currentCategory]);
+
+  const filteredCourses = courses.filter(course => {
     const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesSearch;
+    return matchesSearch;
   });
 
   return (
@@ -118,15 +138,15 @@ export function Courses() {
               className="group bg-white rounded-[2.5rem] overflow-hidden shadow-xl hover:shadow-2xl transition-all border border-slate-100 flex flex-col h-full"
             >
               <div className="relative h-60 overflow-hidden">
-                <img
-                  src={course.image}
-                  alt={course.title}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                />
+                      <img
+                        src={course.image_url || (course as any).image}
+                        alt={course.title}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                      />
                 <div className="absolute inset-0 bg-gradient-to-t from-white/20 via-transparent to-transparent opacity-60" />
                 <div className="absolute top-4 left-4 flex flex-col gap-2">
                   <span className="px-4 py-2 bg-brand-teal/90 backdrop-blur rounded-full text-[10px] font-black text-white uppercase tracking-widest border border-white/10">
-                    {course.category.replace(/-/g, ' ')}
+                    {course.category?.replace(/-/g, ' ')}
                   </span>
                   {course.level && (
                     <span className="px-4 py-2 bg-brand-accent/90 backdrop-blur rounded-full text-[10px] font-black text-white uppercase tracking-widest border border-white/10">
@@ -140,7 +160,7 @@ export function Courses() {
                   {course.title}
                 </h3>
                 <p className="text-slate-500 text-sm mb-6 flex-1 line-clamp-3 leading-relaxed font-medium">
-                  {course.desc}
+                  {course.description || course.desc}
                 </p>
                 <div className="flex items-center justify-between mb-8 pt-6 border-t border-slate-100">
                   <div className="flex items-center gap-2 text-slate-400 text-[10px] font-black uppercase tracking-[0.2em]">

@@ -69,7 +69,7 @@ export function InstructorDashboard() {
               </div>
 
               <div className="flex gap-4">
-                <button className="flex-1 bg-slate-900 text-white py-5 rounded-2xl font-bold text-sm hover:bg-brand-teal transition-all flex items-center justify-center gap-3 shadow-xl hover:shadow-brand-teal/20">
+                <button className="flex-1 bg-brand-teal text-white py-5 rounded-2xl font-bold text-sm hover:bg-brand-accent transition-all flex items-center justify-center gap-3 shadow-xl shadow-brand-teal/20 border border-transparent">
                   <Edit size={18} />
                   Edit Course
                 </button>

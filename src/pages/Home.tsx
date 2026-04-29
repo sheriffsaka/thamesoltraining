@@ -65,11 +65,11 @@ export function Home() {
   ];
 
   return (
-    <div className="overflow-hidden bg-brand-dark">
+    <div className="overflow-hidden bg-slate-50">
       {/* Hero Section */}
-      <section className="relative min-h-[95vh] flex items-center pt-20 hero-gradient overflow-hidden border-b border-white/5">
+      <section className="relative min-h-[95vh] flex items-center pt-20 overflow-hidden border-b border-slate-100 bg-white">
         <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-brand-dark/50 backdrop-blur-[1px] z-10" />
+          <div className="absolute inset-0 bg-white/40 backdrop-blur-[1px] z-10" />
           <AnimatePresence mode="wait">
             <motion.video
               key={currentSlide}
@@ -81,7 +81,7 @@ export function Home() {
               loop
               muted
               playsInline
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover grayscale"
             >
               <source src={slides[currentSlide].video} type="video/mp4" />
             </motion.video>
@@ -105,26 +105,26 @@ export function Home() {
               >
                 {slides[currentSlide].subtitle}
               </motion.div>
-              <h1 className="text-6xl md:text-8xl font-bold leading-[1.05] mb-10 text-white tracking-tighter">
+              <h1 className="text-6xl md:text-8xl font-bold leading-[1.05] mb-10 text-slate-900 tracking-tighter">
                 {slides[currentSlide].title.split(' ')[0]} <br/>
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-teal to-brand-accent italic font-serif">
+                <span className="text-brand-teal italic font-serif">
                   {slides[currentSlide].title.split(' ').slice(1).join(' ')}
                 </span>
               </h1>
-              <p className="text-xl text-slate-300 mb-12 leading-relaxed max-w-xl font-medium">
+              <p className="text-xl text-slate-600 mb-12 leading-relaxed max-w-xl font-medium">
                 {slides[currentSlide].desc}
               </p>
               <div className="flex flex-col sm:flex-row gap-6">
                 <Link
                   to={slides[currentSlide].link}
-                  className="bg-brand-teal text-white px-12 py-5 rounded-lg font-black text-xs uppercase tracking-widest hover:bg-brand-accent transition-all flex items-center justify-center gap-3 group shadow-2xl shadow-brand-teal/20"
+                  className="bg-brand-teal text-white px-12 py-5 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-brand-accent transition-all flex items-center justify-center gap-3 group shadow-2xl shadow-brand-teal/20"
                 >
                   View Category
                   <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                 </Link>
                 <Link
                   to="/contact"
-                  className="bg-white/5 border border-white/10 text-white px-12 py-5 rounded-lg font-black text-xs uppercase tracking-widest hover:bg-white/10 transition-all text-center"
+                  className="bg-slate-50 border border-slate-100 text-slate-900 px-12 py-5 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-white transition-all text-center shadow-lg"
                 >
                   Book Consultation
                 </Link>
@@ -143,7 +143,7 @@ export function Home() {
                     "w-12 h-12 rounded-xl flex items-center justify-center font-black text-sm transition-all border",
                     currentSlide === idx 
                       ? "bg-brand-teal text-white border-brand-teal shadow-lg shadow-brand-teal/20" 
-                      : "bg-white/5 text-slate-400 border-white/10 group-hover:bg-white/10"
+                      : "bg-white text-slate-400 border-slate-100 group-hover:bg-slate-50 group-hover:shadow-lg"
                   )}>
                     0{idx + 1}
                   </div>
@@ -152,7 +152,7 @@ export function Home() {
                     currentSlide === idx ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4 pointer-events-none"
                   )}>
                     <div className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-teal">{slide.subtitle}</div>
-                    <div className="text-xs font-bold text-white uppercase">{slide.title}</div>
+                    <div className="text-xs font-bold text-slate-900 uppercase">{slide.title}</div>
                   </div>
                 </button>
               ))}
@@ -161,23 +161,20 @@ export function Home() {
         </div>
 
         {/* Accreditations / Partners Ribbon */}
-        <div className="absolute bottom-0 left-0 w-full bg-brand-surface/40 backdrop-blur-md border-t border-white/5 py-8 z-20">
-          <div className="max-w-7xl mx-auto px-4 flex flex-wrap justify-center items-center gap-12 grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all duration-700">
-            <div className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 border-r border-white/10 pr-12 hidden md:block">Accredited By</div>
-            <div className="text-xl font-bold text-white/50 tracking-tighter">CPD<span className="text-brand-teal">UK</span></div>
-            <div className="text-xl font-black text-white/50 tracking-tighter">TQUK</div>
-            <div className="text-xl font-serif italic text-white/50 tracking-tighter">NCFE</div>
-            <div className="text-xl font-bold text-white/50 tracking-tighter">Cache</div>
-            <div className="text-xl font-black text-white/50 tracking-tighter">Skills<span className="text-brand-teal">For</span>Care</div>
+        <div className="absolute bottom-0 left-0 w-full bg-white/80 backdrop-blur-md border-t border-slate-100 py-8 z-20">
+          <div className="max-w-7xl mx-auto px-4 flex flex-wrap justify-center items-center gap-12 grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-700">
+            <div className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 border-r border-slate-100 pr-12 hidden md:block">Accredited By</div>
+            <div className="text-xl font-bold text-slate-400 tracking-tighter">CPD<span className="text-brand-teal">UK</span></div>
+            <div className="text-xl font-black text-slate-400 tracking-tighter">TQUK</div>
+            <div className="text-xl font-serif italic text-slate-400 tracking-tighter">NCFE</div>
+            <div className="text-xl font-bold text-slate-400 tracking-tighter">Cache</div>
+            <div className="text-xl font-black text-slate-400 tracking-tighter">Skills<span className="text-brand-teal">For</span>Care</div>
           </div>
         </div>
-
-        {/* Abstract Glows */}
-        <div className="absolute top-1/4 right-0 w-1/2 h-1/2 bg-brand-teal/10 blur-[180px] rounded-full translate-x-1/3" />
       </section>
 
-      {/* Stats Section with sleek dark cards */}
-      <section className="bg-brand-surface py-16 border-b border-white/5">
+      {/* Stats Section with sleek light cards */}
+      <section className="bg-white py-16 border-b border-slate-50 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-12">
             {stats.map((stat, i) => (
@@ -189,7 +186,7 @@ export function Home() {
                 transition={{ delay: i * 0.1 }}
                 className="flex items-center gap-6 group"
               >
-                <div className="text-4xl font-black text-white group-hover:text-brand-teal transition-colors tracking-tighter">{stat.value}</div>
+                <div className="text-4xl font-black text-slate-900 group-hover:text-brand-teal transition-colors tracking-tighter">{stat.value}</div>
                 <div className="text-[10px] text-slate-400 font-black uppercase tracking-[0.2em] max-w-[80px]">{stat.label}</div>
               </motion.div>
             ))}
@@ -197,15 +194,15 @@ export function Home() {
         </div>
       </section>
 
-      {/* Categories Section with card-dark */}
-      <section className="py-32 bg-brand-dark">
+      {/* Categories Section with light cards */}
+      <section className="py-32 bg-slate-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-24 gap-8">
             <div className="max-w-2xl">
               <h2 className="text-xs font-black text-brand-teal uppercase tracking-[0.4em] mb-4">Core Competencies</h2>
-              <h3 className="text-5xl font-bold text-white tracking-tighter">Elite Training Categories</h3>
+              <h3 className="text-5xl font-bold text-slate-900 tracking-tighter font-serif">Elite Training Categories</h3>
             </div>
-            <p className="text-slate-400 text-lg max-w-md font-medium leading-relaxed">
+            <p className="text-slate-500 text-lg max-w-md font-medium leading-relaxed">
               We specialize in providing industry-standard training across key sectors driving the modern economy.
             </p>
           </div>
@@ -218,17 +215,17 @@ export function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.2 }}
-                className="group relative overflow-hidden rounded-[2.5rem] aspect-[10/14] shadow-2xl border border-white/5"
+                className="group relative overflow-hidden rounded-[3rem] aspect-[10/14] shadow-2xl border border-white"
               >
                 <img
                   src={cat.image}
                   alt={cat.title}
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-60"
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-80"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-white via-white/20 to-transparent opacity-90 group-hover:opacity-100 transition-opacity" />
                 <div className="absolute bottom-0 left-0 p-12 w-full">
-                  <h3 className="text-3xl font-bold text-white mb-4 tracking-tighter">{cat.title}</h3>
-                  <p className="text-slate-100 text-sm mb-8 leading-relaxed font-medium">
+                  <h3 className="text-3xl font-bold text-slate-900 mb-4 tracking-tighter font-serif">{cat.title}</h3>
+                  <p className="text-slate-600 text-sm mb-8 leading-relaxed font-medium">
                     {cat.desc}
                   </p>
                   <Link
@@ -246,31 +243,31 @@ export function Home() {
       </section>
 
       {/* Why Choose Us Section */}
-      <section className="py-32 bg-brand-dark relative overflow-hidden">
+      <section className="py-32 bg-white relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
             <div className="relative">
-              <div className="relative rounded-[4rem] overflow-hidden aspect-square shadow-2xl border border-white/5">
+              <div className="relative rounded-[4rem] overflow-hidden aspect-square shadow-2xl border border-slate-100">
                 <img 
                   src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=800" 
                   alt="Students learning" 
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover grayscale opacity-80"
                 />
-                <div className="absolute inset-0 bg-brand-teal/20 mix-blend-overlay" />
+                <div className="absolute inset-0 bg-brand-teal/5 mix-blend-overlay" />
               </div>
               {/* Floating Stat Card */}
               <motion.div 
                 initial={{ opacity: 0, x: 20 }}
                 whileInView={{ opacity: 1, x: 0 }}
-                className="absolute -bottom-10 -right-10 bg-brand-surface p-10 rounded-[2.5rem] border border-white/10 shadow-2xl z-20 max-w-[300px]"
+                className="absolute -bottom-10 -right-10 bg-white p-10 rounded-[3rem] border border-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.1)] z-20 max-w-[300px]"
               >
                 <div className="flex items-center gap-4 mb-4">
-                  <div className="w-12 h-12 bg-brand-teal/20 rounded-2xl flex items-center justify-center text-brand-teal">
+                  <div className="w-12 h-12 bg-brand-teal/10 rounded-2xl flex items-center justify-center text-brand-teal">
                     <CheckCircle2 size={24} />
                   </div>
-                  <div className="font-black text-2xl text-white tracking-tighter">100%</div>
+                  <div className="font-black text-2xl text-slate-900 tracking-tighter">100%</div>
                 </div>
-                <div className="text-xs font-black text-slate-400 uppercase tracking-widest leading-relaxed">
+                <div className="text-xs font-bold text-slate-500 uppercase tracking-widest leading-relaxed">
                   Compliance and quality assurance guaranteed across all programs.
                 </div>
               </motion.div>
@@ -279,11 +276,11 @@ export function Home() {
             <div className="space-y-12">
               <div>
                 <h2 className="text-xs font-black text-brand-teal uppercase tracking-[0.4em] mb-4">The TMS Advantage</h2>
-                <h3 className="text-5xl font-bold text-white tracking-tighter mb-8 font-serif leading-tight">
+                <h3 className="text-5xl font-bold text-slate-900 tracking-tighter mb-8 font-serif leading-tight">
                   Why Leading Institutions <br/>
                   <span className="italic text-brand-teal">Choose TMS</span>
                 </h3>
-                <p className="text-slate-400 text-lg leading-relaxed font-medium">
+                <p className="text-slate-600 text-lg leading-relaxed font-medium">
                   At Thames Solution Training, we don't just provide courses; we forge pathways to professional mastery through rigorous standards and innovative pedagogy.
                 </p>
               </div>
@@ -301,12 +298,12 @@ export function Home() {
                     transition={{ delay: i * 0.1 }}
                     className="flex gap-6 group"
                   >
-                    <div className="w-6 h-6 rounded-full border-2 border-brand-teal flex items-center justify-center shrink-0 mt-1 transition-colors group-hover:bg-brand-teal">
+                    <div className="w-6 h-6 rounded-full border-2 border-brand-teal bg-white flex items-center justify-center shrink-0 mt-1 transition-colors group-hover:bg-brand-teal">
                       <div className="w-2 h-2 bg-brand-teal rounded-full group-hover:bg-white" />
                     </div>
                     <div>
-                      <h4 className="text-lg font-bold text-white mb-2 tracking-tight">{item.title}</h4>
-                      <p className="text-slate-400 text-sm leading-relaxed">{item.desc}</p>
+                      <h4 className="text-lg font-bold text-slate-900 mb-2 tracking-tight font-serif">{item.title}</h4>
+                      <p className="text-slate-500 text-sm leading-relaxed">{item.desc}</p>
                     </div>
                   </motion.div>
                 ))}
@@ -316,13 +313,13 @@ export function Home() {
         </div>
       </section>
 
-      {/* FAQ Section */}
-      <section className="py-32 bg-brand-surface border-y border-white/5 relative overflow-hidden">
+      {/* FAQ Section with light cards */}
+      <section className="py-32 bg-slate-50 relative overflow-hidden border-y border-slate-100">
         <div className="absolute top-1/2 left-0 w-96 h-96 bg-brand-teal/5 rounded-full blur-[100px] -translate-x-1/2 -translate-y-1/2" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center max-w-3xl mx-auto mb-20">
             <h2 className="text-xs font-black text-brand-teal uppercase tracking-[0.4em] mb-4">Support & Info</h2>
-            <h3 className="text-5xl font-bold text-white tracking-tighter font-serif">Critical Intelligence</h3>
+            <h3 className="text-5xl font-bold text-slate-900 tracking-tighter font-serif">Critical Intelligence</h3>
           </div>
 
           <div className="max-w-4xl mx-auto space-y-6">
@@ -338,13 +335,13 @@ export function Home() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="bg-brand-surface rounded-[2rem] p-10 border border-white/5 hover:border-brand-teal/30 transition-all group overflow-hidden relative shadow-2xl"
+                className="bg-white rounded-[2.5rem] p-10 border border-slate-100 hover:border-brand-teal/30 transition-all group overflow-hidden relative shadow-xl"
               >
                 <div className="absolute top-0 left-0 w-1 h-full bg-brand-teal scale-y-0 group-hover:scale-y-100 transition-transform origin-top" />
-                <h4 className="text-xl font-bold text-white mb-4 flex gap-4 font-serif leading-tight">
+                <h4 className="text-xl font-bold text-slate-900 mb-4 flex gap-4 font-serif leading-tight">
                   <span className="text-brand-teal">Q.</span> {faq.q}
                 </h4>
-                <p className="text-slate-400 leading-relaxed pl-10 font-medium">
+                <p className="text-slate-500 leading-relaxed pl-10 font-medium">
                   {faq.a}
                 </p>
               </motion.div>
@@ -354,11 +351,11 @@ export function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-32 px-4 bg-brand-dark">
+      <section className="py-32 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
-          <div className="relative rounded-[4rem] bg-brand-surface p-12 lg:p-24 overflow-hidden text-center shadow-2xl border border-white/5 group">
+          <div className="relative rounded-[4rem] bg-slate-900 p-12 lg:p-24 overflow-hidden text-center shadow-2xl group">
             {/* Decoration */}
-            <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-brand-teal/5 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2 group-hover:bg-brand-teal/10 transition-all duration-1000" />
+            <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-brand-teal/10 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2 group-hover:bg-brand-teal/20 transition-all duration-1000" />
             
             <div className="relative z-10 max-w-3xl mx-auto">
               <h2 className="text-xs font-black text-brand-teal uppercase tracking-[0.4em] mb-8">Ready to Advance?</h2>

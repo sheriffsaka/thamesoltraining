@@ -11,8 +11,8 @@ export function ManageCourses() {
     <div className="space-y-8">
       <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-white font-serif">Manage Courses</h1>
-          <p className="text-slate-400">Create and edit your training curriculum.</p>
+          <h1 className="text-3xl font-bold text-slate-900 font-serif">Manage Courses</h1>
+          <p className="text-slate-500 font-medium">Create and edit your training curriculum.</p>
         </div>
         <button className="bg-brand-teal text-white px-8 py-4 rounded-2xl font-bold text-sm shadow-xl shadow-brand-teal/20 hover:scale-105 transition-all flex items-center gap-3">
           <Plus size={20} />
@@ -20,20 +20,20 @@ export function ManageCourses() {
         </button>
       </header>
 
-      <div className="bg-brand-card rounded-3xl border border-white/5 overflow-hidden">
-        <div className="p-8 border-b border-white/5">
+      <div className="bg-white rounded-[2.5rem] border border-slate-100 overflow-hidden shadow-2xl">
+        <div className="p-8 border-b border-slate-100">
           <div className="relative max-w-md">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
             <input 
               type="text" 
               placeholder="Search your courses..."
-              className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-12 pr-6 text-white outline-none focus:border-brand-teal transition-all"
+              className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 pl-12 pr-6 text-slate-900 outline-none focus:border-brand-teal transition-all"
             />
           </div>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-left">
-            <thead className="bg-white/5 text-[10px] font-bold text-slate-500 uppercase tracking-widest border-b border-white/5">
+            <thead className="bg-slate-50 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">
               <tr>
                 <th className="px-8 py-5">Course Title</th>
                 <th className="px-8 py-5">Status</th>
@@ -42,23 +42,24 @@ export function ManageCourses() {
                 <th className="px-8 py-5 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/5">
+            <tbody className="divide-y divide-slate-50">
               {courses.map((course) => (
-                <tr key={course.id} className="hover:bg-white/5 transition-all group">
+                <tr key={course.id} className="hover:bg-slate-50/50 transition-all group">
                   <td className="px-8 py-6">
-                    <div className="font-bold text-slate-200 group-hover:text-brand-teal transition-colors font-serif">{course.title}</div>
+                    <div className="font-bold text-slate-900 group-hover:text-brand-teal transition-colors font-serif">{course.title}</div>
                   </td>
                   <td className="px-8 py-6">
-                    <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                      course.status === 'Active' ? 'bg-emerald-400/10 text-emerald-400' : 'bg-white/5 text-slate-500'
-                    }`}>
+                    <span className={cn(
+                      "px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest",
+                      course.status === 'Active' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-slate-50 text-slate-400 border border-slate-100'
+                    )}>
                       {course.status}
                     </span>
                   </td>
-                  <td className="px-8 py-6 text-center text-slate-400 font-bold">{course.students}</td>
-                  <td className="px-8 py-6 text-center text-slate-400 font-bold">{course.modules}</td>
+                  <td className="px-8 py-6 text-center text-slate-500 font-black">{course.students}</td>
+                  <td className="px-8 py-6 text-center text-slate-500 font-black">{course.modules}</td>
                   <td className="px-8 py-6 text-right">
-                    <button className="text-brand-teal font-bold text-xs hover:underline underline-offset-4 decoration-2">Manage</button>
+                    <button className="text-brand-teal font-black text-[10px] uppercase tracking-widest hover:bg-brand-teal/5 px-4 py-2 rounded-lg transition-all">Manage</button>
                   </td>
                 </tr>
               ))}

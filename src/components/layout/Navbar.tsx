@@ -76,14 +76,14 @@ export function Navbar() {
     <nav className={cn(
       "sticky top-0 z-50 border-b transition-all duration-300",
       isHome 
-        ? "bg-brand-dark/80 backdrop-blur-md border-white/5" 
+        ? "bg-white/80 backdrop-blur-md border-slate-100 shadow-sm" 
         : "bg-white border-slate-100 shadow-sm"
     )}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-24">
           <div className="flex items-center">
             <Link to="/">
-              <Logo dark={!isHome} />
+              <Logo dark={true} />
             </Link>
           </div>
 
@@ -99,7 +99,7 @@ export function Navbar() {
                 {link.children ? (
                   <button className={cn(
                     "flex items-center gap-1.5 text-[11px] font-black tracking-[0.2em] transition-colors py-2 uppercase",
-                    isHome ? "text-slate-300 hover:text-brand-teal" : "text-slate-600 hover:text-brand-teal"
+                    "text-slate-600 hover:text-brand-teal"
                   )}>
                     {link.name}
                     <ChevronDown size={14} className={cn("transition-transform opacity-50", activeDropdown === link.name && "rotate-180")} />
@@ -111,7 +111,7 @@ export function Navbar() {
                       "text-[11px] font-black tracking-[0.2em] transition-colors py-2 uppercase",
                       location.pathname === link.path 
                         ? "text-brand-teal" 
-                        : (isHome ? "text-slate-300 hover:text-brand-teal" : "text-slate-600 hover:text-brand-teal")
+                        : "text-slate-600 hover:text-brand-teal"
                     )}
                   >
                     {link.name}
@@ -178,7 +178,7 @@ export function Navbar() {
               onClick={() => setIsOpen(!isOpen)}
               className={cn(
                 "p-2 transition-colors rounded-xl",
-                isHome ? "text-white hover:text-brand-teal bg-white/5" : "text-slate-900 hover:text-brand-teal bg-slate-100"
+                "text-slate-900 hover:text-brand-teal bg-slate-100"
               )}
             >
               {isOpen ? <X size={28} /> : <Menu size={28} />}
@@ -196,7 +196,7 @@ export function Navbar() {
             exit={{ opacity: 0, height: 0 }}
             className={cn(
               "lg:hidden border-t overflow-hidden shadow-2xl",
-              isHome ? "bg-brand-dark border-white/5" : "bg-white border-slate-100"
+              "bg-white border-slate-100"
             )}
           >
             <div className="px-6 pt-6 pb-16 space-y-4">
@@ -218,7 +218,7 @@ export function Navbar() {
                                     onClick={() => setIsOpen(false)}
                                     className={cn(
                                       "block px-4 py-3 text-sm font-bold transition-colors rounded-xl font-serif",
-                                      isHome ? "text-slate-400 hover:text-brand-teal" : "text-slate-600 hover:text-brand-teal hover:bg-slate-50"
+                                      "text-slate-600 hover:text-brand-teal hover:bg-slate-50"
                                     )}
                                   >
                                     {item.name}
@@ -237,7 +237,7 @@ export function Navbar() {
                               onClick={() => setIsOpen(false)}
                               className={cn(
                                 "block px-6 py-4 text-sm font-bold transition-colors rounded-xl font-serif",
-                                isHome ? "text-slate-400 hover:text-brand-teal" : "text-slate-600 hover:text-brand-teal hover:bg-slate-50"
+                                "text-slate-600 hover:text-brand-teal hover:bg-slate-50"
                               )}
                             >
                               {child.name}
@@ -254,7 +254,7 @@ export function Navbar() {
                         "block px-4 py-5 text-sm font-black uppercase tracking-[0.2em] transition-all rounded-2xl",
                         location.pathname === link.path 
                           ? "bg-brand-teal text-white shadow-lg shadow-brand-teal/20" 
-                          : (isHome ? "text-slate-300 hover:text-brand-teal hover:bg-white/5" : "text-slate-600 hover:text-brand-teal hover:bg-slate-50")
+                          : "text-slate-600 hover:text-brand-teal hover:bg-slate-50"
                       )}
                     >
                       {link.name}

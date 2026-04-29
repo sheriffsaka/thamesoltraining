@@ -32,27 +32,90 @@ Learners will develop advanced communication skills, understand person-centred c
   image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80&w=1200',
 };
 
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { CheckCircle2, Clock, Award, Shield, ArrowLeft, Mail, Phone, User, MessageSquare } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { supabase } from '@/src/lib/supabase';
+import { getCourseById } from '@/src/services/courseService';
+
 export function CourseDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [course, setCourse] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   const [isApplying, setIsApplying] = useState(false);
   const [formStatus, setFormStatus] = useState<'idle' | 'submitting' | 'success'>('idle');
+
+  useEffect(() => {
+    async function loadCourse() {
+      if (!id) return;
+      setLoading(true);
+      const data = await getCourseById(id);
+      if (data) {
+        setCourse(data);
+      } else {
+        // Fallback or 404 logic
+        setCourse(null);
+      }
+      setLoading(false);
+    }
+    loadCourse();
+  }, [id]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormStatus('submitting');
-    // Simulate API call
+    
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (user && course) {
+      // If user is logged in, create an actual enrollment
+      const { error } = await supabase
+        .from('enrollments')
+        .insert({
+          user_id: user.id,
+          course_id: course.id,
+          status: 'active'
+        });
+        
+      if (error && error.code !== '23505') { // Ignore unique constraint error (already enrolled)
+        console.error('Enrollment error:', error);
+      }
+    }
+    
+    // Always show success for demo/lead collection
     setTimeout(() => {
       setFormStatus('success');
     }, 1500);
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-brand-teal border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (!course) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+        <div className="text-center">
+          <h2 className="text-4xl font-bold text-slate-900 mb-4 font-serif">Course Not Found</h2>
+          <button onClick={() => navigate('/courses')} className="text-brand-teal font-bold hover:underline">
+            Back to Course Catalog
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-slate-50 min-h-screen pt-20">
-      {/* Hero Header */}
       <section className="relative h-[500px] flex items-end overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <img src={mockCourse.image} alt={mockCourse.title} className="w-full h-full object-cover" />
+          <img src={course.image_url || course.image} alt={course.title} className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent" />
         </div>
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 text-white">
@@ -67,9 +130,9 @@ export function CourseDetail() {
           </motion.button>
           <div className="flex flex-col gap-6">
             <span className="px-6 py-2 bg-brand-teal text-white rounded-full text-[10px] font-black w-fit uppercase tracking-[0.2em] shadow-lg shadow-brand-teal/20">
-              {mockCourse.category}
+              {course.category?.replace(/-/g, ' ')}
             </span>
-            <h1 className="text-4xl md:text-7xl font-bold max-w-4xl font-serif leading-tight select-none tracking-tight">{mockCourse.title}</h1>
+            <h1 className="text-4xl md:text-7xl font-bold max-w-4xl font-serif leading-tight select-none tracking-tight">{course.title}</h1>
           </div>
         </div>
       </section>
@@ -88,7 +151,7 @@ export function CourseDetail() {
                 Course Description
               </h2>
               <p className="text-slate-600 text-lg leading-relaxed whitespace-pre-line font-medium">
-                {mockCourse.longDesc}
+                {course.description || course.longDesc}
               </p>
             </motion.div>
 
@@ -102,7 +165,7 @@ export function CourseDetail() {
                 What You Will Learn
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {mockCourse.outcomes.map((outcome, i) => (
+                {(course.outcomes || []).map((outcome: string, i: number) => (
                   <div key={i} className="flex gap-4 p-6 rounded-[2rem] bg-white border border-slate-100 hover:border-brand-teal/30 transition-all group shadow-xl">
                     <CheckCircle2 className="text-brand-teal shrink-0 group-hover:scale-110 transition-transform" size={20} />
                     <span className="text-slate-700 font-bold text-sm leading-tight">{outcome}</span>
@@ -122,7 +185,7 @@ export function CourseDetail() {
                   Requirements
                 </h2>
                 <ul className="space-y-5">
-                  {mockCourse.requirements.map((req, i) => (
+                  {(course.requirements || []).map((req: string, i: number) => (
                     <li key={i} className="flex items-center gap-4 text-slate-600 font-bold text-sm">
                       <div className="w-2.5 h-2.5 rounded-full border-2 border-brand-teal bg-white" />
                       {req}
@@ -142,7 +205,7 @@ export function CourseDetail() {
                   </div>
                   <div>
                     <h4 className="font-black text-slate-400 uppercase tracking-[0.2em] text-[10px] mb-2">Certification</h4>
-                    <p className="text-slate-900 font-bold leading-tight font-serif text-lg">{mockCourse.certification}</p>
+                    <p className="text-slate-900 font-bold leading-tight font-serif text-lg">{course.certification || 'Level 3 Diploma (RQF)'}</p>
                   </div>
                 </div>
                 <div className="h-px bg-slate-100" />
@@ -172,7 +235,7 @@ export function CourseDetail() {
                     </div>
                   </div>
                   <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-3 text-center">Duration</h3>
-                  <p className="text-4xl font-bold text-slate-900 font-serif">{mockCourse.duration}</p>
+                  <p className="text-4xl font-bold text-slate-900 font-serif">{course.duration}</p>
                 </div>
 
                 <div className="space-y-6">
@@ -217,7 +280,7 @@ export function CourseDetail() {
                   </div>
                   <h2 className="text-3xl font-bold text-slate-900 mb-6 font-serif">Application Received!</h2>
                   <p className="text-slate-600 mb-10 text-lg leading-relaxed font-medium">
-                    Thank you for applying for the <strong>{mockCourse.title}</strong>. Our admissions team will review your application and contact you within 48 hours.
+                    Thank you for applying for the <strong>{course.title}</strong>. Our admissions team will review your application and contact you within 48 hours.
                   </p>
                   <button 
                     onClick={() => setIsApplying(false)}

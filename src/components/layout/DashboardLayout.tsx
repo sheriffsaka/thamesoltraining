@@ -15,7 +15,8 @@ import {
 import { motion } from 'motion/react';
 import { Logo } from '@/src/components/ui/Logo';
 import { cn } from '@/src/lib/utils';
-import { supabase } from '@/src/lib/supabase';
+import { useState, useEffect } from 'react';
+import { supabase, Profile } from '@/src/lib/supabase';
 
 interface SidebarItem {
   name: string;
@@ -32,6 +33,22 @@ interface DashboardLayoutProps {
 export function DashboardLayout({ children, menuItems, userRole }: DashboardLayoutProps) {
   const location = useLocation();
   const navigate = useNavigate();
+  const [profile, setProfile] = useState<Profile | null>(null);
+
+  useEffect(() => {
+    async function loadProfile() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', user.id)
+          .single();
+        if (data) setProfile(data as Profile);
+      }
+    }
+    loadProfile();
+  }, []);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -44,7 +61,7 @@ export function DashboardLayout({ children, menuItems, userRole }: DashboardLayo
       <aside className="w-80 bg-white text-slate-900 hidden xl:flex flex-col flex-shrink-0 border-r border-slate-100 shadow-xl relative z-20">
         <div className="p-10 border-b border-slate-100">
           <Link to="/">
-            <Logo showText={true} />
+            <Logo showText={true} dark={true} />
           </Link>
         </div>
 
@@ -94,7 +111,7 @@ export function DashboardLayout({ children, menuItems, userRole }: DashboardLayo
         {/* Header */}
         <header className="h-24 bg-white/80 backdrop-blur-xl border-b border-slate-100 px-12 flex items-center justify-between flex-shrink-0 relative z-10">
           <div className="flex items-center gap-6 lg:hidden">
-            <Logo showText={false} />
+            <Logo showText={false} dark={true} />
             <h2 className="font-black text-brand-teal px-5 py-2 bg-brand-teal/10 border border-brand-teal/20 rounded-xl text-[10px] uppercase tracking-widest">{userRole} Portal</h2>
           </div>
 
@@ -122,12 +139,16 @@ export function DashboardLayout({ children, menuItems, userRole }: DashboardLayo
             
             <div className="flex items-center gap-4 pl-2">
               <div className="text-right hidden sm:block">
-                <div className="text-base font-bold text-slate-900 leading-none font-serif">John Student</div>
+                <div className="text-base font-bold text-slate-900 leading-none font-serif">{profile?.full_name || 'User'}</div>
                 <div className="text-[10px] font-black text-brand-teal uppercase tracking-[0.2em] mt-2">{userRole}</div>
               </div>
               <div className="w-12 h-12 rounded-2xl border border-slate-100 p-0.5 bg-gradient-to-tr from-brand-teal to-brand-accent shadow-lg shadow-brand-teal/20">
-                <div className="w-full h-full bg-white rounded-xl flex items-center justify-center text-brand-teal">
-                  <User size={24} />
+                <div className="w-full h-full bg-white rounded-xl flex items-center justify-center text-brand-teal overflow-hidden">
+                  {profile?.avatar_url ? (
+                    <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+                  ) : (
+                    <User size={24} />
+                  )}
                 </div>
               </div>
             </div>
