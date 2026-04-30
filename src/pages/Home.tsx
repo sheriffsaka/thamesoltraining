@@ -59,7 +59,7 @@ export function Home() {
           {
             title: "Healthcare Excellence",
             subtitle: "Elevate Patient Care",
-            desc: "Empowering the next generation of healthcare professionals with accredited clinical and vocational training.",
+            desc: "Empowering the next generation of healthcare professionals with accredited clinical and vocational training designed for modern care standards.",
             video: "https://res.cloudinary.com/di7okmjsx/video/upload/v1777508500/the-healthcare-worker-in-blue-scrubs-gently-pushes_hhxtqz.mp4",
             link: "/courses?category=health-and-social-care"
           },
@@ -69,6 +69,13 @@ export function Home() {
             desc: "Master the art of strategic management and clinical leadership with our Level 5 Diploma programs.",
             video: "https://res.cloudinary.com/di7okmjsx/video/upload/v1777509647/the-trainer-in-the-gray-blazer-speaks-and-gestures_oir7sf.mp4",
             link: "/courses?category=leadership"
+          },
+          {
+            title: "Digital Intelligence",
+            subtitle: "Master the Digital Landscape",
+            desc: "Future-proof your career with professional training in GDPR, data protection, and essential IT skills.",
+            video: "https://cdn.pixabay.com/video/2021/04/12/70868-537452601_large.mp4",
+            link: "/courses?category=gdpr"
           }
         ]);
       }
@@ -87,24 +94,26 @@ export function Home() {
   return (
     <div className="overflow-hidden bg-slate-50">
       {/* Hero Section */}
-      <section className="relative min-h-[95vh] flex items-center pt-20 overflow-hidden border-b border-slate-100 bg-white">
+      <section className="relative min-h-[95vh] flex items-center pt-20 overflow-hidden border-b border-slate-100 bg-white text-sharp">
         <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-white/20 z-10" />
+          <div className="absolute inset-0 bg-white/10 z-10" />
           <AnimatePresence mode="wait">
-            <motion.video
-              key={currentSlide}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 0.8 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 1.5 }}
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="w-full h-full object-cover"
-            >
-              <source src={slides[currentSlide]?.video} type="video/mp4" />
-            </motion.video>
+            {slides.length > 0 && (
+              <motion.video
+                key={currentSlide}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 1.5 }}
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full h-full object-cover"
+              >
+                <source src={slides[currentSlide]?.video} type="video/mp4" />
+              </motion.video>
+            )}
           </AnimatePresence>
         </div>
 
