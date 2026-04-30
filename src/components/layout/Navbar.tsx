@@ -34,7 +34,8 @@ const navLinks: any[] = [
         id: 'assessor',
         path: '/courses?category=assessor',
         items: [
-          { name: 'Vocational Assessments', path: '/courses?category=assessor&level=Vocational' },
+          { name: 'Level 3 Award', path: '/courses?category=assessor' },
+          { name: 'Level 3 Certificate', path: '/courses?category=assessor' },
         ]
       },
       {
@@ -42,7 +43,8 @@ const navLinks: any[] = [
         id: 'functional',
         path: '/courses?category=functional-skills',
         items: [
-          { name: 'Level 2 Skills', path: '/courses?category=functional-skills&level=Level 2' },
+          { name: 'Level 2 English', path: '/courses?category=functional-skills' },
+          { name: 'Level 2 Maths', path: '/courses?category=functional-skills' },
         ]
       },
       {
@@ -50,7 +52,7 @@ const navLinks: any[] = [
         id: 'mandatory',
         path: '/courses?category=mandatory',
         items: [
-          { name: 'Mandatory Compliance', path: '/courses?category=mandatory&level=Compliance' },
+          { name: 'Compliance Training', path: '/courses?category=mandatory' },
         ]
       },
       {
@@ -187,7 +189,7 @@ export function Navbar() {
                                     </h4>
                                   </Link>
                                   <div className="grid grid-cols-1 gap-4">
-                                    {(link.children.find((s: any) => s.name === activeSubMenu)?.items || []).map((item: any) => (
+                                    {((link.children.find((s: any) => s.name === activeSubMenu) as any)?.items || []).map((item: any) => (
                                       <Link
                                         key={item.name}
                                         to={item.path}

@@ -20,9 +20,9 @@ export function ManageUsers() {
   }
 
   async function updateUserRole(userId: string, newRole: string) {
-    const { error } = await supabase
-      .from('profiles')
-      .update({ role: newRole })
+    const { error } = await (supabase
+      .from('profiles') as any)
+      .update({ role: newRole } as any)
       .eq('id', userId);
     
     if (!error) {

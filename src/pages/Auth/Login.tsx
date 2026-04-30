@@ -34,8 +34,8 @@ export function Login() {
       
       // Bootstrap admin for the specific user email
       if (email === 'sheriffdeenalade@gmail.com' && (!profile || (profile as any).role !== 'admin')) {
-         await supabase.from('profiles').update({ role: 'admin' }).eq('id', data.user.id);
-         const { data: updatedProfile } = await supabase.from('profiles').select('role').eq('id', data.user.id).single();
+         await (supabase.from('profiles') as any).update({ role: 'admin' } as any).eq('id', data.user.id);
+         const { data: updatedProfile } = await (supabase.from('profiles') as any).select('role').eq('id', data.user.id).single();
          profile = updatedProfile;
       }
 

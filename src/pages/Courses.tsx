@@ -32,19 +32,19 @@ export function Courses() {
 
   const filteredCourses = courses.filter(course => {
     const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesLevel = currentLevel ? course.level === currentLevel : true;
-    return matchesSearch && matchesLevel;
+    const matchesSubCategory = currentLevel ? (course as any).subCategory === currentLevel : true;
+    return matchesSearch && matchesSubCategory;
   });
 
-  // Grouping logic for when a category is selected but no specific level is filtered
+  // Grouping logic for when a category is selected but no specific sub-category is filtered
   const groupedCourses = filteredCourses.reduce((acc, course) => {
-    const levelKey = course.level || 'General';
-    if (!acc[levelKey]) acc[levelKey] = [];
-    acc[levelKey].push(course);
+    const groupKey = (course as any).subCategory || 'General';
+    if (!acc[groupKey]) acc[groupKey] = [];
+    acc[groupKey].push(course);
     return acc;
   }, {} as Record<string, any[]>);
 
-  const levels = Object.keys(groupedCourses);
+  const groups = Object.keys(groupedCourses);
 
   return (
     <div className="bg-slate-50 min-h-screen pt-20 text-sharp">
@@ -98,16 +98,16 @@ export function Courses() {
 
         {/* Display Grouped Courses */}
         <div className="space-y-20">
-          {levels.map((level) => (
-            <div key={level}>
-              {currentCategory !== 'all' && !currentLevel && level !== 'General' && (
+          {groups.map((group) => (
+            <div key={group}>
+              {currentCategory !== 'all' && !currentLevel && group !== 'General' && (
                 <div className="flex items-center gap-6 mb-12">
-                  <h2 className="text-2xl font-bold text-slate-900 font-serif whitespace-nowrap">{level}</h2>
+                  <h2 className="text-2xl font-bold text-slate-900 font-serif whitespace-nowrap">{group}</h2>
                   <div className="h-px bg-slate-200 flex-1" />
                 </div>
               )}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {groupedCourses[level].map((course, i) => (
+                {groupedCourses[group].map((course, i) => (
                   <motion.div
                     key={course.id}
                     initial={{ opacity: 0, y: 30 }}

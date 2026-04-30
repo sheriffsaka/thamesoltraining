@@ -41,12 +41,12 @@ export function CourseDetail() {
       // If user is logged in, create an actual enrollment
       const { error } = await supabase
         .from('enrollments')
-        .insert({
+        .insert([{
           user_id: user.id,
           course_id: course.id,
           progress: 0,
           status: 'active'
-        });
+        }] as any);
         
       if (error && error.code !== '23505') { // Ignore unique constraint error (already enrolled)
         console.error('Enrollment error:', error);

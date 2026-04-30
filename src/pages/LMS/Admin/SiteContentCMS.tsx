@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Plus, 
   Search, 
@@ -222,16 +222,16 @@ function CourseManager() {
     const courseData = {
       title: formData.get('title'),
       category: formData.get('category'),
-      level: formData.get('level'),
+      sub_category: formData.get('sub_category'),
       description: formData.get('description'),
       duration: formData.get('duration'),
       image_url: editingCourse?.image_url,
     };
 
     if (editingCourse?.id) {
-      await supabase.from('courses').update(courseData as any).eq('id', editingCourse.id);
+      await (supabase.from('courses') as any).update(courseData as any).eq('id', editingCourse.id);
     } else {
-      await supabase.from('courses').insert([courseData as any]);
+      await (supabase.from('courses') as any).insert([courseData as any]);
     }
     setEditingCourse(null);
     fetchCourses();
@@ -298,7 +298,9 @@ function CourseManager() {
             <h4 className="text-lg font-bold text-slate-900 mb-2 truncate font-serif">{course.title}</h4>
             <div className="text-xs text-brand-teal font-black uppercase tracking-widest mb-4">{course.category}</div>
             <div className="flex justify-between items-center pt-6 mt-auto border-t border-slate-200/60">
-              <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{course.level}</span>
+              <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] truncate mr-2">
+                {course.sub_category || course.level || 'General'}
+              </span>
               <div className="flex gap-2">
                 <button 
                   onClick={() => setEditingCourse(course)}
@@ -337,14 +339,15 @@ function CourseManager() {
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">Category</label>
                   <select name="category" defaultValue={editingCourse.category || 'health-and-social-care'} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-brand-teal font-bold">
                     <option value="health-and-social-care">Health & Social Care</option>
-                    <option value="leadership">Leadership</option>
-                    <option value="clinical">Clinical Skills</option>
-                    <option value="business">Business</option>
+                    <option value="assessor">Assessor Courses</option>
+                    <option value="functional-skills">Functional Skills</option>
+                    <option value="mandatory">Mandatory Training</option>
+                    <option value="care-certificate">Care Certificate</option>
                   </select>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">Level</label>
-                  <input name="level" defaultValue={editingCourse.level || 'Level 3'} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-brand-teal font-bold" />
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">Sub-Category</label>
+                  <input name="sub_category" defaultValue={editingCourse.sub_category || editingCourse.level || ''} placeholder="e.g. Level 2 Qualifications" className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-brand-teal font-bold" />
                 </div>
                 <div className="space-y-2">
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">Duration</label>
@@ -406,9 +409,9 @@ function FAQManager() {
     };
 
     if (editingFaq?.id) {
-      await supabase.from('faqs').update(faqData as any).eq('id', editingFaq.id);
+      await (supabase.from('faqs') as any).update(faqData as any).eq('id', editingFaq.id);
     } else {
-      await supabase.from('faqs').insert([faqData as any]);
+      await (supabase.from('faqs') as any).insert([faqData as any]);
     }
     setEditingFaq(null);
     fetchFaqs();
@@ -546,9 +549,9 @@ function TeamManager() {
     };
 
     if (editingMember?.id) {
-      await supabase.from('team_members').update(memberData as any).eq('id', editingMember.id);
+      await (supabase.from('team_members') as any).update(memberData as any).eq('id', editingMember.id);
     } else {
-      await supabase.from('team_members').insert([memberData as any]);
+      await (supabase.from('team_members') as any).insert([memberData as any]);
     }
     setEditingMember(null);
     fetchMembers();
@@ -681,9 +684,9 @@ function TestimonialManager() {
     };
 
     if (editingTestimonial?.id) {
-      await supabase.from('testimonials').update(testimonialData as any).eq('id', editingTestimonial.id);
+      await (supabase.from('testimonials') as any).update(testimonialData as any).eq('id', editingTestimonial.id);
     } else {
-      await supabase.from('testimonials').insert([testimonialData as any]);
+      await (supabase.from('testimonials') as any).insert([testimonialData as any]);
     }
     setEditingTestimonial(null);
     fetchTestimonials();

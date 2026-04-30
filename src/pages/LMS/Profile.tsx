@@ -15,8 +15,8 @@ export function Profile() {
     async function loadProfile() {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        const { data } = await supabase
-          .from('profiles')
+        const { data } = await (supabase
+          .from('profiles') as any)
           .select('*')
           .eq('id', user.id)
           .single();
@@ -39,8 +39,8 @@ export function Profile() {
       const publicUrl = await uploadImage(file);
       
       // Update profile in DB
-      const { error } = await supabase
-        .from('profiles')
+      const { error } = await (supabase
+        .from('profiles') as any)
         .update({ avatar_url: publicUrl } as any)
         .eq('id', profile.id);
 
@@ -59,8 +59,8 @@ export function Profile() {
   const handleSave = async () => {
     if (!profile) return;
     try {
-      const { error } = await supabase
-        .from('profiles')
+      const { error } = await (supabase
+        .from('profiles') as any)
         .update({ full_name: fullName } as any)
         .eq('id', profile.id);
 
