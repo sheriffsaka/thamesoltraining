@@ -4,35 +4,7 @@ import { CheckCircle2, Clock, Award, Shield, ArrowLeft, Mail, Phone, User, Messa
 import { motion, AnimatePresence } from 'motion/react';
 import { supabase } from '@/src/lib/supabase';
 import { getCourseById } from '@/src/services/courseService';
-
-const mockCourse = {
-  id: '1',
-  title: 'Health and Social Care Level 3 Diploma',
-  category: 'Healthcare',
-  longDesc: `The Level 3 Diploma in Adult Care (RQF) is for learners who work in adult care settings and wish to develop their skills and knowledge to a professional standard. This qualification validates the skills and knowledge required for safe and effective practice.
-
-Learners will develop advanced communication skills, understand person-centred care, and lead best practices in health and social care settings.`,
-  outcomes: [
-    'Advanced communication in care settings',
-    'Personal development as a healthcare professional',
-    'Equality and inclusion in adult care',
-    'Duty of care in health and social care',
-    'The role of the health and social care worker',
-    'Handling information in care settings',
-    'Health and safety in social care',
-    'Principles of safeguarding and protection',
-    'Lead person-centred assessment and planning'
-  ],
-  duration: '12 Months',
-  requirements: [
-    'Minimum 18 years of age',
-    'Currently working in a care setting (recommended)',
-    'Satisfactory literacy and numeracy skills',
-    'Valid identification'
-  ],
-  certification: 'Level 3 Diploma (RQF) Accredited by TQUK / NCFE',
-  image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80&w=1200',
-};
+import { mockCourses } from '@/src/constants/courses';
 
 export function CourseDetail() {
   const { id } = useParams();
@@ -50,8 +22,9 @@ export function CourseDetail() {
       if (data) {
         setCourse(data);
       } else {
-        // Fallback or 404 logic
-        setCourse(null);
+        // Fallback to mock data if not found in Supabase
+        const mock = mockCourses.find(c => c.id === id);
+        setCourse(mock || null);
       }
       setLoading(false);
     }

@@ -5,7 +5,7 @@ import { Logo } from '@/src/components/ui/Logo';
 import { cn } from '@/src/lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
 
-const navLinks = [
+const navLinks: any[] = [
   {
     name: 'About',
     children: [
@@ -16,43 +16,49 @@ const navLinks = [
   },
   {
     name: 'Courses',
-    isMega: true,
+    isHierarchical: true,
     children: [
       {
-        title: 'HEALTH AND SOCIAL CARE',
+        name: 'Health and Social Care',
+        id: 'hsc',
+        path: '/courses?category=health-and-social-care',
         items: [
-          { name: 'Adult Care L2 & L3', path: '/courses?category=health-and-social-care' },
-          { name: 'Leadership & Management L5', path: '/courses?category=leadership' },
+          { name: 'Level 2 Qualifications', path: '/courses?category=health-and-social-care&level=Level 2 Qualifications' },
+          { name: 'Level 3 Qualifications', path: '/courses?category=health-and-social-care&level=Level 3 Qualifications' },
+          { name: 'Level 5 Qualifications', path: '/courses?category=health-and-social-care&level=Level 5 Qualifications' },
+          { name: 'Child Care', path: '/courses?category=health-and-social-care&level=Child Care' },
         ]
       },
       {
-        title: 'ASSESSOR COURSES',
+        name: 'Assessor Courses',
+        id: 'assessor',
+        path: '/courses?category=assessor',
         items: [
-          { name: 'Assessor (CAVA) L3', path: '/courses?category=assessor' },
-          { name: 'IQA (Internal Quality Assurance) L4', path: '/courses?category=iqa' },
+          { name: 'Vocational Assessments', path: '/courses?category=assessor&level=Vocational' },
         ]
       },
       {
-        title: 'FUNCTIONAL SKILLS',
+        name: 'Functional Skills',
+        id: 'functional',
+        path: '/courses?category=functional-skills',
         items: [
-          { name: 'Functional Skills English', path: '/courses?category=functional-skills' },
-          { name: 'Functional Skills Maths', path: '/courses?category=functional-skills' },
-          { name: 'Functional Skills ICT', path: '/courses?category=functional-skills' },
+          { name: 'Level 2 Skills', path: '/courses?category=functional-skills&level=Level 2' },
         ]
       },
       {
-        title: 'MANDATORY TRAINING',
+        name: 'Mandatory Training',
+        id: 'mandatory',
+        path: '/courses?category=mandatory',
         items: [
-          { name: 'First Aid at Work', path: '/courses?category=mandatory' },
-          { name: 'Moving & Handling', path: '/courses?category=mandatory' },
-          { name: 'Health & Safety', path: '/courses?category=mandatory' },
+          { name: 'Mandatory Compliance', path: '/courses?category=mandatory&level=Compliance' },
         ]
       },
       {
-        title: 'CARE CERTIFICATE',
+        name: 'Care Certificate',
+        id: 'care-certificate',
+        path: '/courses?category=care-certificate',
         items: [
-          { name: 'Care Certificate (15 Standards)', path: '/courses?category=care-certificate' },
-          { name: 'Clinical Skills', path: '/courses?category=health-and-social-care' },
+          { name: 'Standards 1-15', path: '/courses?category=care-certificate' },
         ]
       },
     ],
@@ -61,7 +67,7 @@ const navLinks = [
   {
     name: 'Safeguard & Prevent',
     children: [
-      { name: 'Safeguarding – Help & Support', path: '/safeguarding' },
+      { name: 'Safeguarding Hub', path: '/safeguarding' },
       { name: 'Prevent Duty', path: '/prevent-duty' },
       { name: 'British Values', path: '/british-values' },
     ],
@@ -72,6 +78,7 @@ const navLinks = [
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [activeSubMenu, setActiveSubMenu] = useState<string | null>(null);
   const location = useLocation();
   const isHome = location.pathname === '/';
 
@@ -95,14 +102,22 @@ export function Navbar() {
             {navLinks.map((link) => (
               <div
                 key={link.name}
-                className="relative"
-                onMouseEnter={() => setActiveDropdown(link.name)}
-                onMouseLeave={() => setActiveDropdown(null)}
+                className="relative h-full flex items-center"
+                onMouseEnter={() => {
+                  setActiveDropdown(link.name);
+                  if (link.isHierarchical && link.children) {
+                    setActiveSubMenu(link.children[0].name);
+                  }
+                }}
+                onMouseLeave={() => {
+                  setActiveDropdown(null);
+                  setActiveSubMenu(null);
+                }}
               >
                 {link.children ? (
                   <button className={cn(
-                    "flex items-center gap-1.5 text-[11px] font-black tracking-[0.2em] transition-colors py-2 uppercase",
-                    "text-slate-600 hover:text-brand-teal"
+                    "flex items-center gap-1.5 text-[11px] font-black tracking-[0.2em] transition-all py-2 uppercase h-full",
+                    activeDropdown === link.name ? "text-brand-teal scale-105" : "text-slate-600 hover:text-brand-teal"
                   )}>
                     {link.name}
                     <ChevronDown size={14} className={cn("transition-transform opacity-50", activeDropdown === link.name && "rotate-180")} />
@@ -111,7 +126,7 @@ export function Navbar() {
                   <Link
                     to={link.path!}
                     className={cn(
-                      "text-[11px] font-black tracking-[0.2em] transition-colors py-2 uppercase",
+                      "text-[11px] font-black tracking-[0.2em] transition-colors py-2 uppercase h-full flex items-center",
                       location.pathname === link.path 
                         ? "text-brand-teal" 
                         : "text-slate-600 hover:text-brand-teal"
@@ -128,29 +143,66 @@ export function Navbar() {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 10 }}
                       className={cn(
-                        "absolute left-0 mt-4 bg-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-100 overflow-hidden z-50 p-3",
-                        link.isMega ? "w-[1100px] -left-[450px] p-12" : "w-80"
+                        "absolute left-0 top-[100%] bg-white rounded-b-2xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-100 overflow-hidden z-50",
+                        link.isHierarchical ? "w-[600px] flex min-h-[300px]" : "w-80 p-3"
                       )}
                     >
-                      {link.isMega ? (
-                        <div className="grid grid-cols-4 gap-12">
-                          {link.children.map((section: any) => (
-                            <div key={section.title} className="space-y-8">
-                              <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-teal border-b border-slate-100 pb-5 mb-2">{section.title}</h4>
-                              <div className="flex flex-col gap-5">
-                                {section.items.map((item: any) => (
-                                  <Link
-                                    key={item.name}
-                                    to={item.path}
-                                    className="text-[13px] font-bold text-slate-500 hover:text-brand-teal transition-colors leading-tight"
-                                  >
-                                    {item.name}
-                                  </Link>
-                                ))}
+                      {link.isHierarchical ? (
+                        <>
+                          {/* Sidebar Categories */}
+                          <div className="w-[45%] bg-slate-50/50 border-r border-slate-100 py-4">
+                            {link.children.map((section: any) => (
+                              <div
+                                key={section.name}
+                                onMouseEnter={() => setActiveSubMenu(section.name)}
+                                className={cn(
+                                  "flex items-center justify-between px-8 py-5 transition-all cursor-pointer group",
+                                  activeSubMenu === section.name ? "bg-white text-brand-teal" : "text-slate-600"
+                                )}
+                              >
+                                <span className="text-[11px] font-black uppercase tracking-widest leading-tight pr-4">
+                                  {section.name}
+                                </span>
+                                {section.items && section.items.length > 0 && <ChevronDown size={14} className="-rotate-90 opacity-40 group-hover:translate-x-1 transition-transform" />}
                               </div>
-                            </div>
-                          ))}
-                        </div>
+                            ))}
+                          </div>
+                          {/* Sub-menu Content */}
+                          <div className="flex-1 bg-white p-8">
+                            <AnimatePresence mode="wait">
+                              {activeSubMenu && (
+                                <motion.div
+                                  key={activeSubMenu}
+                                  initial={{ opacity: 0, x: 10 }}
+                                  animate={{ opacity: 1, x: 0 }}
+                                  exit={{ opacity: 0, x: -10 }}
+                                  className="space-y-6"
+                                >
+                                  <Link 
+                                    to={link.children.find((s: any) => s.name === activeSubMenu)?.path || '#'}
+                                    className="block group"
+                                  >
+                                    <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-teal mb-6 border-b border-slate-100 pb-4 inline-block group-hover:text-brand-accent transition-colors">
+                                      View All {activeSubMenu}
+                                    </h4>
+                                  </Link>
+                                  <div className="grid grid-cols-1 gap-4">
+                                    {(link.children.find((s: any) => s.name === activeSubMenu)?.items || []).map((item: any) => (
+                                      <Link
+                                        key={item.name}
+                                        to={item.path}
+                                        className="text-[13px] font-bold text-slate-500 hover:text-brand-teal transition-all leading-tight flex items-center gap-2 hover:translate-x-1"
+                                      >
+                                        <div className="w-1 h-1 bg-brand-teal/20 rounded-full" />
+                                        {item.name}
+                                      </Link>
+                                    ))}
+                                  </div>
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
+                          </div>
+                        </>
                       ) : (
                         link.children.map((child: any) => (
                           <Link
@@ -208,12 +260,18 @@ export function Navbar() {
                   {link.children ? (
                     <div className="space-y-4 mb-8">
                       <div className="px-4 py-3 text-[10px] font-black text-brand-teal uppercase tracking-[0.4em] opacity-80 border-b border-slate-100 mb-6">{link.name}</div>
-                      {link.isMega ? (
+                      {link.isHierarchical ? (
                         <div className="space-y-8">
                           {link.children.map((section: any) => (
-                            <div key={section.title} className="pl-6 space-y-4">
-                              <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{section.title}</div>
-                              <div className="grid grid-cols-1 gap-2">
+                            <div key={section.name} className="pl-6 space-y-4">
+                              <Link 
+                                to={section.path}
+                                onClick={() => setIsOpen(false)}
+                                className="text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-brand-teal block"
+                              >
+                                {section.name}
+                              </Link>
+                              <div className="grid grid-cols-1 gap-2 pl-4">
                                 {section.items.map((item: any) => (
                                   <Link
                                     key={item.name}

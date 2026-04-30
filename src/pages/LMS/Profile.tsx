@@ -188,5 +188,3 @@ export function Profile() {
     </div>
   );
 }
-
-import { cn } from '@/src/lib/utils';
