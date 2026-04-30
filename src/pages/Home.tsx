@@ -19,14 +19,24 @@ const categories = [
     image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80&w=800' 
   },
   { 
-    title: 'Professional Compliance', 
-    desc: 'GDPR, Fire Safety, and Mandatory training for institutional standards.', 
-    image: 'https://images.unsplash.com/photo-1507537243993-c0a35bb06f0e?auto=format&fit=crop&q=80&w=800' 
+    title: 'Assessor Courses', 
+    desc: 'Professional qualifications for vocational assessors and quality assurance.', 
+    image: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&q=80&w=800' 
   },
   { 
-    title: 'Teacher Training', 
-    desc: 'Assessors (CAVA) and Quality Assurance (IQA) vocational qualifications.', 
-    image: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&q=80&w=800' 
+    title: 'Functional Skills', 
+    desc: 'Essential English, Maths, and ICT skills for career advancement.', 
+    image: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&q=80&w=800' 
+  },
+  { 
+    title: 'Mandatory Training', 
+    desc: 'Core compliance training: First Aid, Health & Safety, and Moving & Handling.', 
+    image: 'https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&q=80&w=800' 
+  },
+  { 
+    title: 'Care Certificate', 
+    desc: 'Foundation standards for workers new to the health and social care sector.', 
+    image: 'https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?auto=format&fit=crop&q=80&w=800' 
   },
 ];
 
@@ -35,25 +45,39 @@ export function Home() {
   const [faqs, setFaqs] = useState<any[]>([]);
   const [slides, setSlides] = useState<any[]>([
     {
-      title: "Healthcare Excellence",
-      subtitle: "Elevate Patient Care",
+      title: "Health and Social Care",
+      subtitle: "Healthcare Excellence",
       desc: "Empowering the next generation of healthcare professionals with accredited clinical and vocational training.",
       video: "https://res.cloudinary.com/di7okmjsx/video/upload/v1777508500/the-healthcare-worker-in-blue-scrubs-gently-pushes_hhxtqz.mp4",
       link: "/courses?category=health-and-social-care"
     },
     {
-      title: "Leadership & Strategy",
-      subtitle: "Lead with Authority",
-      desc: "Master the art of strategic management and clinical leadership with our Level 5 Diploma programs.",
+      title: "Assessor Courses",
+      subtitle: "Vocational Mastery",
+      desc: "Master the art of assessment and quality assurance with our Level 3 and 4 diploma programs.",
       video: "https://res.cloudinary.com/di7okmjsx/video/upload/v1777509647/the-trainer-in-the-gray-blazer-speaks-and-gestures_oir7sf.mp4",
-      link: "/courses?category=leadership"
+      link: "/courses?category=assessor"
     },
     {
-      title: "Digital Intelligence",
-      subtitle: "Master the Digital Landscape",
-      desc: "Future-proof your career with professional training in GDPR, data protection, and essential IT skills.",
+      title: "Functional Skills",
+      subtitle: "Essential Foundation",
+      desc: "Future-proof your career with essential English, Maths, and ICT skills required in today's market.",
       video: "https://res.cloudinary.com/di7okmjsx/video/upload/v1777546716/digital_skill_mpswyj.mp4",
-      link: "/courses?category=gdpr"
+      link: "/courses?category=functional-skills"
+    },
+    {
+      title: "Mandatory Training",
+      subtitle: "Compliance First",
+      desc: "Ensure safety and professional standards with our comprehensive mandatory training modules.",
+      video: "https://res.cloudinary.com/di7okmjsx/video/upload/v1777508500/the-healthcare-worker-in-blue-scrubs-gently-pushes_hhxtqz.mp4",
+      link: "/courses?category=mandatory"
+    },
+    {
+      title: "Care Certificate",
+      subtitle: "Standard for Care",
+      desc: "The fundamental standards of care for health and social care workers in the United Kingdom.",
+      video: "https://res.cloudinary.com/di7okmjsx/video/upload/v1777509647/the-trainer-in-the-gray-blazer-speaks-and-gestures_oir7sf.mp4",
+      link: "/courses?category=care-certificate"
     }
   ]);
 
@@ -79,25 +103,39 @@ export function Home() {
       } else {
         setSlides([
           {
-            title: "Healthcare Excellence",
-            subtitle: "Elevate Patient Care",
+            title: "Health and Social Care",
+            subtitle: "Healthcare Excellence",
             desc: "Empowering the next generation of healthcare professionals with accredited clinical and vocational training.",
             video: "https://res.cloudinary.com/di7okmjsx/video/upload/v1777508500/the-healthcare-worker-in-blue-scrubs-gently-pushes_hhxtqz.mp4",
             link: "/courses?category=health-and-social-care"
           },
           {
-            title: "Leadership & Strategy",
-            subtitle: "Lead with Authority",
-            desc: "Master the art of strategic management and clinical leadership with our Level 5 Diploma programs.",
+            title: "Assessor Courses",
+            subtitle: "Vocational Mastery",
+            desc: "Master the art of assessment and quality assurance with our Level 3 and 4 diploma programs.",
             video: "https://res.cloudinary.com/di7okmjsx/video/upload/v1777509647/the-trainer-in-the-gray-blazer-speaks-and-gestures_oir7sf.mp4",
-            link: "/courses?category=leadership"
+            link: "/courses?category=assessor"
           },
           {
-            title: "Digital Intelligence",
-            subtitle: "Master the Digital Landscape",
-            desc: "Future-proof your career with professional training in GDPR, data protection, and essential IT skills.",
-            video: "https://cdn.pixabay.com/video/2021/04/12/70868-537452601_large.mp4",
-            link: "/courses?category=gdpr"
+            title: "Functional Skills",
+            subtitle: "Essential Foundation",
+            desc: "Future-proof your career with essential English, Maths, and ICT skills required in today's market.",
+            video: "https://res.cloudinary.com/di7okmjsx/video/upload/v1777546716/digital_skill_mpswyj.mp4",
+            link: "/courses?category=functional-skills"
+          },
+          {
+            title: "Mandatory Training",
+            subtitle: "Compliance First",
+            desc: "Ensure safety and professional standards with our comprehensive mandatory training modules.",
+            video: "https://res.cloudinary.com/di7okmjsx/video/upload/v1777508500/the-healthcare-worker-in-blue-scrubs-gently-pushes_hhxtqz.mp4",
+            link: "/courses?category=mandatory"
+          },
+          {
+            title: "Care Certificate",
+            subtitle: "Standard for Care",
+            desc: "The fundamental standards of care for health and social care workers in the United Kingdom.",
+            video: "https://res.cloudinary.com/di7okmjsx/video/upload/v1777509647/the-trainer-in-the-gray-blazer-speaks-and-gestures_oir7sf.mp4",
+            link: "/courses?category=care-certificate"
           }
         ]);
       }
@@ -371,7 +409,7 @@ export function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center max-w-3xl mx-auto mb-20">
             <h2 className="text-xs font-black text-brand-teal uppercase tracking-[0.4em] mb-4">Support & Info</h2>
-            <h3 className="text-5xl font-bold text-slate-900 tracking-tighter font-serif">Critical Intelligence</h3>
+            <h3 className="text-5xl font-bold text-slate-900 tracking-tighter font-serif">Frequently Asked Questions</h3>
           </div>
 
           <div className="max-w-4xl mx-auto space-y-6">

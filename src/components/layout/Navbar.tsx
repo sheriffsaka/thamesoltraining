@@ -6,7 +6,6 @@ import { cn } from '@/src/lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
 
 const navLinks = [
-  { name: 'Home', path: '/' },
   {
     name: 'About',
     children: [
@@ -20,36 +19,40 @@ const navLinks = [
     isMega: true,
     children: [
       {
-        title: 'Health & Social Care',
+        title: 'HEALTH AND SOCIAL CARE',
         items: [
           { name: 'Adult Care L2 & L3', path: '/courses?category=health-and-social-care' },
           { name: 'Leadership & Management L5', path: '/courses?category=leadership' },
-          { name: 'Care Certificate (15 Standards)', path: '/courses?category=care-certificate' },
-          { name: 'Mandatory Training', path: '/courses?category=mandatory' },
         ]
       },
       {
-        title: 'Education & Training',
+        title: 'ASSESSOR COURSES',
         items: [
           { name: 'Assessor (CAVA) L3', path: '/courses?category=assessor' },
           { name: 'IQA (Internal Quality Assurance) L4', path: '/courses?category=iqa' },
-          { name: 'Functional Skills (Maths/English/ICT)', path: '/courses?category=functional-skills' },
         ]
       },
       {
-        title: 'Specialized Training',
+        title: 'FUNCTIONAL SKILLS',
         items: [
-          { name: 'Child Care L3', path: '/courses?category=child-care' },
-          { name: 'GDPR & Data Protection', path: '/courses?category=gdpr' },
-          { name: 'Employability Skills', path: '/employability' },
+          { name: 'Functional Skills English', path: '/courses?category=functional-skills' },
+          { name: 'Functional Skills Maths', path: '/courses?category=functional-skills' },
+          { name: 'Functional Skills ICT', path: '/courses?category=functional-skills' },
         ]
       },
       {
-        title: 'Professional Support',
+        title: 'MANDATORY TRAINING',
         items: [
-          { name: 'Apprenticeships', path: '/about' },
-          { name: 'Consultancy Services', path: '/about' },
-          { name: 'Safeguarding Hub', path: '/safeguarding' },
+          { name: 'First Aid at Work', path: '/courses?category=mandatory' },
+          { name: 'Moving & Handling', path: '/courses?category=mandatory' },
+          { name: 'Health & Safety', path: '/courses?category=mandatory' },
+        ]
+      },
+      {
+        title: 'CARE CERTIFICATE',
+        items: [
+          { name: 'Care Certificate (15 Standards)', path: '/courses?category=care-certificate' },
+          { name: 'Clinical Skills', path: '/courses?category=health-and-social-care' },
         ]
       },
     ],

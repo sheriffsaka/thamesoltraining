@@ -40,13 +40,9 @@ const mockCourses: any[] = [
 const categories = [
   { id: 'all', name: 'All' },
   { id: 'health-and-social-care', name: 'Health Care' },
-  { id: 'leadership', name: 'Leadership' },
-  { id: 'child-care', name: 'Child Care' },
   { id: 'assessor', name: 'Assessor' },
-  { id: 'iqa', name: 'IQA' },
   { id: 'functional-skills', name: 'Functional' },
   { id: 'mandatory', name: 'Mandatory' },
-  { id: 'gdpr', name: 'GDPR' },
   { id: 'care-certificate', name: 'Care Cert' },
 ];
 
