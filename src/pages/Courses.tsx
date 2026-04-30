@@ -80,7 +80,7 @@ export function Courses() {
   });
 
   return (
-    <div className="bg-slate-50 min-h-screen pt-20">
+    <div className="bg-slate-50 min-h-screen pt-20 text-sharp">
       {/* Header */}
       <section className="bg-white py-20 border-b border-slate-100 relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">

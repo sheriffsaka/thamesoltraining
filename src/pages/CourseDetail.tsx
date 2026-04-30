@@ -108,7 +108,7 @@ export function CourseDetail() {
   }
 
   return (
-    <div className="bg-slate-50 min-h-screen pt-20">
+    <div className="bg-slate-50 min-h-screen pt-20 text-sharp">
       <section className="relative h-[500px] flex items-end overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img src={course.image_url || course.image} alt={course.title} className="w-full h-full object-cover" />

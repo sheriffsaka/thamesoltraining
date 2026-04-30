@@ -40,6 +40,20 @@ export function Home() {
       desc: "Empowering the next generation of healthcare professionals with accredited clinical and vocational training.",
       video: "https://res.cloudinary.com/di7okmjsx/video/upload/v1777508500/the-healthcare-worker-in-blue-scrubs-gently-pushes_hhxtqz.mp4",
       link: "/courses?category=health-and-social-care"
+    },
+    {
+      title: "Leadership & Strategy",
+      subtitle: "Lead with Authority",
+      desc: "Master the art of strategic management and clinical leadership with our Level 5 Diploma programs.",
+      video: "https://res.cloudinary.com/di7okmjsx/video/upload/v1777509647/the-trainer-in-the-gray-blazer-speaks-and-gestures_oir7sf.mp4",
+      link: "/courses?category=leadership"
+    },
+    {
+      title: "Digital Intelligence",
+      subtitle: "Master the Digital Landscape",
+      desc: "Future-proof your career with professional training in GDPR, data protection, and essential IT skills.",
+      video: "https://cdn.pixabay.com/video/2021/04/12/70868-537452601_large.mp4",
+      link: "/courses?category=gdpr"
     }
   ]);
 
@@ -77,6 +91,13 @@ export function Home() {
             desc: "Master the art of strategic management and clinical leadership with our Level 5 Diploma programs.",
             video: "https://res.cloudinary.com/di7okmjsx/video/upload/v1777509647/the-trainer-in-the-gray-blazer-speaks-and-gestures_oir7sf.mp4",
             link: "/courses?category=leadership"
+          },
+          {
+            title: "Digital Intelligence",
+            subtitle: "Master the Digital Landscape",
+            desc: "Future-proof your career with professional training in GDPR, data protection, and essential IT skills.",
+            video: "https://cdn.pixabay.com/video/2021/04/12/70868-537452601_large.mp4",
+            link: "/courses?category=gdpr"
           }
         ]);
       }
