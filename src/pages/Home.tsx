@@ -69,14 +69,14 @@ export function Home() {
       title: "Mandatory Training",
       subtitle: "Compliance Excellence",
       desc: "Ensure 100% workplace compliance with essential training in First Aid, Safeguarding, Mental Capacity, and more.",
-      video: "https://res.cloudinary.com/di7okmjsx/video/upload/v1777508500/the-healthcare-worker-in-blue-scrubs-gently-pushes_hhxtqz.mp4",
+      video: "https://player.vimeo.com/external/517333232.sd.mp4?s=7167690196238b975e532b2e88a087815cf111d4&profile_id=165&oauth2_token_id=57447761",
       link: "/courses?category=mandatory"
     },
     {
       title: "Care Certificate",
       subtitle: "Foundation Standards",
       desc: "Master the 15 fundamental standards of care required for all health and social care professionals in the UK.",
-      video: "https://res.cloudinary.com/di7okmjsx/video/upload/v1777509647/the-trainer-in-the-gray-blazer-speaks-and-gestures_oir7sf.mp4",
+      video: "https://player.vimeo.com/external/494252666.sd.mp4?s=72fa1aab2e3ef96a32490df2448375494d4d2325&profile_id=165&oauth2_token_id=57447761",
       link: "/courses?category=care-certificate"
     }
   ]);
@@ -127,14 +127,14 @@ export function Home() {
             title: "Mandatory Training",
             subtitle: "Compliance Excellence",
             desc: "Ensure 100% workplace compliance with essential training in First Aid, Safeguarding, Mental Capacity, and more.",
-            video: "https://res.cloudinary.com/di7okmjsx/video/upload/v1777508500/the-healthcare-worker-in-blue-scrubs-gently-pushes_hhxtqz.mp4",
+            video: "https://player.vimeo.com/external/517333232.sd.mp4?s=7167690196238b975e532b2e88a087815cf111d4&profile_id=165&oauth2_token_id=57447761",
             link: "/courses?category=mandatory"
           },
           {
             title: "Care Certificate",
             subtitle: "Foundation Standards",
             desc: "Master the 15 fundamental standards of care required for all health and social care professionals in the UK.",
-            video: "https://res.cloudinary.com/di7okmjsx/video/upload/v1777509647/the-trainer-in-the-gray-blazer-speaks-and-gestures_oir7sf.mp4",
+            video: "https://player.vimeo.com/external/494252666.sd.mp4?s=72fa1aab2e3ef96a32490df2448375494d4d2325&profile_id=165&oauth2_token_id=57447761",
             link: "/courses?category=care-certificate"
           }
         ]);

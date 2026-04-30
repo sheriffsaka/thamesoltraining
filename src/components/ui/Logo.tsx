@@ -11,7 +11,7 @@ export function Logo({ className, showText = true, dark = false }: LogoProps) {
   return (
     <div className={cn("flex items-center gap-4", className)}>
       <div className="relative flex items-center justify-center h-16 w-auto">
-        <img src="/logo.png" alt="Thames Solution" className="h-full w-auto object-contain" />
+        <img src="https://res.cloudinary.com/di7okmjsx/image/upload/v1777572170/Thameslogo_ryvosf.png" alt="Thames Solution" className="h-full w-auto object-contain" />
       </div>
     </div>
   );
