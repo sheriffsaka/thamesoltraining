@@ -65,7 +65,7 @@ export function Home() {
       title: "Healthcare Excellence",
       subtitle: "Elevate Patient Care",
       desc: "Empowering the next generation of healthcare professionals with accredited clinical and vocational training designed for modern care standards.",
-      video: "https://cdn.pixabay.com/video/2019/11/24/29326-375549007_large.mp4",
+      video: "https://res.cloudinary.com/di7okmjsx/video/upload/v1777508500/the-healthcare-worker-in-blue-scrubs-gently-pushes_hhxtqz.mp4",
       link: "/courses?category=health-and-social-care"
     },
     {
