@@ -98,46 +98,13 @@ export function Home() {
       }
 
       const heroHero = heroContent.find(c => c.id === 'home_hero');
-      if (heroHero?.content?.slides) {
+      // Only set slides from database if they have been updated to the new 5-category structure
+      // or if they don't look like the stale "Healthcare Excellence" defaults.
+      if (heroHero?.content?.slides && heroHero.content.slides.length === 5) {
         setSlides(heroHero.content.slides);
       } else {
-        setSlides([
-          {
-            title: "Health and Social Care",
-            subtitle: "Professional Excellence",
-            desc: "Empowering healthcare professionals with accredited Level 2 to Level 5 diplomas and specialized childcare qualifications.",
-            video: "https://res.cloudinary.com/di7okmjsx/video/upload/v1777508500/the-healthcare-worker-in-blue-scrubs-gently-pushes_hhxtqz.mp4",
-            link: "/courses?category=health-and-social-care"
-          },
-          {
-            title: "Assessor Courses",
-            subtitle: "Vocational Mastery",
-            desc: "Achieve the gold standard in vocational assessment with our RQF Level 3 Award and Certificate programs.",
-            video: "https://res.cloudinary.com/di7okmjsx/video/upload/v1777509647/the-trainer-in-the-gray-blazer-speaks-and-gestures_oir7sf.mp4",
-            link: "/courses?category=assessor"
-          },
-          {
-            title: "Functional Skills",
-            subtitle: "Essential Foundations",
-            desc: "Future-proof your career with Level 2 English and Maths qualifications essential for professional growth.",
-            video: "https://res.cloudinary.com/di7okmjsx/video/upload/v1777546716/digital_skill_mpswyj.mp4",
-            link: "/courses?category=functional-skills"
-          },
-          {
-            title: "Mandatory Training",
-            subtitle: "Compliance Excellence",
-            desc: "Ensure 100% workplace compliance with essential training in First Aid, Safeguarding, Mental Capacity, and more.",
-            video: "https://player.vimeo.com/external/517333232.sd.mp4?s=7167690196238b975e532b2e88a087815cf111d4&profile_id=165&oauth2_token_id=57447761",
-            link: "/courses?category=mandatory"
-          },
-          {
-            title: "Care Certificate",
-            subtitle: "Foundation Standards",
-            desc: "Master the 15 fundamental standards of care required for all health and social care professionals in the UK.",
-            video: "https://player.vimeo.com/external/494252666.sd.mp4?s=72fa1aab2e3ef96a32490df2448375494d4d2325&profile_id=165&oauth2_token_id=57447761",
-            link: "/courses?category=care-certificate"
-          }
-        ]);
+        // We keep the hardcoded slides if the database is stale or empty
+        console.log('Using hardcoded category slides as database content is stale or empty');
       }
     }
     loadContent();
