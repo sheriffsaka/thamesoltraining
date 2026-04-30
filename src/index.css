@@ -14,11 +14,19 @@
 
 @layer base {
   body {
-    @apply font-sans text-slate-600 bg-slate-50 antialiased;
+    @apply font-sans text-slate-600 bg-slate-50;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
   
   h1, h2, h3, h4 {
     @apply tracking-tight text-slate-900;
+  }
+
+  .text-sharp {
+     @apply tracking-tight antialiased;
+     text-rendering: optimizeLegibility;
   }
 }
 

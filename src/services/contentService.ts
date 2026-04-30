@@ -41,6 +41,32 @@ export async function getSiteContent(section: string) {
   return data;
 }
 
+export async function getTeam() {
+  const { data, error } = await supabase
+    .from('team_members')
+    .select('*')
+    .order('order_index', { ascending: true });
+
+  if (error) {
+    console.error('Error fetching team:', error);
+    return [];
+  }
+  return data;
+}
+
+export async function getTestimonials() {
+  const { data, error } = await supabase
+    .from('testimonials')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching testimonials:', error);
+    return [];
+  }
+  return data;
+}
+
 export async function getNotifications(userId: string) {
   const { data, error } = await supabase
     .from('notifications')

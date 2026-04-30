@@ -89,6 +89,28 @@ CREATE TABLE IF NOT EXISTS public.site_contents (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
 );
 
+-- TEAM_MEMBERS: Staff and Instructors
+CREATE TABLE IF NOT EXISTS public.team_members (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  name TEXT NOT NULL,
+  role TEXT NOT NULL,
+  bio TEXT,
+  image_url TEXT,
+  order_index INTEGER DEFAULT 0,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- TESTIMONIALS: Student feedback
+CREATE TABLE IF NOT EXISTS public.testimonials (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  student_name TEXT NOT NULL,
+  course_name TEXT NOT NULL,
+  content TEXT NOT NULL,
+  image_url TEXT,
+  rating INTEGER DEFAULT 5,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
 -- 2. Row Level Security (RLS) Policies (Continued)
 
 -- Announcements: Publicly viewable, Admin only write
@@ -106,6 +128,20 @@ CREATE POLICY "FAQs viewable by everyone." ON public.faqs FOR SELECT USING (true
 -- Site Contents: Public viewable, Admin only write
 ALTER TABLE public.site_contents ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Site contents viewable by everyone." ON public.site_contents FOR SELECT USING (true);
+CREATE POLICY "Only admins can modify site contents." ON public.site_contents 
+  FOR ALL USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'));
+
+-- Team Members: Public viewable, Admin only write
+ALTER TABLE public.team_members ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Team viewable by everyone." ON public.team_members FOR SELECT USING (true);
+CREATE POLICY "Only admins can modify team." ON public.team_members 
+  FOR ALL USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'));
+
+-- Testimonials: Public viewable, Admin only write
+ALTER TABLE public.testimonials ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Testimonials viewable by everyone." ON public.testimonials FOR SELECT USING (true);
+CREATE POLICY "Only admins can modify testimonials." ON public.testimonials 
+  FOR ALL USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'));
 
 -- 4. Initial Seed Data
 INSERT INTO public.announcements (title, content, category)

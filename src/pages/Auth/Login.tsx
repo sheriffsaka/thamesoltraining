@@ -26,12 +26,19 @@ export function Login() {
       setLoading(false);
     } else {
       // Fetch role
-      const { data: profile } = await supabase
+      let { data: profile } = await supabase
         .from('profiles')
         .select('role')
         .eq('id', data.user.id)
         .single();
       
+      // Bootstrap admin for the specific user email
+      if (email === 'sheriffdeenalade@gmail.com' && (!profile || (profile as any).role !== 'admin')) {
+         await supabase.from('profiles').update({ role: 'admin' }).eq('id', data.user.id);
+         const { data: updatedProfile } = await supabase.from('profiles').select('role').eq('id', data.user.id).single();
+         profile = updatedProfile;
+      }
+
       const role = (profile as any)?.role;
       if (role === 'admin') navigate('/admin');
       else if (role === 'instructor') navigate('/instructor');

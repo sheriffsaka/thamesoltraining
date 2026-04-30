@@ -3,7 +3,7 @@ import { ArrowRight, BookOpen, Users, Award, ShieldCheck, CheckCircle2, ChevronD
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { cn } from '@/src/lib/utils';
-import { getFAQs } from '@/src/services/contentService';
+import { getFAQs, getSiteContent } from '@/src/services/contentService';
 
 const stats = [
   { label: 'Courses', value: '50+', icon: BookOpen },
@@ -33,77 +33,77 @@ const categories = [
 export function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [faqs, setFaqs] = useState<any[]>([]);
+  const [slides, setSlides] = useState<any[]>([]);
 
   useEffect(() => {
-    async function loadFaqs() {
-      const data = await getFAQs();
-      if (data && data.length > 0) {
-        setFaqs(data);
+    async function loadContent() {
+      const [faqData, heroContent] = await Promise.all([
+        getFAQs(),
+        getSiteContent('home')
+      ]);
+
+      if (faqData && faqData.length > 0) {
+        setFaqs(faqData);
       } else {
-        // Fallback to static if no data yet
         setFaqs([
-          { question: 'How do I enroll in a course?', answer: 'To enroll, simply browse our courses, click "View Details", and fill out the "Apply Now" form. Our team will contact you within 48 hours to finalize your application.' },
-          { question: 'Are the certificates recognized?', answer: 'Yes, all our courses are accredited by leading UK awarding bodies including TQUK and NCFE, providing you with nationally recognized qualifications.' },
-          { question: 'Can I study while working?', answer: 'Absolutely! Our courses are designed with flexibility in mind, offering a mix of online resources and blended learning to fit your busy schedule.' },
-          { question: 'What are the entry requirements?', answer: 'Requirements vary by course. Generally, you need to be over 18 and have a basic level of literacy/numeracy. Specifics are listed on each course page.' }
+          { question: 'How do I enroll in a course?', answer: 'To enroll, simply browse our courses, click "View Details", and fill out the "Apply Now" form.' },
+          { question: 'Are the certificates recognized?', answer: 'Yes, all our courses are accredited by leading UK awarding bodies.' },
+        ]);
+      }
+
+      const heroHero = heroContent.find(c => c.id === 'home_hero');
+      if (heroHero?.content?.slides) {
+        setSlides(heroHero.content.slides);
+      } else {
+        setSlides([
+          {
+            title: "Healthcare Excellence",
+            subtitle: "Elevate Patient Care",
+            desc: "Empowering the next generation of healthcare professionals with accredited clinical and vocational training.",
+            video: "https://res.cloudinary.com/di7okmjsx/video/upload/v1777508500/the-healthcare-worker-in-blue-scrubs-gently-pushes_hhxtqz.mp4",
+            link: "/courses?category=health-and-social-care"
+          },
+          {
+            title: "Leadership & Strategy",
+            subtitle: "Lead with Authority",
+            desc: "Master the art of strategic management and clinical leadership with our Level 5 Diploma programs.",
+            video: "https://res.cloudinary.com/di7okmjsx/video/upload/v1777509647/the-trainer-in-the-gray-blazer-speaks-and-gestures_oir7sf.mp4",
+            link: "/courses?category=leadership"
+          }
         ]);
       }
     }
-    loadFaqs();
+    loadContent();
   }, []);
 
-  // Auto-play effect
   useEffect(() => {
+    if (!slides.length) return;
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
     }, 8000);
     return () => clearInterval(timer);
-  }, []);
-  
-  const slides = [
-    {
-      title: "Healthcare Excellence",
-      subtitle: "Elevate Patient Care",
-      desc: "Empowering the next generation of healthcare professionals with accredited clinical and vocational training designed for modern care standards.",
-      video: "https://res.cloudinary.com/di7okmjsx/video/upload/v1777508500/the-healthcare-worker-in-blue-scrubs-gently-pushes_hhxtqz.mp4",
-      link: "/courses?category=health-and-social-care"
-    },
-    {
-      title: "Leadership & Strategy",
-      subtitle: "Lead with Authority",
-      desc: "Master the art of strategic management and clinical leadership with our Level 5 Diploma programs, tailored for aspiring health and social care managers.",
-      video: "https://cdn.pixabay.com/video/2020/09/23/50917-463870685_large.mp4",
-      link: "/courses?category=leadership"
-    },
-    {
-      title: "Digital Intelligence",
-      subtitle: "Master the Digital Landscape",
-      desc: "Future-proof your career with professional training in GDPR, data protection, and essential IT skills required in today's competitive job market.",
-      video: "https://cdn.pixabay.com/video/2021/04/12/70868-537452601_large.mp4",
-      link: "/courses?category=gdpr"
-    }
-  ];
+  }, [slides]);
 
   return (
     <div className="overflow-hidden bg-slate-50">
       {/* Hero Section */}
       <section className="relative min-h-[95vh] flex items-center pt-20 overflow-hidden border-b border-slate-100 bg-white">
         <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-white/40 backdrop-blur-[1px] z-10" />
+          <div className="absolute inset-0 bg-white/20 z-10" />
           <AnimatePresence mode="wait">
             <motion.video
               key={currentSlide}
               initial={{ opacity: 0 }}
-              animate={{ opacity: 0.35 }}
+              animate={{ opacity: 0.8 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 1.5 }}
               autoPlay
               loop
               muted
               playsInline
-              className="w-full h-full object-cover grayscale"
+              className="w-full h-full object-cover"
             >
-              <source src={slides[currentSlide].video} type="video/mp4" />
+              <source src={slides[currentSlide]?.video} type="video/mp4" />
             </motion.video>
           </AnimatePresence>
         </div>
@@ -123,20 +123,20 @@ export function Home() {
                 transition={{ delay: 0.2 }}
                 className="text-xs font-black text-brand-teal uppercase tracking-[0.5em] mb-6"
               >
-                {slides[currentSlide].subtitle}
+                {slides[currentSlide]?.subtitle}
               </motion.div>
               <h1 className="text-6xl md:text-8xl font-bold leading-[1.05] mb-10 text-slate-900 tracking-tighter">
-                {slides[currentSlide].title.split(' ')[0]} <br/>
+                {slides[currentSlide]?.title.split(' ')[0]} <br/>
                 <span className="text-brand-teal italic font-serif">
-                  {slides[currentSlide].title.split(' ').slice(1).join(' ')}
+                  {slides[currentSlide]?.title.split(' ').slice(1).join(' ')}
                 </span>
               </h1>
               <p className="text-xl text-slate-600 mb-12 leading-relaxed max-w-xl font-medium">
-                {slides[currentSlide].desc}
+                {slides[currentSlide]?.desc}
               </p>
               <div className="flex flex-col sm:flex-row gap-6">
                 <Link
-                  to={slides[currentSlide].link}
+                  to={slides[currentSlide]?.link}
                   className="bg-brand-teal text-white px-12 py-5 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-brand-accent transition-all flex items-center justify-center gap-3 group shadow-2xl shadow-brand-teal/20"
                 >
                   View Category
