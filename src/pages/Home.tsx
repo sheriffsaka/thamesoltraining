@@ -33,7 +33,15 @@ const categories = [
 export function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [faqs, setFaqs] = useState<any[]>([]);
-  const [slides, setSlides] = useState<any[]>([]);
+  const [slides, setSlides] = useState<any[]>([
+    {
+      title: "Healthcare Excellence",
+      subtitle: "Elevate Patient Care",
+      desc: "Empowering the next generation of healthcare professionals with accredited clinical and vocational training.",
+      video: "https://res.cloudinary.com/di7okmjsx/video/upload/v1777508500/the-healthcare-worker-in-blue-scrubs-gently-pushes_hhxtqz.mp4",
+      link: "/courses?category=health-and-social-care"
+    }
+  ]);
 
   useEffect(() => {
     async function loadContent() {
@@ -59,7 +67,7 @@ export function Home() {
           {
             title: "Healthcare Excellence",
             subtitle: "Elevate Patient Care",
-            desc: "Empowering the next generation of healthcare professionals with accredited clinical and vocational training designed for modern care standards.",
+            desc: "Empowering the next generation of healthcare professionals with accredited clinical and vocational training.",
             video: "https://res.cloudinary.com/di7okmjsx/video/upload/v1777508500/the-healthcare-worker-in-blue-scrubs-gently-pushes_hhxtqz.mp4",
             link: "/courses?category=health-and-social-care"
           },
@@ -69,13 +77,6 @@ export function Home() {
             desc: "Master the art of strategic management and clinical leadership with our Level 5 Diploma programs.",
             video: "https://res.cloudinary.com/di7okmjsx/video/upload/v1777509647/the-trainer-in-the-gray-blazer-speaks-and-gestures_oir7sf.mp4",
             link: "/courses?category=leadership"
-          },
-          {
-            title: "Digital Intelligence",
-            subtitle: "Master the Digital Landscape",
-            desc: "Future-proof your career with professional training in GDPR, data protection, and essential IT skills.",
-            video: "https://cdn.pixabay.com/video/2021/04/12/70868-537452601_large.mp4",
-            link: "/courses?category=gdpr"
           }
         ]);
       }
@@ -84,36 +85,37 @@ export function Home() {
   }, []);
 
   useEffect(() => {
-    if (!slides.length) return;
+    if (!slides || slides.length === 0) return;
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
     }, 8000);
     return () => clearInterval(timer);
   }, [slides]);
 
+  if (!slides || slides.length === 0) return null;
+  const slide = slides[currentSlide] || slides[0];
+
   return (
-    <div className="overflow-hidden bg-slate-50">
+    <div className="overflow-hidden bg-slate-50 text-sharp">
       {/* Hero Section */}
-      <section className="relative min-h-[95vh] flex items-center pt-20 overflow-hidden border-b border-slate-100 bg-white text-sharp">
+      <section className="relative min-h-[95vh] flex items-center pt-20 overflow-hidden border-b border-slate-100 bg-white">
         <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-white/10 z-10" />
+          <div className="absolute inset-0 bg-white/40 backdrop-blur-[1px] z-10" />
           <AnimatePresence mode="wait">
-            {slides.length > 0 && (
-              <motion.video
-                key={currentSlide}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 1.5 }}
-                autoPlay
-                loop
-                muted
-                playsInline
-                className="w-full h-full object-cover"
-              >
-                <source src={slides[currentSlide]?.video} type="video/mp4" />
-              </motion.video>
-            )}
+            <motion.video
+              key={currentSlide}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.35 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 1.5 }}
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full h-full object-cover grayscale"
+            >
+              <source src={slide.video} type="video/mp4" />
+            </motion.video>
           </AnimatePresence>
         </div>
 
@@ -132,20 +134,20 @@ export function Home() {
                 transition={{ delay: 0.2 }}
                 className="text-xs font-black text-brand-teal uppercase tracking-[0.5em] mb-6"
               >
-                {slides[currentSlide]?.subtitle}
+                {slide.subtitle}
               </motion.div>
               <h1 className="text-6xl md:text-8xl font-bold leading-[1.05] mb-10 text-slate-900 tracking-tighter">
-                {slides[currentSlide]?.title.split(' ')[0]} <br/>
+                {slide.title.split(' ')[0]} <br/>
                 <span className="text-brand-teal italic font-serif">
-                  {slides[currentSlide]?.title.split(' ').slice(1).join(' ')}
+                  {slide.title.split(' ').slice(1).join(' ')}
                 </span>
               </h1>
               <p className="text-xl text-slate-600 mb-12 leading-relaxed max-w-xl font-medium">
-                {slides[currentSlide]?.desc}
+                {slide.desc}
               </p>
               <div className="flex flex-col sm:flex-row gap-6">
                 <Link
-                  to={slides[currentSlide]?.link}
+                  to={slide.link}
                   className="bg-brand-teal text-white px-12 py-5 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-brand-accent transition-all flex items-center justify-center gap-3 group shadow-2xl shadow-brand-teal/20"
                 >
                   View Category

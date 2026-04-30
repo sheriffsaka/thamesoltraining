@@ -1,7 +1,26 @@
 import { Users, Target, Award, CheckCircle2 } from 'lucide-react';
 import { motion } from 'motion/react';
+import { useState, useEffect } from 'react';
+import { getSiteContent } from '@/src/services/contentService';
 
 export function About() {
+  const [content, setContent] = useState<any>({
+    title: "Empowering Careers Through \nExpert Training",
+    description: "Thames Solution Training & Consultancy Ltd is a leading provider of professional training and vocational qualifications in London. We bridge the gap between ambition and employment.",
+    mission: "To provide high-quality, accessible, and inclusive training that empowers individuals to achieve their full potential and secure meaningful employment. We are dedicated to excellence in education and consultancy."
+  });
+
+  useEffect(() => {
+    async function loadContent() {
+      const data = await getSiteContent('about');
+      const aboutPage = data.find(item => item.id === 'about_page');
+      if (aboutPage?.content) {
+        setContent(aboutPage.content);
+      }
+    }
+    loadContent();
+  }, []);
+
   const stats = [
     { label: 'Years Experience', value: '10+' },
     { label: 'Qualified Students', value: '5K+' },
@@ -10,7 +29,7 @@ export function About() {
   ];
 
   return (
-    <div className="bg-slate-50 min-h-screen pt-20">
+    <div className="bg-slate-50 min-h-screen pt-20 text-sharp">
       {/* Hero */}
       <section className="relative py-24 overflow-hidden border-b border-slate-100 bg-white">
         <div className="absolute inset-0 opacity-10">
@@ -20,9 +39,9 @@ export function About() {
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-5xl lg:text-7xl font-bold mb-8 font-serif"
+            className="text-5xl lg:text-7xl font-bold mb-8 font-serif whitespace-pre-line"
           >
-            Empowering Careers Through <br /> <span className="text-brand-teal font-sans italic">Expert Training</span>
+            {content.title.split('\n')[0]} <br /> <span className="text-brand-teal font-sans italic">{content.title.split('\n')[1] || ''}</span>
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
@@ -30,7 +49,7 @@ export function About() {
             transition={{ delay: 0.1 }}
             className="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed"
           >
-            Thames Solution Training & Consultancy Ltd is a leading provider of professional training and vocational qualifications in London. We bridge the gap between ambition and employment.
+            {content.description}
           </motion.p>
         </div>
       </section>
@@ -62,7 +81,7 @@ export function About() {
           <div className="space-y-8 text-slate-900">
             <h2 className="text-4xl font-bold font-serif">Our Mission</h2>
             <p className="text-lg text-slate-600 leading-relaxed font-medium">
-              To provide high-quality, accessible, and inclusive training that empowers individuals to achieve their full potential and secure meaningful employment. We are dedicated to excellence in education and consultancy.
+              {content.mission}
             </p>
             <div className="space-y-4">
               {[
