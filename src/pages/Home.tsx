@@ -46,36 +46,36 @@ export function Home() {
   const [slides, setSlides] = useState<any[]>([
     {
       title: "Health and Social Care",
-      subtitle: "Healthcare Excellence",
-      desc: "Empowering the next generation of healthcare professionals with accredited clinical and vocational training.",
+      subtitle: "Professional Excellence",
+      desc: "Empowering healthcare professionals with accredited Level 2 to Level 5 diplomas and specialized childcare qualifications.",
       video: "https://res.cloudinary.com/di7okmjsx/video/upload/v1777508500/the-healthcare-worker-in-blue-scrubs-gently-pushes_hhxtqz.mp4",
       link: "/courses?category=health-and-social-care"
     },
     {
       title: "Assessor Courses",
       subtitle: "Vocational Mastery",
-      desc: "Master the art of assessment and quality assurance with our Level 3 and 4 diploma programs.",
+      desc: "Achieve the gold standard in vocational assessment with our RQF Level 3 Award and Certificate programs.",
       video: "https://res.cloudinary.com/di7okmjsx/video/upload/v1777509647/the-trainer-in-the-gray-blazer-speaks-and-gestures_oir7sf.mp4",
       link: "/courses?category=assessor"
     },
     {
       title: "Functional Skills",
-      subtitle: "Essential Foundation",
-      desc: "Future-proof your career with essential English, Maths, and ICT skills required in today's market.",
+      subtitle: "Essential Foundations",
+      desc: "Future-proof your career with Level 2 English and Maths qualifications essential for professional growth.",
       video: "https://res.cloudinary.com/di7okmjsx/video/upload/v1777546716/digital_skill_mpswyj.mp4",
       link: "/courses?category=functional-skills"
     },
     {
       title: "Mandatory Training",
-      subtitle: "Compliance First",
-      desc: "Ensure safety and professional standards with our comprehensive mandatory training modules.",
+      subtitle: "Compliance Excellence",
+      desc: "Ensure 100% workplace compliance with essential training in First Aid, Safeguarding, Mental Capacity, and more.",
       video: "https://res.cloudinary.com/di7okmjsx/video/upload/v1777508500/the-healthcare-worker-in-blue-scrubs-gently-pushes_hhxtqz.mp4",
       link: "/courses?category=mandatory"
     },
     {
       title: "Care Certificate",
-      subtitle: "Standard for Care",
-      desc: "The fundamental standards of care for health and social care workers in the United Kingdom.",
+      subtitle: "Foundation Standards",
+      desc: "Master the 15 fundamental standards of care required for all health and social care professionals in the UK.",
       video: "https://res.cloudinary.com/di7okmjsx/video/upload/v1777509647/the-trainer-in-the-gray-blazer-speaks-and-gestures_oir7sf.mp4",
       link: "/courses?category=care-certificate"
     }
@@ -104,36 +104,36 @@ export function Home() {
         setSlides([
           {
             title: "Health and Social Care",
-            subtitle: "Healthcare Excellence",
-            desc: "Empowering the next generation of healthcare professionals with accredited clinical and vocational training.",
+            subtitle: "Professional Excellence",
+            desc: "Empowering healthcare professionals with accredited Level 2 to Level 5 diplomas and specialized childcare qualifications.",
             video: "https://res.cloudinary.com/di7okmjsx/video/upload/v1777508500/the-healthcare-worker-in-blue-scrubs-gently-pushes_hhxtqz.mp4",
             link: "/courses?category=health-and-social-care"
           },
           {
             title: "Assessor Courses",
             subtitle: "Vocational Mastery",
-            desc: "Master the art of assessment and quality assurance with our Level 3 and 4 diploma programs.",
+            desc: "Achieve the gold standard in vocational assessment with our RQF Level 3 Award and Certificate programs.",
             video: "https://res.cloudinary.com/di7okmjsx/video/upload/v1777509647/the-trainer-in-the-gray-blazer-speaks-and-gestures_oir7sf.mp4",
             link: "/courses?category=assessor"
           },
           {
             title: "Functional Skills",
-            subtitle: "Essential Foundation",
-            desc: "Future-proof your career with essential English, Maths, and ICT skills required in today's market.",
+            subtitle: "Essential Foundations",
+            desc: "Future-proof your career with Level 2 English and Maths qualifications essential for professional growth.",
             video: "https://res.cloudinary.com/di7okmjsx/video/upload/v1777546716/digital_skill_mpswyj.mp4",
             link: "/courses?category=functional-skills"
           },
           {
             title: "Mandatory Training",
-            subtitle: "Compliance First",
-            desc: "Ensure safety and professional standards with our comprehensive mandatory training modules.",
+            subtitle: "Compliance Excellence",
+            desc: "Ensure 100% workplace compliance with essential training in First Aid, Safeguarding, Mental Capacity, and more.",
             video: "https://res.cloudinary.com/di7okmjsx/video/upload/v1777508500/the-healthcare-worker-in-blue-scrubs-gently-pushes_hhxtqz.mp4",
             link: "/courses?category=mandatory"
           },
           {
             title: "Care Certificate",
-            subtitle: "Standard for Care",
-            desc: "The fundamental standards of care for health and social care workers in the United Kingdom.",
+            subtitle: "Foundation Standards",
+            desc: "Master the 15 fundamental standards of care required for all health and social care professionals in the UK.",
             video: "https://res.cloudinary.com/di7okmjsx/video/upload/v1777509647/the-trainer-in-the-gray-blazer-speaks-and-gestures_oir7sf.mp4",
             link: "/courses?category=care-certificate"
           }

@@ -38,7 +38,7 @@ export function Courses() {
 
   // Grouping logic for when a category is selected but no specific sub-category is filtered
   const groupedCourses = filteredCourses.reduce((acc, course) => {
-    const groupKey = (course as any).subCategory || 'General';
+    const groupKey = (course as any).sub_category || (course as any).subCategory || (course as any).level || 'General';
     if (!acc[groupKey]) acc[groupKey] = [];
     acc[groupKey].push(course);
     return acc;

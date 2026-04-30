@@ -226,6 +226,8 @@ function CourseManager() {
       description: formData.get('description'),
       duration: formData.get('duration'),
       image_url: editingCourse?.image_url,
+      outcomes: (formData.get('outcomes') as string)?.split('\n').filter(Boolean) || [],
+      requirements: (formData.get('requirements') as string)?.split('\n').filter(Boolean) || [],
     };
 
     if (editingCourse?.id) {
@@ -365,6 +367,14 @@ function CourseManager() {
               <div className="space-y-2">
                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">Description</label>
                 <textarea name="description" defaultValue={editingCourse.description} className="w-full h-32 bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-brand-teal font-bold" />
+              </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">What You Will Learn (One per line)</label>
+                <textarea name="outcomes" defaultValue={editingCourse.outcomes?.join('\n')} className="w-full h-32 bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-brand-teal font-bold" />
+              </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">Requirements (One per line)</label>
+                <textarea name="requirements" defaultValue={editingCourse.requirements?.join('\n')} className="w-full h-32 bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-brand-teal font-bold" />
               </div>
               <div className="flex justify-end gap-4 pt-6">
                 <button type="button" onClick={() => setEditingCourse(null)} className="px-8 py-4 text-slate-400 font-bold hover:bg-slate-50 rounded-2xl">Cancel</button>
