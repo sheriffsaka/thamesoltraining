@@ -52,7 +52,7 @@ export function Home() {
       title: "Digital Intelligence",
       subtitle: "Master the Digital Landscape",
       desc: "Future-proof your career with professional training in GDPR, data protection, and essential IT skills.",
-      video: "https://cdn.pixabay.com/video/2021/04/12/70868-537452601_large.mp4",
+      video: "https://res.cloudinary.com/di7okmjsx/video/upload/v1777546716/digital_skill_mpswyj.mp4",
       link: "/courses?category=gdpr"
     }
   ]);
