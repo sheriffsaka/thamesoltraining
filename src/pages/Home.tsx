@@ -76,7 +76,7 @@ export function Home() {
       title: "Care Certificate",
       subtitle: "Foundation Standards",
       desc: "Master the 15 fundamental standards of care required for all health and social care professionals in the UK.",
-      video: "https://player.vimeo.com/external/494252666.sd.mp4?s=72fa1aab2e3ef96a32490df2448375494d4d2325&profile_id=165&oauth2_token_id=57447761",
+      video: "https://res.cloudinary.com/di7okmjsx/video/upload/v1777664670/care_cert_ules5v.mp4",
       link: "/courses?category=care-certificate"
     }
   ]);
