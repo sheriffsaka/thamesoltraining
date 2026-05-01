@@ -62,14 +62,14 @@ export function Home() {
       title: "Functional Skills",
       subtitle: "Essential Foundations",
       desc: "Future-proof your career with Level 2 English and Maths qualifications essential for professional growth.",
-      video: "https://res.cloudinary.com/di7okmjsx/video/upload/v1777546716/digital_skill_mpswyj.mp4",
+      video: "https://res.cloudinary.com/di7okmjsx/video/upload/v1777656036/FunctionalTraining_exmzfz.mp4",
       link: "/courses?category=functional-skills"
     },
     {
       title: "Mandatory Training",
       subtitle: "Compliance Excellence",
       desc: "Ensure 100% workplace compliance with essential training in First Aid, Safeguarding, Mental Capacity, and more.",
-      video: "https://player.vimeo.com/external/517333232.sd.mp4?s=7167690196238b975e532b2e88a087815cf111d4&profile_id=165&oauth2_token_id=57447761",
+      video: "https://res.cloudinary.com/di7okmjsx/video/upload/v1777656040/MadatoryTraining_tqui4d.mp4",
       link: "/courses?category=mandatory"
     },
     {

@@ -97,12 +97,17 @@ export function CourseDetail() {
             <ArrowLeft size={16} />
             Back to Courses
           </motion.button>
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-wrap gap-4 mb-6">
             <span className="px-6 py-2 bg-brand-teal text-white rounded-full text-[10px] font-black w-fit uppercase tracking-[0.2em] shadow-lg shadow-brand-teal/20">
               {course.category?.replace(/-/g, ' ')}
             </span>
-            <h1 className="text-4xl md:text-7xl font-bold max-w-4xl font-serif leading-tight select-none tracking-tight">{course.title}</h1>
+            {(course.sub_category || course.subCategory || course.level) && (
+              <span className="px-6 py-2 bg-brand-accent text-white rounded-full text-[10px] font-black w-fit uppercase tracking-[0.2em] shadow-lg shadow-brand-accent/20">
+                {course.sub_category || course.subCategory || course.level}
+              </span>
+            )}
           </div>
+          <h1 className="text-4xl md:text-7xl font-bold max-w-4xl font-serif leading-tight select-none tracking-tight">{course.title}</h1>
         </div>
       </section>
 

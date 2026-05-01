@@ -32,7 +32,8 @@ export function Courses() {
 
   const filteredCourses = courses.filter(course => {
     const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesSubCategory = currentLevel ? (course as any).subCategory === currentLevel : true;
+    const courseSubCat = (course as any).sub_category || (course as any).subCategory || (course as any).level;
+    const matchesSubCategory = currentLevel ? courseSubCat === currentLevel : true;
     return matchesSearch && matchesSubCategory;
   });
 
@@ -126,9 +127,9 @@ export function Courses() {
                         <span className="px-4 py-2 bg-brand-teal/90 backdrop-blur rounded-full text-[10px] font-black text-white uppercase tracking-widest border border-white/10">
                           {course.category?.replace(/-/g, ' ')}
                         </span>
-                        {course.level && (
+                        {(course.sub_category || course.subCategory || course.level) && (
                           <span className="px-4 py-2 bg-brand-accent/90 backdrop-blur rounded-full text-[10px] font-black text-white uppercase tracking-widest border border-white/10">
-                            {course.level}
+                            {course.sub_category || course.subCategory || course.level}
                           </span>
                         )}
                       </div>
