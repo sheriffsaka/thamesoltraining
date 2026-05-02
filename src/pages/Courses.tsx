@@ -20,20 +20,42 @@ export function Courses() {
     async function loadCourses() {
       setIsLoading(true);
       try {
-        const data = await getCourses(currentCategory);
-        if (data && data.length > 0) {
-          setCourses([...data]);
-        } else {
-          const filteredMock = mockCourses.filter(c => 
-            currentCategory === 'all' || 
-            c.category === currentCategory ||
-            c.category?.toLowerCase().replace(/\s+/g, '-') === currentCategory.toLowerCase()
+        const dbData = await getCourses(currentCategory);
+        
+        // Always get applicable mock courses
+        const mockFiltered = mockCourses.filter(c => {
+          const catNorm = c.category?.toLowerCase().replace(/\s+/g, '-').replace(/&/g, 'and');
+          const targetNorm = currentCategory.toLowerCase().replace(/\s+/g, '-').replace(/&/g, 'and');
+          
+          return currentCategory === 'all' || 
+                 c.category === currentCategory ||
+                 catNorm === targetNorm ||
+                 catNorm?.includes(targetNorm) ||
+                 targetNorm.includes(catNorm || '');
+        });
+
+        // Merge and deduplicate by ID or Title to ensure we show everything available
+        const combined = [...(dbData || [])];
+        mockFiltered.forEach(m => {
+          const exists = combined.some(d => 
+            d.id === m.id || 
+            d.title.toLowerCase().trim() === m.title.toLowerCase().trim()
           );
-          setCourses([...filteredMock] as any);
-        }
+          if (!exists) {
+            combined.push(m as any);
+          }
+        });
+        
+        setCourses(combined);
       } catch (err) {
         console.error('Error loading courses:', err);
-        setCourses([...mockCourses] as any);
+        // Fallback to purely mock if everything fails
+        const mockFiltered = mockCourses.filter(c => {
+             const catNorm = c.category?.toLowerCase().replace(/\s+/g, '-').replace(/&/g, 'and');
+             const targetNorm = currentCategory.toLowerCase().replace(/\s+/g, '-').replace(/&/g, 'and');
+             return currentCategory === 'all' || catNorm === targetNorm;
+        });
+        setCourses([...mockFiltered] as any);
       }
       setIsLoading(false);
     }
@@ -71,11 +93,22 @@ export function Courses() {
 
   // Grouping logic for when a category is selected but no specific sub-category is filtered
   const groupedCourses = filteredCourses.reduce((acc, course) => {
-    const rawKey = (course as any).sub_category || (course as any).subCategory || (course as any).level || 'General';
+    let groupKey = (course as any).sub_category || (course as any).subCategory || (course as any).level;
+    
+    // Fallback for categories without specific sub-categories
+    if (!groupKey || groupKey.toString().trim() === '') {
+      if (currentCategory !== 'all') {
+        const cat = categories.find(c => c.id === currentCategory);
+        groupKey = cat ? cat.name : 'General';
+      } else {
+        groupKey = 'General';
+      }
+    }
+    
     // Clean up the key for grouping
-    const groupKey = rawKey.toString().trim();
-    if (!acc[groupKey]) acc[groupKey] = [];
-    acc[groupKey].push(course);
+    const finalKey = groupKey.toString().trim();
+    if (!acc[finalKey]) acc[finalKey] = [];
+    acc[finalKey].push(course);
     return acc;
   }, {} as Record<string, any[]>);
 
@@ -135,9 +168,11 @@ export function Courses() {
         <div className="space-y-20">
           {groups.map((group) => (
             <div key={group}>
-              {currentCategory !== 'all' && !currentLevel && group !== 'General' && (
+              {currentCategory !== 'all' && !currentLevel && (
                 <div className="flex items-center gap-6 mb-12">
-                  <h2 className="text-2xl font-bold text-slate-900 font-serif whitespace-nowrap">{group}</h2>
+                  <h2 className="text-3xl font-bold text-slate-900 font-serif whitespace-nowrap tracking-tight">
+                    {group}
+                  </h2>
                   <div className="h-px bg-slate-200 flex-1" />
                 </div>
               )}

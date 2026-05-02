@@ -28,6 +28,9 @@ export async function getCourses(category: string = 'all') {
         .ilike('category', `%${category.split('-')[0]}%`);
       
       if (broadData && broadData.length > 0) return broadData as Course[];
+      
+      // No matches found for this category, don't return all courses
+      return [];
     }
 
     const { data, error } = await query.order('created_at', { ascending: false });

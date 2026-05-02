@@ -15,26 +15,31 @@ const stats = [
 const categories = [
   { 
     title: 'Health & Social Care', 
+    id: 'health-and-social-care',
     desc: 'Elite clinical and administrative training for modern healthcare sectors.', 
     image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80&w=800' 
   },
   { 
     title: 'Assessor Courses', 
+    id: 'assessor',
     desc: 'Professional qualifications for vocational assessors and quality assurance.', 
     image: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&q=80&w=800' 
   },
   { 
     title: 'Functional Skills', 
+    id: 'functional-skills',
     desc: 'Essential English, Maths, and ICT skills for career advancement.', 
     image: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&q=80&w=800' 
   },
   { 
     title: 'Mandatory Training', 
+    id: 'mandatory',
     desc: 'Core compliance training: First Aid, Health & Safety, and Moving & Handling.', 
     image: 'https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&q=80&w=800' 
   },
   { 
     title: 'Care Certificate', 
+    id: 'care-certificate',
     desc: 'Foundation standards for workers new to the health and social care sector.', 
     image: 'https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?auto=format&fit=crop&q=80&w=800' 
   },
@@ -286,7 +291,7 @@ export function Home() {
                     {cat.desc}
                   </p>
                   <Link
-                    to={`/courses?category=${cat.title.toLowerCase()}`}
+                    to={`/courses?category=${cat.id}`}
                     className="inline-flex items-center gap-3 text-brand-teal font-black text-[11px] uppercase tracking-widest group/btn"
                   >
                     View Modules

@@ -5,7 +5,7 @@ export const mockCourses: any[] = [
     title: 'Level 2 Adult Social Care Certificate', 
     category: 'health-and-social-care', 
     subCategory: 'Level 2 Qualifications',
-    desc: 'Entry-level certification for adult social care professionals.', 
+    desc: 'The Care Certificate is an agreed set of standards that define the knowledge, skills and behaviours expected of specific job roles in the health and social care sectors.', 
     duration: '6 Months',
     image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80&w=600'
   },
@@ -14,7 +14,7 @@ export const mockCourses: any[] = [
     title: 'Level 2 Diploma in Clinical Healthcare Support', 
     category: 'health-and-social-care', 
     subCategory: 'Level 2 Qualifications',
-    desc: 'Focused on clinical support within healthcare settings.', 
+    desc: 'Provides the knowledge and skills for clinical support staff working under the direction of a healthcare professional.', 
     duration: '6 Months',
     image: 'https://images.unsplash.com/photo-1584515839997-3afb3b3c990b?auto=format&fit=crop&q=80&w=600'
   },
@@ -23,25 +23,97 @@ export const mockCourses: any[] = [
     title: 'Level 2 Diploma in Care', 
     category: 'health-and-social-care', 
     subCategory: 'Level 2 Qualifications',
-    desc: 'Core diploma for those starting in the care sector.',
+    desc: 'An occupational qualification for learners who work in adult care settings in England.',
     duration: '6 Months',
     image: 'https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?auto=format&fit=crop&q=80&w=600'
   },
 
   // HEALTH AND SOCIAL CARE - Level 3 Qualifications
-  { id: 'hsc-l3-1', title: 'Level 3 Diploma in Adult Care', category: 'health-and-social-care', subCategory: 'Level 3 Qualifications', desc: 'Advanced skills for senior care roles.', duration: '12 Months', image: 'https://images.unsplash.com/photo-1516549221187-df9bd638dfd1?auto=format&fit=crop&q=80&w=600' },
-  { id: 'hsc-l3-2', title: 'Level 3 Health and Social Care (Adult)', category: 'health-and-social-care', subCategory: 'Level 3 Qualifications', desc: 'Comprehensive training for adult care.', duration: '12 Months', image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80&w=600' },
-  { id: 'hsc-l3-3', title: 'Level 3 Healthcare Support Service', category: 'health-and-social-care', subCategory: 'Level 3 Qualifications', desc: 'Support primary care environments.', duration: '12 Months', image: 'https://images.unsplash.com/photo-1505751172107-164746ecf130?auto=format&fit=crop&q=80&w=600' },
+  { 
+    id: 'hsc-l3-1', 
+    title: 'Level 3 Diploma in Adult Care', 
+    category: 'health-and-social-care', 
+    subCategory: 'Level 3 Qualifications', 
+    desc: 'For workers who have key responsibilities for delivery of care and support and/or specialized technical skills.', 
+    duration: '12 Months', 
+    image: 'https://images.unsplash.com/photo-1516549221187-df9bd638dfd1?auto=format&fit=crop&q=80&w=600' 
+  },
+  { 
+    id: 'hsc-l3-2', 
+    title: 'Level 3 Health and Social Care (Adult)', 
+    category: 'health-and-social-care', 
+    subCategory: 'Level 3 Qualifications', 
+    desc: 'Advanced level qualification for those working in various health and social care settings.', 
+    duration: '12 Months', 
+    image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80&w=600' 
+  },
+  { 
+    id: 'hsc-l3-3', 
+    title: 'Level 3 Healthcare Support Service', 
+    category: 'health-and-social-care', 
+    subCategory: 'Level 3 Qualifications', 
+    desc: 'For those working in a healthcare support role in a variety of settings.', 
+    duration: '12 Months', 
+    image: 'https://images.unsplash.com/photo-1505751172107-164746ecf130?auto=format&fit=crop&q=80&w=600' 
+  },
 
   // HEALTH AND SOCIAL CARE - Level 5 Qualifications
-  { id: 'hsc-l5-1', title: 'Level 5 Diploma in Health and Social Care and Children and Young People', category: 'health-and-social-care', subCategory: 'Level 5 Qualifications', desc: 'Advanced leadership for complex care.', duration: '18 Months', image: 'https://images.unsplash.com/photo-1454165833767-02a6e3099033?auto=format&fit=crop&q=80&w=600' },
-  { id: 'hsc-l5-2', title: 'Level 5 Diploma in Leadership and Management', category: 'health-and-social-care', subCategory: 'Level 5 Qualifications', desc: 'Executive training for managers.', duration: '18 Months', image: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&q=80&w=600' },
+  { 
+    id: 'hsc-l5-1', 
+    title: 'Level 5 Diploma in Health and Social Care and Children and Young People', 
+    category: 'health-and-social-care', 
+    subCategory: 'Level 5 Qualifications', 
+    desc: 'A qualification for those working in a management or lead practitioner role in the sector.', 
+    duration: '18 Months', 
+    image: 'https://images.unsplash.com/photo-1454165833767-02a6e3099033?auto=format&fit=crop&q=80&w=600' 
+  },
+  { 
+    id: 'hsc-l5-2', 
+    title: 'Level 5 Diploma in Leadership and Management', 
+    category: 'health-and-social-care', 
+    subCategory: 'Level 5 Qualifications', 
+    desc: 'Comprehensive training for managers and leaders in health and social care settings.', 
+    duration: '18 Months', 
+    image: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&q=80&w=600' 
+  },
 
   // HEALTH AND SOCIAL CARE - Child Care
-  { id: 'cc-l3-1', title: 'Level 3 Diploma for Residential Childcare', category: 'health-and-social-care', subCategory: 'Child Care', desc: 'Focused on residential settings for children.', duration: '12 Months', image: 'https://images.unsplash.com/photo-1484981138541-3d074aa97716?auto=format&fit=crop&q=80&w=600' },
-  { id: 'cc-l3-2', title: 'Level 3 Diploma in Early Years Educator', category: 'health-and-social-care', subCategory: 'Child Care', desc: 'Become a qualified early years practitioner.', duration: '12 Months', image: 'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&q=80&w=600' },
-  { id: 'cc-l3-3', title: 'Level 3 Diploma in Children’s Learning and Development (Early Year Educator)', category: 'health-and-social-care', subCategory: 'Child Care', desc: 'In-depth study of child development.', duration: '12 Months', image: 'https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&q=80&w=600' },
-  { id: 'cc-l5-1', title: 'Level 5 Diploma in Leadership and Management for Residential Childcare', category: 'health-and-social-care', subCategory: 'Child Care', desc: 'Managing residential facilities.', duration: '18 Months', image: 'https://images.unsplash.com/photo-1542744094-3a31f272c490?auto=format&fit=crop&q=80&w=600' },
+  { 
+    id: 'cc-l3-1', 
+    title: 'Level 3 Diploma for Residential Childcare', 
+    category: 'health-and-social-care', 
+    subCategory: 'Child Care', 
+    desc: 'For individuals who work in residential childcare settings.', 
+    duration: '12 Months', 
+    image: 'https://images.unsplash.com/photo-1484981138541-3d074aa97716?auto=format&fit=crop&q=80&w=600' 
+  },
+  { 
+    id: 'cc-l3-2', 
+    title: 'Level 3 Diploma in Early Years Educator', 
+    category: 'health-and-social-care', 
+    subCategory: 'Child Care', 
+    desc: 'Enables learners to work with children from birth to 5 years and gain knowledge of children aged 5 to 7 years.', 
+    duration: '12 Months', 
+    image: 'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&q=80&w=600' 
+  },
+  { 
+    id: 'cc-l3-3', 
+    title: 'Level 3 Diploma in Children’s Learning and Development (Early Year Educator)', 
+    category: 'health-and-social-care', 
+    subCategory: 'Child Care', 
+    desc: 'Provides the knowledge and skills needed to work as an early years educator.', 
+    duration: '12 Months', 
+    image: 'https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&q=80&w=600' 
+  },
+  { 
+    id: 'cc-l5-1', 
+    title: 'Level 5 Diploma in Leadership and Management for Residential Childcare', 
+    category: 'health-and-social-care', 
+    subCategory: 'Child Care', 
+    desc: 'Aiming to guide and assess the development of knowledge and skills for those in management roles in residential childcare.', 
+    duration: '18 Months', 
+    image: 'https://images.unsplash.com/photo-1542744094-3a31f272c490?auto=format&fit=crop&q=80&w=600' 
+  },
 
   // ASSESSOR COURSES
   { id: 'ac-l3-1', title: 'RQF Level 3 Award in Assessing Competency in the Work Environment', category: 'assessor', desc: 'Master workplace assessments.', duration: '3 Months', image: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=600' },
