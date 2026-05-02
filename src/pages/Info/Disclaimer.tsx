@@ -3,20 +3,15 @@ import { AlertTriangle, Hammer, ShieldAlert, Scale } from 'lucide-react';
 export function Disclaimer() {
   return (
     <div className="bg-white min-h-screen pt-20">
-      <section className="py-24 border-b border-slate-900 bg-slate-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row justify-between items-end gap-12">
-            <div className="max-w-3xl">
-              <p className="text-brand-teal font-black uppercase tracking-[0.4em] text-xs mb-6">TMS Legal Department</p>
-              <h1 className="text-5xl lg:text-8xl font-bold tracking-tighter font-serif text-slate-900">Disclaimer</h1>
-            </div>
-            <div className="pb-4">
-              <div className="flex gap-4 items-center text-slate-400 font-bold uppercase tracking-widest text-[10px]">
-                <span>Document ID: TMS-LGL-001</span>
-                <div className="w-1 h-1 bg-slate-200 rounded-full" />
-                <span>Last Revised: May 2024</span>
-              </div>
-            </div>
+      <section className="py-24 relative overflow-hidden bg-slate-50">
+        <div className="absolute top-0 right-0 w-1/3 h-full bg-brand-teal/[0.03] -skew-x-12 translate-x-32" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="max-w-3xl">
+            <p className="text-brand-teal font-black uppercase tracking-[0.4em] text-xs mb-6">Legal Notice & Disclosure</p>
+            <h1 className="text-5xl lg:text-8xl font-bold tracking-tighter font-serif text-slate-900 leading-none">Disclaimer</h1>
+            <p className="text-2xl text-slate-600 mt-8 font-serif leading-relaxed italic">
+              "Official legal statements regarding the use of our services, information accuracy, and institutional liability."
+            </p>
           </div>
         </div>
       </section>

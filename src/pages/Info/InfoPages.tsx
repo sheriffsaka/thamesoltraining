@@ -1,4 +1,6 @@
 import { ShieldAlert, BookText, Globe } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { motion } from 'motion/react';
 
 export function InfoPage({ type }: { type: 'prevent' | 'values' | 'employability' }) {
   const content = {
@@ -76,9 +78,12 @@ export function InfoPage({ type }: { type: 'prevent' | 'values' | 'employability
 
   return (
     <div className="bg-white min-h-screen pt-20">
-      <section className="py-24 border-b border-slate-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row gap-12 items-end justify-between border-b-2 border-slate-900 pb-12 mb-12">
+      <section className="py-24 relative overflow-hidden bg-slate-50">
+        {/* Background Accent */}
+        <div className="absolute top-0 right-0 w-1/3 h-full bg-brand-teal/[0.03] -skew-x-12 translate-x-20" />
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="flex flex-col md:flex-row gap-12 items-end justify-between mb-12">
             <div className="max-w-3xl">
               <p className="text-brand-teal font-black uppercase tracking-[0.3em] text-xs mb-4">{content.subtitle}</p>
               <h1 className="text-5xl lg:text-7xl font-bold tracking-tighter font-serif text-slate-900">{content.title}</h1>
@@ -89,10 +94,16 @@ export function InfoPage({ type }: { type: 'prevent' | 'values' | 'employability
           </div>
 
           <div className="max-w-4xl">
-            <p className="text-2xl text-slate-600 font-medium leading-relaxed mb-20 italic font-serif">
+            <p className="text-2xl text-slate-600 font-medium leading-relaxed mb-12 italic font-serif">
               "{content.text}"
             </p>
+          </div>
+        </div>
+      </section>
 
+      <section className="py-24 relative">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-4xl">
             <div className="space-y-24">
               {content.details.map((item, idx) => (
                 <div key={idx} className="border-l-4 border-brand-teal pl-12 relative">
@@ -108,20 +119,17 @@ export function InfoPage({ type }: { type: 'prevent' | 'values' | 'employability
         </div>
       </section>
 
-      <section className="py-24 bg-slate-50">
+      <section className="py-24 bg-slate-900 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
-            <h2 className="text-4xl font-bold text-slate-900 mb-8 font-serif">Further Information</h2>
-            <p className="text-xl text-slate-600 mb-12 leading-relaxed">
-              TMS Training & Consultancy is committed to transparency and the welfare of our learners. If you have questions regarding this policy or require specific support, please contact our administrative team.
+            <h2 className="text-4xl font-bold text-white mb-8 font-serif">Our Support</h2>
+            <p className="text-xl text-slate-400 mb-12 leading-relaxed">
+              TMS Training & Consultancy is committed to transparency and the welfare of our learners. If you have questions regarding our practices or require specific professional support, we are here to help.
             </p>
             <div className="flex gap-4">
-              <button className="bg-brand-teal text-white px-10 py-4 rounded-lg font-bold hover:bg-brand-accent transition-all shadow-xl shadow-brand-teal/20">
-                Contact an Advisor
-              </button>
-              <button className="bg-white border border-slate-200 text-slate-900 px-10 py-4 rounded-lg font-bold hover:bg-slate-50 transition-all">
-                Download PDF Policy
-              </button>
+              <Link to="/contact" className="bg-brand-teal text-white px-10 py-4 rounded-lg font-bold hover:bg-brand-accent transition-all shadow-xl shadow-brand-teal/20 text-center">
+                Get Expert Advice
+              </Link>
             </div>
           </div>
         </div>

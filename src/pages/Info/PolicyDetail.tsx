@@ -74,80 +74,66 @@ const POLICY_DATA: Record<string, any> = {
 export function PolicyDetail() {
   const { id } = useParams<{ id: string }>();
   const policy = POLICY_DATA[id || ''] || {
-    title: (id?.replace('-', ' ') || 'Policy').toUpperCase(),
-    lastUpdated: 'January 2024',
-    content: 'Full policy documentation is currently being archived. Please contact our compliance department for the latest version of this document.'
+    title: id?.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') || 'Policy',
+    lastUpdated: 'May 2024',
+    content: 'The official documentation for this procedure is currently undergoing revision. Please contact our compliance office for the latest authorized version.'
   };
 
   if (!id) return <Navigate to="/policy" />;
 
+  // Ensure title is Sentence Case if it came from POLICY_DATA
+  const displayTitle = policy.title;
+
   return (
     <div className="bg-white min-h-screen pt-20">
-      <section className="py-24 border-b border-slate-900 bg-slate-50">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-24 relative overflow-hidden bg-slate-50">
+        <div className="absolute top-0 right-0 w-1/3 h-full bg-brand-teal/[0.03] -skew-x-12 translate-x-24" />
+        
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="flex items-center gap-3 text-brand-teal font-black uppercase tracking-[0.3em] text-[10px] mb-8">
             <ShieldCheck size={16} />
             <span>TMS Official Document</span>
           </div>
-          <h1 className="text-5xl md:text-7xl font-bold text-slate-900 mb-10 font-serif tracking-tighter leading-none">
-            {policy.title}
+          <h1 className="text-4xl md:text-6xl font-bold text-slate-900 mb-10 font-serif tracking-tight leading-tight">
+            {displayTitle}
           </h1>
-          <div className="flex flex-wrap gap-10 items-center text-slate-500 font-bold border-t border-slate-200 pt-10 mt-10">
+          <div className="flex flex-wrap gap-8 items-center text-slate-400 font-bold border-t border-slate-200 pt-10 mt-10">
             <div className="flex items-center gap-3">
-              <Calendar size={18} className="text-brand-teal" />
-              <span className="text-sm">Revised: {policy.lastUpdated}</span>
+              <Calendar size={18} className="text-slate-300" />
+              <span className="text-xs uppercase tracking-widest">Revised: {policy.lastUpdated}</span>
             </div>
             <div className="flex items-center gap-3">
-              <User size={18} className="text-brand-teal" />
-              <span className="text-sm">Owner: Compliance Dept</span>
+              <User size={18} className="text-slate-300" />
+              <span className="text-xs uppercase tracking-widest">Owner: Compliance Dept</span>
             </div>
             <div className="flex items-center gap-3">
-              <FileText size={18} className="text-brand-teal" />
-              <span className="text-sm">Status: Active</span>
+              <FileText size={18} className="text-slate-300" />
+              <span className="text-xs uppercase tracking-widest">Status: Active</span>
             </div>
           </div>
         </div>
       </section>
 
       <section className="py-24 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col lg:flex-row gap-20">
-          <div className="flex-1">
-            <div className="prose prose-slate prose-lg max-w-none prose-headings:font-serif prose-headings:text-slate-900 prose-p:text-slate-600 prose-p:font-medium prose-p:leading-relaxed prose-strong:text-slate-900">
-              <div className="whitespace-pre-line">
-                {policy.content}
-              </div>
-            </div>
+        <div className="prose prose-slate prose-lg max-w-none prose-headings:font-serif prose-headings:text-slate-900 prose-headings:tracking-tight prose-p:text-slate-600 prose-p:font-medium prose-p:leading-relaxed prose-strong:text-slate-900">
+          <div className="whitespace-pre-line">
+            {policy.content}
           </div>
-
-          <div className="w-full lg:w-72 shrink-0">
-            <div className="sticky top-40 space-y-6">
-              <div className="bg-slate-900 p-8 rounded-lg text-white">
-                <h4 className="text-lg font-bold mb-6 font-serif">Document Actions</h4>
-                <div className="space-y-4">
-                  <button className="w-full flex items-center justify-between p-4 bg-slate-800 rounded-lg hover:bg-brand-teal transition-all group">
-                    <span className="text-xs font-bold uppercase tracking-widest">Download PDF</span>
-                    <Download size={18} className="opacity-40 group-hover:opacity-100" />
-                  </button>
-                  <button className="w-full flex items-center justify-between p-4 bg-slate-800 rounded-lg hover:bg-brand-teal transition-all group">
-                    <span className="text-xs font-bold uppercase tracking-widest">Print Notice</span>
-                    <Printer size={18} className="opacity-40 group-hover:opacity-100" />
-                  </button>
-                  <button className="w-full flex items-center justify-between p-4 bg-slate-800 rounded-lg hover:bg-brand-teal transition-all group">
-                    <span className="text-xs font-bold uppercase tracking-widest">Share Legal</span>
-                    <Share2 size={18} className="opacity-40 group-hover:opacity-100" />
-                  </button>
-                </div>
-              </div>
-              
-              <div className="p-8 border border-slate-100 rounded-lg">
-                <h4 className="text-sm font-black uppercase tracking-widest text-slate-400 mb-4">Contact Legal</h4>
-                <p className="text-xs text-slate-500 leading-relaxed font-medium">
-                  For specific queries regarding this policy, please email:
-                  <br />
-                  <span className="text-slate-900 font-bold block mt-2">info@thamessolution.com</span>
-                </p>
-              </div>
-            </div>
+        </div>
+        
+        <div className="mt-24 pt-12 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-8">
+          <p className="text-slate-400 text-sm font-medium italic">
+            This document is the property of Thames Solution Training & Consultancy Ltd.
+          </p>
+          <div className="flex gap-4">
+            <button className="flex items-center gap-2 text-slate-400 hover:text-brand-teal transition-colors text-xs font-black uppercase tracking-widest">
+              <Printer size={16} />
+              Print
+            </button>
+            <button className="flex items-center gap-2 text-slate-400 hover:text-brand-teal transition-colors text-xs font-black uppercase tracking-widest">
+              <Share2 size={16} />
+              Share
+            </button>
           </div>
         </div>
       </section>

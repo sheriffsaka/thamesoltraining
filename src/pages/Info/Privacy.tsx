@@ -3,25 +3,26 @@ import { Shield, Lock, Eye, FileText } from 'lucide-react';
 
 export function Privacy() {
   return (
-    <div className="bg-slate-50 min-h-screen pt-20">
-      <section className="py-24 bg-white border-b border-slate-100">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-slate-900">
+    <div className="bg-white min-h-screen pt-20">
+      <section className="py-24 relative overflow-hidden bg-slate-50">
+        <div className="absolute top-0 right-0 w-1/3 h-full bg-brand-teal/[0.03] -skew-x-12 translate-x-32" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="w-20 h-20 bg-brand-teal/10 text-brand-teal rounded-3xl flex items-center justify-center mx-auto mb-10 border border-brand-teal/20"
+            className="w-20 h-20 bg-brand-teal/10 text-brand-teal rounded-lg flex items-center justify-center mb-10 border border-brand-teal/20"
           >
-            <Shield size={36} />
+            < Shield size={36} />
           </motion.div>
-          <h1 className="text-5xl font-bold mb-6 font-serif tracking-tight">Privacy Policy</h1>
-          <p className="text-xl text-slate-500 max-w-2xl mx-auto">
-            Your trust is our most significant asset. Learn how Thames Solution protects and manages your personal data.
+          <h1 className="text-5xl lg:text-8xl font-bold mb-8 tracking-tighter font-serif text-slate-900 leading-none">Privacy<br />Policy</h1>
+          <p className="text-2xl text-slate-600 max-w-3xl font-serif leading-relaxed italic">
+            "Your trust is our most significant asset. Learn how Thames Solution protects and manages your personal data within our professional infrastructure."
           </p>
         </div>
       </section>
 
-      <section className="py-24 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-[3rem] p-12 lg:p-20 shadow-xl border border-slate-100 space-y-16">
+      <section className="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="bg-white rounded-lg p-12 lg:p-20 shadow-2xl border border-slate-100 space-y-20">
           <div className="space-y-8">
             <h2 className="text-3xl font-bold text-slate-900 font-serif">1. Information We Collect</h2>
             <div className="space-y-6 text-slate-600 leading-relaxed text-lg">
@@ -63,7 +64,7 @@ export function Privacy() {
                 <li><strong>Regulatory Authorities:</strong> To comply with legal obligations and educational standards.</li>
                 <li><strong>Service Providers:</strong> Partners who help us deliver our LMS and communication services.</li>
               </ul>
-              <div className="p-8 bg-brand-teal/5 rounded-3xl border border-brand-teal/10 mt-8">
+              <div className="p-8 bg-brand-teal/5 rounded-lg border border-brand-teal/10 mt-8">
                 <p className="text-slate-800 font-bold mb-4 flex items-center gap-3">
                   <Lock size={20} className="text-brand-teal" />
                   Security Commitment

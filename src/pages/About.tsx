@@ -1,4 +1,5 @@
 import { Users, Target, Award, CheckCircle2, Eye, Heart } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { useState, useEffect } from 'react';
 import { getSiteContent } from '@/src/services/contentService';
@@ -164,12 +165,12 @@ export function About() {
           <h2 className="text-4xl font-bold text-slate-900 mb-8 font-serif">Ready to take the next step?</h2>
           <p className="text-slate-600 mb-10 text-lg font-medium">Join thousands of successful graduates who have transformed their careers with Thames Solution.</p>
           <div className="flex flex-wrap justify-center gap-4">
-            <button className="px-12 py-4 bg-brand-teal text-white rounded-lg font-bold hover:bg-brand-accent transition-all shadow-xl shadow-brand-teal/20">
+            <Link to="/courses" className="px-12 py-4 bg-brand-teal text-white rounded-lg font-bold hover:bg-brand-accent transition-all shadow-xl shadow-brand-teal/20">
               Browse Courses
-            </button>
-            <button className="px-12 py-4 bg-white border border-slate-200 text-slate-900 rounded-lg font-bold hover:bg-slate-50 transition-all">
+            </Link>
+            <Link to="/contact" className="px-12 py-4 bg-white border border-slate-200 text-slate-900 rounded-lg font-bold hover:bg-slate-50 transition-all">
               Contact Us
-            </button>
+            </Link>
           </div>
         </div>
       </section>
