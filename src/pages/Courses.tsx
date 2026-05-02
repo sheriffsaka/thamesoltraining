@@ -32,8 +32,10 @@ export function Courses() {
 
   const filteredCourses = courses.filter(course => {
     const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase());
-    const courseSubCat = (course as any).sub_category || (course as any).subCategory || (course as any).level;
-    const matchesSubCategory = currentLevel ? courseSubCat === currentLevel : true;
+    const courseSubCatRaw = (course as any).sub_category || (course as any).subCategory || (course as any).level || '';
+    const matchesSubCategory = currentLevel 
+      ? courseSubCatRaw.toString().toLowerCase() === currentLevel.toLowerCase() 
+      : true;
     return matchesSearch && matchesSubCategory;
   });
 

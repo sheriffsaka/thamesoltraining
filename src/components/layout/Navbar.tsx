@@ -34,8 +34,8 @@ const navLinks: any[] = [
         id: 'assessor',
         path: '/courses?category=assessor',
         items: [
-          { name: 'Level 3 Award', path: '/courses?category=assessor' },
-          { name: 'Level 3 Certificate', path: '/courses?category=assessor' },
+          { name: 'Award in Assessing', path: '/courses/ac-l3-1' },
+          { name: 'Certificate in Assessing', path: '/courses/ac-l3-2' },
         ]
       },
       {
@@ -43,8 +43,8 @@ const navLinks: any[] = [
         id: 'functional',
         path: '/courses?category=functional-skills',
         items: [
-          { name: 'Level 2 English', path: '/courses?category=functional-skills' },
-          { name: 'Level 2 Maths', path: '/courses?category=functional-skills' },
+          { name: 'Level 2 English', path: '/courses/fs-en-l2' },
+          { name: 'Level 2 Maths', path: '/courses/fs-mt-l2' },
         ]
       },
       {
@@ -52,7 +52,7 @@ const navLinks: any[] = [
         id: 'mandatory',
         path: '/courses?category=mandatory',
         items: [
-          { name: 'Compliance Training', path: '/courses?category=mandatory' },
+          { name: 'View Compliance Training', path: '/courses?category=mandatory' },
         ]
       },
       {
@@ -60,7 +60,7 @@ const navLinks: any[] = [
         id: 'care-certificate',
         path: '/courses?category=care-certificate',
         items: [
-          { name: 'Standards 1-15', path: '/courses?category=care-certificate' },
+          { name: 'Standards 1-15', path: '/courses/cc-15' },
         ]
       },
     ],
