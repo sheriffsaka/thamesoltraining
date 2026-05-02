@@ -19,16 +19,26 @@ export function Courses() {
   useEffect(() => {
     async function loadCourses() {
       setIsLoading(true);
-      const data = await getCourses(currentCategory);
-      if (data && data.length > 0) {
-        setCourses(data);
-      } else {
-        setCourses(mockCourses.filter(c => currentCategory === 'all' || c.category === currentCategory) as any);
+      try {
+        const data = await getCourses(currentCategory);
+        if (data && data.length > 0) {
+          setCourses([...data]);
+        } else {
+          const filteredMock = mockCourses.filter(c => 
+            currentCategory === 'all' || 
+            c.category === currentCategory ||
+            c.category?.toLowerCase().replace(/\s+/g, '-') === currentCategory.toLowerCase()
+          );
+          setCourses([...filteredMock] as any);
+        }
+      } catch (err) {
+        console.error('Error loading courses:', err);
+        setCourses([...mockCourses] as any);
       }
       setIsLoading(false);
     }
     loadCourses();
-  }, [currentCategory]);
+  }, [currentCategory, currentLevel]);
 
   const filteredCourses = courses.filter(course => {
     const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase());
@@ -37,12 +47,24 @@ export function Courses() {
     const courseSubCatRaw = (course as any).sub_category || (course as any).subCategory || (course as any).level || '';
     
     // Robust comparison for currentLevel filter
-    const matchesSubCategory = currentLevel 
-      ? courseSubCatRaw.toString().toLowerCase().trim() === currentLevel.toLowerCase().trim() 
-      : true;
+    const currentLevelNorm = currentLevel?.toLowerCase().trim() || '';
+    const courseLevelNorm = courseSubCatRaw.toString().toLowerCase().trim();
+
+    const matchesSubCategory = !currentLevel 
+      ? true 
+      : (courseLevelNorm === currentLevelNorm || 
+         courseLevelNorm.includes(currentLevelNorm.replace(' qualifications', '').trim()) ||
+         currentLevelNorm.includes(courseLevelNorm.replace(' qualifications', '').trim()));
       
-    // Category filter is already applied in useFetch, but we can double check here
-    const matchesCategory = currentCategory === 'all' || course.category === currentCategory;
+    // Category filter logic - normalize both to be sure
+    const categoryNormalized = course.category?.toLowerCase().replace(/\s+/g, '-').replace(/&/g, 'and');
+    const targetCategoryNormalized = currentCategory.toLowerCase().replace(/\s+/g, '-').replace(/&/g, 'and');
+    
+    const matchesCategory = currentCategory === 'all' || 
+                           course.category === currentCategory || 
+                           categoryNormalized === targetCategoryNormalized ||
+                           categoryNormalized?.includes(targetCategoryNormalized) ||
+                           targetCategoryNormalized.includes(categoryNormalized || '');
     
     return matchesSearch && matchesSubCategory && matchesCategory;
   });

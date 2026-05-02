@@ -6,10 +6,28 @@ export async function getCourses(category: string = 'all') {
       .from('courses')
       .select('*');
 
-    // If category is not 'all', we try to match it
-    // We'll also try a fallback in the UI side, but let's keep this clean
+    // If category is not 'all', we try multiple matching strategies
     if (category !== 'all') {
-      query = query.eq('category', category);
+      const normalizedCategory = category.toLowerCase().trim();
+      const withSpaces = normalizedCategory.replace(/-/g, ' ');
+      const withAmpersand = normalizedCategory.replace('-and-', ' & ');
+      
+      const { data, error } = await supabase
+        .from('courses')
+        .select('*')
+        .or(`category.eq."${category}",category.ilike."%${withSpaces}%",category.ilike."%${withAmpersand}%"`);
+      
+      if (!error && data && data.length > 0) {
+        return data as Course[];
+      }
+      
+      // If we still have nothing, try even broader
+      const { data: broadData } = await supabase
+        .from('courses')
+        .select('*')
+        .ilike('category', `%${category.split('-')[0]}%`);
+      
+      if (broadData && broadData.length > 0) return broadData as Course[];
     }
 
     const { data, error } = await query.order('created_at', { ascending: false });
@@ -17,17 +35,6 @@ export async function getCourses(category: string = 'all') {
     if (error) {
       console.error('Error fetching courses:', error);
       return [];
-    }
-
-    // Double check: if we filtered by slug but got nothing, maybe it's saved with spaces?
-    // This is a safety measure for manual DB edits
-    if (category !== 'all' && (!data || data.length === 0)) {
-       const { data: fallbackData } = await supabase
-        .from('courses')
-        .select('*')
-        .ilike('category', `%${category.replace(/-/g, ' ')}%`);
-       
-       if (fallbackData && fallbackData.length > 0) return fallbackData as Course[];
     }
 
     return data as Course[];
