@@ -131,19 +131,19 @@ export function Home() {
       {/* Hero Section */}
       <section className="relative min-h-[95vh] flex items-center pt-20 overflow-hidden border-b border-slate-100 bg-white">
         <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-white/40 backdrop-blur-[1px] z-10" />
+          <div className="absolute inset-0 bg-white/20 backdrop-blur-[1px] z-10" />
           <AnimatePresence mode="wait">
             <motion.video
               key={currentSlide}
               initial={{ opacity: 0 }}
-              animate={{ opacity: 0.35 }}
+              animate={{ opacity: 0.6 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 1.5 }}
               autoPlay
               loop
               muted
               playsInline
-              className="w-full h-full object-cover grayscale"
+              className="w-full h-full object-cover"
             >
               <source src={slide.video} type="video/mp4" />
             </motion.video>

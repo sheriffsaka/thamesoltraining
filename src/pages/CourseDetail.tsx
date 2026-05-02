@@ -114,7 +114,7 @@ export function CourseDetail() {
             )}
           </div>
           
-          <h1 className="text-5xl md:text-8xl font-bold max-w-5xl font-serif leading-[1.1] select-none tracking-tight text-white drop-shadow-2xl">
+          <h1 className="text-4xl md:text-6xl font-bold max-w-5xl font-serif leading-[1.1] select-none tracking-tight text-white drop-shadow-2xl">
             {course.title}
           </h1>
         </div>
@@ -131,7 +131,7 @@ export function CourseDetail() {
             >
               <h2 className="text-2xl font-bold text-slate-900 mb-8 font-serif flex items-center gap-6">
                 <div className="w-12 h-1 bg-brand-teal rounded-full" />
-                Course Description
+                Course Overview
               </h2>
               <p className="text-slate-600 text-lg leading-relaxed whitespace-pre-line font-medium">
                 {course.description || course.longDesc}
@@ -157,52 +157,82 @@ export function CourseDetail() {
               </div>
             </motion.div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
-              <motion.div
-                 initial={{ opacity: 0, x: -20 }}
-                 whileInView={{ opacity: 1, x: 0 }}
-                 viewport={{ once: true }}
-              >
-                <h2 className="text-2xl font-bold text-slate-900 mb-8 font-serif flex items-center gap-6">
-                  <div className="w-12 h-1 bg-brand-teal rounded-full" />
-                  Requirements
-                </h2>
-                <ul className="space-y-5">
-                  {(course.requirements || []).map((req: string, i: number) => (
-                    <li key={i} className="flex items-center gap-4 text-slate-600 font-bold text-sm">
-                      <div className="w-2.5 h-2.5 rounded-full border-2 border-brand-teal bg-white" />
-                      {req}
+            <motion.div
+               initial={{ opacity: 0, y: 20 }}
+               whileInView={{ opacity: 1, y: 0 }}
+               viewport={{ once: true }}
+            >
+              <h2 className="text-2xl font-bold text-slate-900 mb-8 font-serif flex items-center gap-6">
+                <div className="w-12 h-1 bg-brand-teal rounded-full" />
+                Entry Requirements
+              </h2>
+              <ul className="space-y-5 px-6">
+                {(course.requirements || [
+                  'Aged 16 or above',
+                  'Interest in the subject area',
+                  'Basic understanding of English/Maths',
+                  'A placement in a relevant working environment (for practical modules)'
+                ]).map((req: string, i: number) => (
+                  <li key={i} className="flex items-center gap-4 text-slate-600 font-bold text-sm">
+                    <div className="w-2.5 h-2.5 rounded-full border-2 border-brand-teal bg-white" />
+                    {req}
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+
+            <motion.div
+               initial={{ opacity: 0, y: 20 }}
+               whileInView={{ opacity: 1, y: 0 }}
+               viewport={{ once: true }}
+            >
+              <h2 className="text-2xl font-bold text-slate-900 mb-8 font-serif flex items-center gap-6">
+                <div className="w-12 h-1 bg-brand-teal rounded-full" />
+                Assessment Method
+              </h2>
+              <p className="text-slate-600 text-lg leading-relaxed font-medium bg-white p-10 rounded-3xl border border-slate-100 shadow-xl">
+                Assessment for this qualification is via a portfolio of evidence. Your tutor will guide you through building a professional portfolio that demonstrates your competence and knowledge in <strong>{course.title}</strong>. This may include observations, witness testimonies, and professional discussions.
+              </p>
+            </motion.div>
+
+            <motion.div
+               initial={{ opacity: 0, y: 20 }}
+               whileInView={{ opacity: 1, y: 0 }}
+               viewport={{ once: true }}
+            >
+              <h2 className="text-2xl font-bold text-slate-900 mb-8 font-serif flex items-center gap-6">
+                <div className="w-12 h-1 bg-brand-teal rounded-full" />
+                Application Process
+              </h2>
+              <div className="bg-slate-900 text-white p-12 rounded-3xl relative overflow-hidden group shadow-2xl">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-brand-teal/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2" />
+                <div className="relative z-10">
+                  <p className="text-slate-300 text-lg leading-relaxed mb-10 font-medium">
+                    Applying to study with TMS is simple. To start your journey:
+                  </p>
+                  <ol className="space-y-6 mb-12">
+                    <li className="flex gap-5 items-start font-bold">
+                      <div className="w-8 h-8 rounded-full bg-brand-teal text-white flex items-center justify-center shrink-0 text-sm">1</div>
+                      <p>Click the <span className="text-brand-teal uppercase tracking-widest text-xs">Enroll Now</span> button on this page to open the application window.</p>
                     </li>
-                  ))}
-                </ul>
-              </motion.div>
-              <motion.div 
-                 initial={{ opacity: 0, x: 20 }}
-                 whileInView={{ opacity: 1, x: 0 }}
-                 viewport={{ once: true }}
-                 className="bg-white rounded-3xl p-12 border border-slate-100 self-start shadow-2xl space-y-10"
-              >
-                <div className="flex gap-6 items-center">
-                  <div className="w-16 h-16 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center text-brand-teal shadow-inner">
-                    <Award size={32} />
-                  </div>
-                  <div>
-                    <h4 className="font-black text-slate-400 uppercase tracking-[0.2em] text-[10px] mb-2">Certification</h4>
-                    <p className="text-slate-900 font-bold leading-tight font-serif text-lg">{course.certification || 'Level 3 Diploma (RQF)'}</p>
-                  </div>
+                    <li className="flex gap-5 items-start font-bold">
+                      <div className="w-8 h-8 rounded-full bg-brand-teal text-white flex items-center justify-center shrink-0 text-sm">2</div>
+                      <p>Fill in your contact details and any specific questions you have.</p>
+                    </li>
+                    <li className="flex gap-5 items-start font-bold">
+                      <div className="w-8 h-8 rounded-full bg-brand-teal text-white flex items-center justify-center shrink-0 text-sm">3</div>
+                      <p>Our admissions team will contact you to discuss your eligibility and guide you through the next steps.</p>
+                    </li>
+                  </ol>
+                  <button 
+                    onClick={() => setIsApplying(true)}
+                    className="w-full bg-brand-teal text-white py-5 rounded-2xl font-black uppercase tracking-[0.2em] text-[11px] hover:bg-brand-accent transition-all shadow-2xl shadow-brand-teal/20"
+                  >
+                    Start Your Application Now
+                  </button>
                 </div>
-                <div className="h-px bg-slate-100" />
-                <div className="flex gap-6 items-center">
-                  <div className="w-16 h-16 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center text-brand-teal shadow-inner">
-                    <Shield size={32} />
-                  </div>
-                  <div>
-                    <h4 className="font-black text-slate-400 uppercase tracking-[0.2em] text-[10px] mb-2">Accreditation</h4>
-                    <p className="text-slate-900 font-bold leading-tight font-serif text-lg">Nationally Recognized (RQF)</p>
-                  </div>
-                </div>
-              </motion.div>
-            </div>
+              </div>
+            </motion.div>
           </div>
 
           {/* Sidebar / CTA */}

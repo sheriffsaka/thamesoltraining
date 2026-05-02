@@ -155,7 +155,7 @@ export function Navbar() {
         <div className="flex justify-between h-32">
           <div className="flex items-center">
             <Link to="/">
-              <Logo dark={true} size="lg" />
+              <Logo dark={true} size="xl" />
             </Link>
           </div>
 
@@ -179,8 +179,8 @@ export function Navbar() {
               >
                 {link.children ? (
                   <button className={cn(
-                    "flex items-center gap-1.5 text-[11px] font-black tracking-[0.2em] transition-all py-2 uppercase h-full",
-                    activeDropdown === link.name ? "text-brand-teal scale-105" : "text-slate-600 hover:text-brand-teal"
+                    "flex items-center gap-1.5 text-[12px] font-bold tracking-tight transition-all py-2 h-full font-serif font-black",
+                    activeDropdown === link.name ? "text-brand-teal scale-105" : "text-slate-800 hover:text-brand-teal"
                   )}>
                     {link.name}
                     <ChevronDown size={14} className={cn("transition-transform opacity-50", activeDropdown === link.name && "rotate-180")} />
@@ -189,10 +189,10 @@ export function Navbar() {
                   <Link
                     to={link.path!}
                     className={cn(
-                      "text-[11px] font-black tracking-[0.2em] transition-colors py-2 uppercase h-full flex items-center",
+                      "text-[12px] font-bold tracking-tight transition-colors py-2 h-full flex items-center font-serif font-black",
                       location.pathname === link.path 
                         ? "text-brand-teal" 
-                        : "text-slate-600 hover:text-brand-teal"
+                        : "text-slate-800 hover:text-brand-teal"
                     )}
                   >
                     {link.name}
@@ -213,7 +213,7 @@ export function Navbar() {
                       {link.isHierarchical ? (
                         <>
                           {/* Categories (Level 1) */}
-                          <div className="w-[30%] bg-slate-50/50 border-r border-slate-100 py-4">
+                          <div className="w-[30%] bg-slate-50/50 border-r border-slate-100 py-4 font-serif">
                             {link.children.map((section: any) => (
                               <div
                                 key={section.name}
@@ -227,21 +227,27 @@ export function Navbar() {
                                 }}
                                 className={cn(
                                   "flex items-center justify-between px-8 py-5 transition-all cursor-pointer group",
-                                  activeSubMenu === section.name ? "bg-white text-brand-teal" : "text-slate-600"
+                                  activeSubMenu === section.name ? "bg-white text-brand-teal" : "text-slate-900"
                                 )}
                               >
-                                <span className="text-[11px] font-black uppercase tracking-widest leading-tight pr-4">
+                                <span className={cn(
+                                  "text-[13px] font-black leading-tight pr-4",
+                                  activeSubMenu === section.name ? "text-brand-teal" : "text-slate-900"
+                                )}>
                                   {section.name}
                                 </span>
-                                {section.items && section.items.length > 0 && <ChevronDown size={14} className="-rotate-90 opacity-40 group-hover:translate-x-1 transition-transform" />}
+                                {section.name === 'Health and Social Care' && <ChevronDown size={14} className="-rotate-90 opacity-40 group-hover:translate-x-1 transition-transform" />}
                               </div>
                             ))}
                           </div>
 
-                          {/* Sub-categories (Level 2) */}
-                          <div className="w-[30%] bg-white border-r border-slate-100 py-4">
+                          {/* Sub-categories (Level 2) - Only show for Health and Social Care */}
+                          <div className={cn(
+                            "w-[30%] bg-white border-r border-slate-100 py-4",
+                            activeSubMenu !== 'Health and Social Care' && "hidden"
+                          )}>
                             <AnimatePresence mode="wait">
-                              {activeSubMenu && (
+                              {activeSubMenu === 'Health and Social Care' && (
                                 <motion.div
                                   key={activeSubMenu}
                                   initial={{ opacity: 0, x: 10 }}
@@ -254,10 +260,10 @@ export function Navbar() {
                                       onMouseEnter={() => setActiveDeepMenu(subCat.name)}
                                       className={cn(
                                         "flex items-center justify-between px-8 py-4 transition-all cursor-pointer group",
-                                        activeDeepMenu === subCat.name ? "bg-slate-50 text-brand-teal" : "text-slate-500"
+                                        activeDeepMenu === subCat.name ? "bg-slate-50 text-brand-teal" : "text-slate-700"
                                       )}
                                     >
-                                      <span className="text-[11px] font-bold uppercase tracking-widest leading-tight pr-4">
+                                      <span className="text-[12px] font-bold font-serif leading-tight pr-4">
                                         {subCat.name}
                                       </span>
                                       {subCat.items && subCat.items.length > 0 && <ChevronDown size={14} className="-rotate-90 opacity-40 group-hover:translate-x-1 transition-transform" />}
@@ -268,45 +274,52 @@ export function Navbar() {
                             </AnimatePresence>
                           </div>
 
-                          {/* Final Courses (Level 3) */}
-                          <div className="flex-1 bg-white p-8">
+                          {/* Final Courses (Level 3 or Level 2 for non-HSC) */}
+                          <div className="flex-1 bg-white p-10">
                             <AnimatePresence mode="wait">
-                              {activeDeepMenu && (
+                              {activeSubMenu && (
                                 <motion.div
-                                  key={activeDeepMenu}
+                                  key={activeSubMenu === 'Health and Social Care' ? activeDeepMenu : activeSubMenu}
                                   initial={{ opacity: 0, x: 10 }}
                                   animate={{ opacity: 1, x: 0 }}
                                   exit={{ opacity: 0, x: -10 }}
                                   className="space-y-6"
                                 >
-                                  <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-teal mb-6 border-b border-slate-100 pb-4 inline-block">
-                                    {activeDeepMenu}
+                                  <h4 className="text-[11px] font-black uppercase tracking-[0.3em] text-brand-teal mb-8 border-b border-slate-100 pb-4 inline-block font-serif">
+                                    {activeSubMenu === 'Health and Social Care' ? activeDeepMenu : activeSubMenu}
                                   </h4>
-                                  <div className="grid grid-cols-1 gap-4">
-                                    {(
-                                      (link.children.find((s: any) => s.name === activeSubMenu)?.items || [])
-                                      .find((sub: any) => sub.name === activeDeepMenu)?.items || []
-                                    ).map((course: any) => (
-                                      <Link
-                                        key={course.name}
-                                        to={course.path}
-                                        className="text-[13px] font-bold text-slate-500 hover:text-brand-teal transition-all leading-tight flex items-center gap-2 hover:translate-x-1"
-                                      >
-                                        <div className="w-1 h-1 bg-brand-teal/20 rounded-full" />
-                                        {course.name}
-                                      </Link>
-                                    ))}
-                                    {/* If no items (like Mandatory Training might not have a 3rd level in data yet) */}
-                                    {((link.children.find((s: any) => s.name === activeSubMenu)?.items || [])
-                                      .find((sub: any) => sub.name === activeDeepMenu)?.items || []).length === 0 && (
+                                  <div className="grid grid-cols-1 gap-5">
+                                    {activeSubMenu === 'Health and Social Care' ? (
+                                      // HSC Logic (3 levels)
+                                      (
+                                        (link.children.find((s: any) => s.name === activeSubMenu)?.items || [])
+                                        .find((sub: any) => sub.name === activeDeepMenu)?.items || []
+                                      ).map((course: any) => (
                                         <Link
-                                          to={((link.children.find((s: any) => s.name === activeSubMenu)?.items || [])
-                                            .find((sub: any) => sub.name === activeDeepMenu)?.path || '#')}
-                                          className="text-[13px] font-bold text-slate-500 hover:text-brand-teal transition-all leading-tight flex items-center gap-2"
+                                          key={course.name}
+                                          to={course.path}
+                                          className="text-[14px] font-bold text-slate-600 hover:text-brand-teal transition-all leading-tight flex items-center gap-3 hover:translate-x-2 font-serif"
                                         >
-                                          View All {activeDeepMenu}
+                                          <div className="w-1.5 h-1.5 bg-brand-teal/20 rounded-full" />
+                                          {course.name}
                                         </Link>
-                                      )}
+                                      ))
+                                    ) : (
+                                      // Others Logic (2 levels: Category -> Courses)
+                                      (
+                                        (link.children.find((s: any) => s.name === activeSubMenu)?.items || [])
+                                        .flatMap((sub: any) => sub.items || [])
+                                      ).map((course: any) => (
+                                        <Link
+                                          key={course.name}
+                                          to={course.path}
+                                          className="text-[14px] font-bold text-slate-600 hover:text-brand-teal transition-all leading-tight flex items-center gap-3 hover:translate-x-2 font-serif"
+                                        >
+                                          <div className="w-1.5 h-1.5 bg-brand-teal/20 rounded-full" />
+                                          {course.name}
+                                        </Link>
+                                      ))
+                                    )}
                                   </div>
                                 </motion.div>
                               )}

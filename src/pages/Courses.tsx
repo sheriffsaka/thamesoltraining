@@ -62,6 +62,13 @@ export function Courses() {
     loadCourses();
   }, [currentCategory, currentLevel]);
 
+  useEffect(() => {
+    // Default sub-category for Health & Social Care if not selected
+    if (currentCategory === 'health-and-social-care' && !currentLevel) {
+      setSearchParams({ category: currentCategory, level: 'Level 2 Qualifications' }, { replace: true });
+    }
+  }, [currentCategory, currentLevel, setSearchParams]);
+
   const filteredCourses = courses.filter(course => {
     const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase());
     
@@ -133,42 +140,88 @@ export function Courses() {
 
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 -mt-10 mb-20 relative z-20">
         {/* Filters */}
-        <div className="bg-white rounded-2xl shadow-2xl p-8 mb-12 border border-slate-50">
-          <div className="flex flex-col lg:flex-row gap-6 items-center">
-            <div className="w-full lg:flex-1 relative">
-              <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
-              <input
-                type="text"
-                placeholder="Search courses..."
-                className="w-full pl-14 pr-4 py-4.5 rounded-xl bg-slate-50 border border-slate-100 focus:border-brand-teal outline-none text-slate-900 transition-all placeholder:text-slate-400 font-medium"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
-            <div className="flex gap-2 overflow-x-auto pb-2 w-full lg:w-auto custom-scrollbar">
-              {categories.map((cat) => (
-                <button
-                  key={cat.id}
-                  onClick={() => setSearchParams(cat.id === 'all' ? {} : { category: cat.id })}
-                  className={cn(
-                    "px-6 py-4 rounded-xl font-bold text-xs whitespace-nowrap transition-all border",
-                    currentCategory === cat.id
-                      ? "bg-brand-teal text-white shadow-lg shadow-brand-teal/20 border-brand-teal"
-                      : "bg-slate-50 text-slate-500 border-slate-100 hover:bg-slate-100"
-                  )}
-                >
-                  {cat.name}
-                </button>
-              ))}
+        {currentCategory === 'all' ? (
+          <div className="bg-white rounded-2xl shadow-2xl p-8 mb-12 border border-slate-50">
+            <div className="flex flex-col lg:flex-row gap-6 items-center">
+              <div className="w-full lg:flex-1 relative">
+                <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
+                <input
+                  type="text"
+                  placeholder="Search courses..."
+                  className="w-full pl-14 pr-4 py-4.5 rounded-xl bg-slate-50 border border-slate-100 focus:border-brand-teal outline-none text-slate-900 transition-all placeholder:text-slate-400 font-medium"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+              <div className="flex gap-2 overflow-x-auto pb-2 w-full lg:w-auto custom-scrollbar">
+                {categories.map((cat) => (
+                  <button
+                    key={cat.id}
+                    onClick={() => setSearchParams(cat.id === 'all' ? {} : { category: cat.id })}
+                    className={cn(
+                      "px-6 py-4 rounded-xl font-bold text-xs whitespace-nowrap transition-all border",
+                      currentCategory === cat.id
+                        ? "bg-brand-teal text-white shadow-lg shadow-brand-teal/20 border-brand-teal"
+                        : "bg-slate-50 text-slate-500 border-slate-100 hover:bg-slate-100"
+                    )}
+                  >
+                    {cat.name}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
+        ) : (
+          <div className="mb-12">
+             <button 
+              onClick={() => setSearchParams({})}
+              className="text-xs font-black text-brand-teal uppercase tracking-[0.2em] mb-8 hover:translate-x--1 transition-all flex items-center gap-2"
+            >
+              ← Back to all categories
+            </button>
+            
+            <div className="bg-white rounded-2xl shadow-2xl p-8 border border-slate-50">
+              <div className="flex flex-col lg:flex-row gap-8 items-center">
+                <div className="w-full lg:flex-1 relative">
+                  <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
+                  <input
+                    type="text"
+                    placeholder={`Search in ${categories.find(c => c.id === currentCategory)?.name}...`}
+                    className="w-full pl-14 pr-4 py-4.5 rounded-xl bg-slate-50 border border-slate-100 focus:border-brand-teal outline-none text-slate-900 transition-all placeholder:text-slate-400 font-medium"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
+                
+                {/* Only show sub-categories for Health and Social Care */}
+                {currentCategory === 'health-and-social-care' && (
+                  <div className="flex gap-2 overflow-x-auto pb-2 w-full lg:w-auto custom-scrollbar">
+                    {['Level 2 Qualifications', 'Level 3 Qualifications', 'Level 5 Qualifications', 'Child Care'].map((level) => (
+                      <button
+                        key={level}
+                        onClick={() => setSearchParams({ category: currentCategory, level })}
+                        className={cn(
+                          "px-6 py-4 rounded-xl font-bold text-[10px] uppercase tracking-widest whitespace-nowrap transition-all border",
+                          currentLevel === level
+                            ? "bg-brand-teal text-white shadow-lg shadow-brand-teal/20 border-brand-teal"
+                            : "bg-slate-50 text-slate-400 border-slate-100 hover:bg-slate-100"
+                        )}
+                      >
+                        {level}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Display Grouped Courses */}
         <div className="space-y-20">
           {groups.map((group) => (
             <div key={group}>
-              {currentCategory !== 'all' && !currentLevel && (
+              {currentCategory === 'health-and-social-care' && (
                 <div className="flex items-center gap-6 mb-12">
                   <h2 className="text-3xl font-bold text-slate-900 font-serif whitespace-nowrap tracking-tight">
                     {group}
