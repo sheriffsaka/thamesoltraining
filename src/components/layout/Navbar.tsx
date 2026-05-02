@@ -179,8 +179,8 @@ export function Navbar() {
               >
                 {link.children ? (
                   <button className={cn(
-                    "flex items-center gap-1.5 text-[12px] font-bold tracking-tight transition-all py-2 h-full font-serif font-black",
-                    activeDropdown === link.name ? "text-brand-teal scale-105" : "text-slate-800 hover:text-brand-teal"
+                    "flex items-center gap-1.5 text-[15px] font-bold tracking-tight transition-all py-2 h-full font-serif",
+                    activeDropdown === link.name ? "text-brand-teal" : "text-slate-800 hover:text-brand-teal"
                   )}>
                     {link.name}
                     <ChevronDown size={14} className={cn("transition-transform opacity-50", activeDropdown === link.name && "rotate-180")} />
@@ -189,7 +189,7 @@ export function Navbar() {
                   <Link
                     to={link.path!}
                     className={cn(
-                      "text-[12px] font-bold tracking-tight transition-colors py-2 h-full flex items-center font-serif font-black",
+                      "text-[15px] font-bold tracking-tight transition-colors py-2 h-full flex items-center font-serif",
                       location.pathname === link.path 
                         ? "text-brand-teal" 
                         : "text-slate-800 hover:text-brand-teal"
@@ -206,14 +206,14 @@ export function Navbar() {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 10 }}
                       className={cn(
-                        "absolute left-0 top-[100%] bg-white rounded-b-xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-100 overflow-hidden z-50",
-                        link.isHierarchical ? "w-[900px] flex min-h-[400px]" : "w-80 p-3"
+                        "absolute left-0 top-[100%] bg-white rounded-b-lg shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-100 overflow-hidden z-50",
+                        link.isHierarchical ? "w-[1000px] flex min-h-[500px]" : "w-80 p-3"
                       )}
                     >
                       {link.isHierarchical ? (
                         <>
                           {/* Categories (Level 1) */}
-                          <div className="w-[30%] bg-slate-50/50 border-r border-slate-100 py-4 font-serif">
+                          <div className="w-[30%] bg-slate-50/50 border-r border-slate-100 py-6 font-serif">
                             {link.children.map((section: any) => (
                               <div
                                 key={section.name}
@@ -226,12 +226,12 @@ export function Navbar() {
                                   }
                                 }}
                                 className={cn(
-                                  "flex items-center justify-between px-8 py-5 transition-all cursor-pointer group",
-                                  activeSubMenu === section.name ? "bg-white text-brand-teal" : "text-slate-900"
+                                  "flex items-center justify-between px-10 py-6 transition-all cursor-pointer group",
+                                  activeSubMenu === section.name ? "bg-white text-brand-teal shadow-sm" : "text-slate-900"
                                 )}
                               >
                                 <span className={cn(
-                                  "text-[13px] font-black leading-tight pr-4",
+                                  "text-[16px] font-black leading-tight pr-4",
                                   activeSubMenu === section.name ? "text-brand-teal" : "text-slate-900"
                                 )}>
                                   {section.name}
@@ -243,7 +243,7 @@ export function Navbar() {
 
                           {/* Sub-categories (Level 2) - Only show for Health and Social Care */}
                           <div className={cn(
-                            "w-[30%] bg-white border-r border-slate-100 py-4",
+                            "w-[35%] bg-white border-r border-slate-100 py-6",
                             activeSubMenu !== 'Health and Social Care' && "hidden"
                           )}>
                             <AnimatePresence mode="wait">
@@ -259,11 +259,11 @@ export function Navbar() {
                                       key={subCat.name}
                                       onMouseEnter={() => setActiveDeepMenu(subCat.name)}
                                       className={cn(
-                                        "flex items-center justify-between px-8 py-4 transition-all cursor-pointer group",
+                                        "flex items-center justify-between px-10 py-5 transition-all cursor-pointer group",
                                         activeDeepMenu === subCat.name ? "bg-slate-50 text-brand-teal" : "text-slate-700"
                                       )}
                                     >
-                                      <span className="text-[12px] font-bold font-serif leading-tight pr-4">
+                                      <span className="text-[14px] font-bold font-serif leading-tight pr-4">
                                         {subCat.name}
                                       </span>
                                       {subCat.items && subCat.items.length > 0 && <ChevronDown size={14} className="-rotate-90 opacity-40 group-hover:translate-x-1 transition-transform" />}
@@ -275,7 +275,7 @@ export function Navbar() {
                           </div>
 
                           {/* Final Courses (Level 3 or Level 2 for non-HSC) */}
-                          <div className="flex-1 bg-white p-10">
+                          <div className="flex-1 bg-white p-12">
                             <AnimatePresence mode="wait">
                               {activeSubMenu && (
                                 <motion.div
@@ -283,12 +283,12 @@ export function Navbar() {
                                   initial={{ opacity: 0, x: 10 }}
                                   animate={{ opacity: 1, x: 0 }}
                                   exit={{ opacity: 0, x: -10 }}
-                                  className="space-y-6"
+                                  className="space-y-8"
                                 >
-                                  <h4 className="text-[11px] font-black uppercase tracking-[0.3em] text-brand-teal mb-8 border-b border-slate-100 pb-4 inline-block font-serif">
+                                  <h4 className="text-[12px] font-black uppercase tracking-[0.4em] text-brand-teal mb-8 border-b border-slate-100 pb-4 inline-block font-serif">
                                     {activeSubMenu === 'Health and Social Care' ? activeDeepMenu : activeSubMenu}
                                   </h4>
-                                  <div className="grid grid-cols-1 gap-5">
+                                  <div className="grid grid-cols-1 gap-6">
                                     {activeSubMenu === 'Health and Social Care' ? (
                                       // HSC Logic (3 levels)
                                       (
@@ -298,9 +298,9 @@ export function Navbar() {
                                         <Link
                                           key={course.name}
                                           to={course.path}
-                                          className="text-[14px] font-bold text-slate-600 hover:text-brand-teal transition-all leading-tight flex items-center gap-3 hover:translate-x-2 font-serif"
+                                          className="text-[16px] font-bold text-slate-700 hover:text-brand-teal transition-all leading-tight flex items-center gap-4 hover:translate-x-2 font-serif"
                                         >
-                                          <div className="w-1.5 h-1.5 bg-brand-teal/20 rounded-full" />
+                                          <div className="w-2 h-2 bg-brand-teal/20 rounded-full" />
                                           {course.name}
                                         </Link>
                                       ))
@@ -313,9 +313,9 @@ export function Navbar() {
                                         <Link
                                           key={course.name}
                                           to={course.path}
-                                          className="text-[14px] font-bold text-slate-600 hover:text-brand-teal transition-all leading-tight flex items-center gap-3 hover:translate-x-2 font-serif"
+                                          className="text-[16px] font-bold text-slate-700 hover:text-brand-teal transition-all leading-tight flex items-center gap-4 hover:translate-x-2 font-serif"
                                         >
-                                          <div className="w-1.5 h-1.5 bg-brand-teal/20 rounded-full" />
+                                          <div className="w-2 h-2 bg-brand-teal/20 rounded-full" />
                                           {course.name}
                                         </Link>
                                       ))
@@ -327,15 +327,17 @@ export function Navbar() {
                           </div>
                         </>
                       ) : (
-                        link.children.map((child: any) => (
-                          <Link
-                            key={child.name}
-                            to={child.path}
-                            className="block px-8 py-5 text-[11px] font-black uppercase tracking-widest text-slate-500 hover:bg-slate-50 hover:text-brand-teal rounded-xl transition-all"
-                          >
-                            {child.name}
-                          </Link>
-                        ))
+                        <div className="space-y-1">
+                          {link.children.map((child: any) => (
+                            <Link
+                              key={child.name}
+                              to={child.path}
+                              className="block px-8 py-5 text-[15px] font-bold text-slate-700 hover:bg-slate-50 hover:text-brand-teal rounded-lg transition-all font-serif"
+                            >
+                              {child.name}
+                            </Link>
+                          ))}
+                        </div>
                       )}
                     </motion.div>
                   )}
@@ -344,7 +346,7 @@ export function Navbar() {
             ))}
             <Link
               to="/login"
-              className="bg-brand-teal text-white px-10 py-3.5 rounded-xl text-[11px] font-black uppercase tracking-[0.2em] hover:bg-brand-accent transition-all shadow-xl shadow-brand-teal/20"
+              className="bg-brand-teal text-white px-10 py-3.5 rounded-lg text-[13px] font-bold uppercase tracking-[0.2em] hover:bg-brand-accent transition-all shadow-xl shadow-brand-teal/20 font-serif"
             >
               LMS Login
             </Link>
@@ -435,7 +437,7 @@ export function Navbar() {
                       to={link.path!}
                       onClick={() => setIsOpen(false)}
                       className={cn(
-                        "block px-4 py-5 text-sm font-black uppercase tracking-[0.2em] transition-all rounded-2xl",
+                        "block px-4 py-5 text-sm font-black uppercase tracking-[0.2em] transition-all rounded-lg",
                         location.pathname === link.path 
                           ? "bg-brand-teal text-white shadow-lg shadow-brand-teal/20" 
                           : "text-slate-600 hover:text-brand-teal hover:bg-slate-50"
@@ -450,7 +452,7 @@ export function Navbar() {
                 <Link
                   to="/login"
                   onClick={() => setIsOpen(false)}
-                  className="block w-full text-center bg-brand-teal text-white py-6 rounded-3xl font-black uppercase tracking-[0.25em] text-xs shadow-2xl shadow-brand-teal/20 active:scale-95 transition-all"
+                  className="block w-full text-center bg-brand-teal text-white py-6 rounded-lg font-black uppercase tracking-[0.25em] text-xs shadow-2xl shadow-brand-teal/20 active:scale-95 transition-all"
                 >
                   LMS Login
                 </Link>

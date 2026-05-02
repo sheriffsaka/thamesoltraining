@@ -9,6 +9,7 @@ import { Login } from './pages/Auth/Login';
 import { About } from './pages/About';
 import { Contact } from './pages/Contact';
 import { Policy } from './pages/Info/Policy';
+import { PolicyDetail } from './pages/Info/PolicyDetail';
 import { Disclaimer } from './pages/Info/Disclaimer';
 import { Privacy } from './pages/Info/Privacy';
 import { Terms } from './pages/Info/Terms';
@@ -76,6 +77,7 @@ export default function App() {
         <Route index element={<Home />} />
         <Route path="about" element={<About />} />
         <Route path="policy" element={<Policy />} />
+        <Route path="policy/:id" element={<PolicyDetail />} />
         <Route path="disclaimer" element={<Disclaimer />} />
         <Route path="privacy" element={<Privacy />} />
         <Route path="terms" element={<Terms />} />

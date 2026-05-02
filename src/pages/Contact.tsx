@@ -16,9 +16,9 @@ export function Contact() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
             {/* Contact Info */}
             <div className="lg:col-span-1 space-y-8">
-              <div className="bg-white p-10 rounded-[2.5rem] border border-slate-100 space-y-8 shadow-2xl">
+              <div className="bg-white p-10 rounded-xl border border-slate-100 space-y-8 shadow-2xl">
                 <div className="flex gap-6">
-                  <div className="w-14 h-14 bg-brand-teal/10 rounded-2xl flex items-center justify-center text-brand-teal shrink-0 border border-brand-teal/20">
+                  <div className="w-14 h-14 bg-brand-teal/10 rounded-lg flex items-center justify-center text-brand-teal shrink-0 border border-brand-teal/20">
                     <MapPin size={24} />
                   </div>
                   <div>
@@ -32,7 +32,7 @@ export function Contact() {
                 </div>
 
                 <div className="flex gap-6">
-                  <div className="w-14 h-14 bg-brand-teal/10 rounded-2xl flex items-center justify-center text-brand-teal shrink-0 border border-brand-teal/20">
+                  <div className="w-14 h-14 bg-brand-teal/10 rounded-lg flex items-center justify-center text-brand-teal shrink-0 border border-brand-teal/20">
                     <Phone size={24} />
                   </div>
                   <div>
@@ -43,7 +43,7 @@ export function Contact() {
                 </div>
 
                 <div className="flex gap-6">
-                  <div className="w-14 h-14 bg-brand-teal/10 rounded-2xl flex items-center justify-center text-brand-teal shrink-0 border border-brand-teal/20">
+                  <div className="w-14 h-14 bg-brand-teal/10 rounded-lg flex items-center justify-center text-brand-teal shrink-0 border border-brand-teal/20">
                     <Mail size={24} />
                   </div>
                   <div>
@@ -53,7 +53,7 @@ export function Contact() {
                 </div>
 
                 <div className="flex gap-6">
-                  <div className="w-14 h-14 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 shrink-0 border border-slate-100">
+                  <div className="w-14 h-14 bg-slate-50 rounded-lg flex items-center justify-center text-slate-400 shrink-0 border border-slate-100">
                     <Clock size={24} />
                   </div>
                   <div>
@@ -67,14 +67,14 @@ export function Contact() {
 
             {/* Contact Form */}
             <div className="lg:col-span-2">
-              <form className="bg-white p-12 rounded-[3rem] border border-slate-100 shadow-2xl">
+              <form className="bg-white p-12 rounded-xl border border-slate-100 shadow-2xl">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                   <div className="space-y-3">
                     <label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Full Name</label>
                     <input 
                       type="text" 
                       placeholder="John Doe"
-                      className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4.5 px-6 text-slate-900 outline-none focus:border-brand-teal transition-all placeholder:text-slate-400 font-medium"
+                      className="w-full bg-slate-50 border border-slate-100 rounded-lg py-4.5 px-6 text-slate-900 outline-none focus:border-brand-teal transition-all placeholder:text-slate-400 font-medium"
                     />
                   </div>
                   <div className="space-y-3">
@@ -82,14 +82,14 @@ export function Contact() {
                     <input 
                       type="email" 
                       placeholder="john@example.com"
-                      className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4.5 px-6 text-slate-900 outline-none focus:border-brand-teal transition-all placeholder:text-slate-400 font-medium"
+                      className="w-full bg-slate-50 border border-slate-100 rounded-lg py-4.5 px-6 text-slate-900 outline-none focus:border-brand-teal transition-all placeholder:text-slate-400 font-medium"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-3 mb-8">
                   <label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Subject</label>
-                  <select className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4.5 px-6 text-slate-900 outline-none focus:border-brand-teal transition-all appearance-none cursor-pointer font-medium">
+                  <select className="w-full bg-slate-50 border border-slate-100 rounded-lg py-4.5 px-6 text-slate-900 outline-none focus:border-brand-teal transition-all appearance-none cursor-pointer font-medium">
                     <option>Course Inquiry</option>
                     <option>Consultancy Services</option>
                     <option>LMS Support</option>
@@ -102,11 +102,11 @@ export function Contact() {
                   <textarea 
                     rows={6}
                     placeholder="Tell us what you're looking for..."
-                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4.5 px-6 text-slate-900 outline-none focus:border-brand-teal transition-all placeholder:text-slate-400 resize-none font-medium"
+                    className="w-full bg-slate-50 border border-slate-100 rounded-lg py-4.5 px-6 text-slate-900 outline-none focus:border-brand-teal transition-all placeholder:text-slate-400 resize-none font-medium"
                   ></textarea>
                 </div>
 
-                <button type="button" className="w-full py-5 bg-brand-teal text-white rounded-2xl font-bold flex items-center justify-center gap-3 hover:bg-brand-accent transition-all shadow-xl shadow-brand-teal/20 group">
+                <button type="button" className="w-full py-5 bg-brand-teal text-white rounded-lg font-bold flex items-center justify-center gap-3 hover:bg-brand-accent transition-all shadow-xl shadow-brand-teal/20 group">
                   <Send size={20} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                   Send Message
                 </button>

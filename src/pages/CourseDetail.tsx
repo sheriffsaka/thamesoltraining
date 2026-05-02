@@ -149,7 +149,7 @@ export function CourseDetail() {
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {(course.outcomes || []).map((outcome: string, i: number) => (
-                  <div key={i} className="flex gap-4 p-6 rounded-2xl bg-white border border-slate-100 hover:border-brand-teal/30 transition-all group shadow-xl">
+                  <div key={i} className="flex gap-4 p-6 rounded-lg bg-white border border-slate-100 hover:border-brand-teal/30 transition-all group shadow-xl">
                     <CheckCircle2 className="text-brand-teal shrink-0 group-hover:scale-110 transition-transform" size={20} />
                     <span className="text-slate-700 font-bold text-sm leading-tight">{outcome}</span>
                   </div>
@@ -190,7 +190,7 @@ export function CourseDetail() {
                 <div className="w-12 h-1 bg-brand-teal rounded-full" />
                 Assessment Method
               </h2>
-              <p className="text-slate-600 text-lg leading-relaxed font-medium bg-white p-10 rounded-3xl border border-slate-100 shadow-xl">
+              <p className="text-slate-600 text-lg leading-relaxed font-medium bg-white p-10 rounded-xl border border-slate-100 shadow-xl">
                 Assessment for this qualification is via a portfolio of evidence. Your tutor will guide you through building a professional portfolio that demonstrates your competence and knowledge in <strong>{course.title}</strong>. This may include observations, witness testimonies, and professional discussions.
               </p>
             </motion.div>
@@ -204,7 +204,7 @@ export function CourseDetail() {
                 <div className="w-12 h-1 bg-brand-teal rounded-full" />
                 Application Process
               </h2>
-              <div className="bg-slate-900 text-white p-12 rounded-3xl relative overflow-hidden group shadow-2xl">
+              <div className="bg-slate-900 text-white p-12 rounded-xl relative overflow-hidden group shadow-2xl">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-brand-teal/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2" />
                 <div className="relative z-10">
                   <p className="text-slate-300 text-lg leading-relaxed mb-10 font-medium">
@@ -226,7 +226,7 @@ export function CourseDetail() {
                   </ol>
                   <button 
                     onClick={() => setIsApplying(true)}
-                    className="w-full bg-brand-teal text-white py-5 rounded-2xl font-black uppercase tracking-[0.2em] text-[11px] hover:bg-brand-accent transition-all shadow-2xl shadow-brand-teal/20"
+                    className="w-full bg-brand-teal text-white py-5 rounded-lg font-black uppercase tracking-[0.2em] text-[11px] hover:bg-brand-accent transition-all shadow-2xl shadow-brand-teal/20"
                   >
                     Start Your Application Now
                   </button>
@@ -237,7 +237,7 @@ export function CourseDetail() {
 
           {/* Sidebar / CTA */}
           <aside className="space-y-8">
-            <div className="sticky top-32 bg-white border border-slate-100 rounded-3xl p-12 shadow-2xl relative overflow-hidden group">
+            <div className="sticky top-32 bg-white border border-slate-100 rounded-xl p-12 shadow-2xl relative overflow-hidden group">
               <div className="absolute top-0 right-0 w-32 h-32 bg-brand-teal/5 rounded-full blur-[40px] -translate-y-1/2 translate-x-1/2 group-hover:bg-brand-teal/10 transition-all" />
               
               <div className="relative z-10 text-center">

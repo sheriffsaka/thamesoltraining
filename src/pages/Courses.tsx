@@ -141,7 +141,7 @@ export function Courses() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 -mt-10 mb-20 relative z-20">
         {/* Filters */}
         {currentCategory === 'all' ? (
-          <div className="bg-white rounded-2xl shadow-2xl p-8 mb-12 border border-slate-50">
+          <div className="bg-white rounded-xl shadow-2xl p-8 mb-12 border border-slate-50">
             <div className="flex flex-col lg:flex-row gap-6 items-center">
               <div className="w-full lg:flex-1 relative">
                 <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
@@ -180,7 +180,7 @@ export function Courses() {
               ← Back to all categories
             </button>
             
-            <div className="bg-white rounded-2xl shadow-2xl p-8 border border-slate-50">
+            <div className="bg-white rounded-xl shadow-2xl p-8 border border-slate-50">
               <div className="flex flex-col lg:flex-row gap-8 items-center">
                 <div className="w-full lg:flex-1 relative">
                   <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
@@ -236,7 +236,7 @@ export function Courses() {
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.05 }}
-                    className="group bg-white rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all border border-slate-100 flex flex-col h-full"
+                    className="group bg-white rounded-xl overflow-hidden shadow-xl hover:shadow-2xl transition-all border border-slate-100 flex flex-col h-full"
                   >
                     <div className="relative h-60 overflow-hidden">
                       <img
@@ -289,7 +289,7 @@ export function Courses() {
         </div>
 
         {filteredCourses.length === 0 && (
-          <div className="text-center py-24 bg-white rounded-2xl border border-slate-100 shadow-2xl">
+          <div className="text-center py-24 bg-white rounded-xl border border-slate-100 shadow-2xl">
             <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-8 border border-slate-100 text-slate-300">
               <Search size={48} />
             </div>

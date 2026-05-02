@@ -277,7 +277,7 @@ export function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.2 }}
-                className="group relative overflow-hidden rounded-3xl aspect-[10/14] shadow-2xl border border-white"
+                className="group relative overflow-hidden rounded-xl aspect-[10/14] shadow-2xl border border-white"
               >
                 <img
                   src={cat.image}
@@ -309,7 +309,7 @@ export function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
             <div className="relative">
-              <div className="relative rounded-3xl overflow-hidden aspect-square shadow-2xl border border-slate-100">
+              <div className="relative rounded-xl overflow-hidden aspect-square shadow-2xl border border-slate-100">
                 <img 
                   src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=800" 
                   alt="Students learning" 
@@ -321,7 +321,7 @@ export function Home() {
               <motion.div 
                 initial={{ opacity: 0, x: 20 }}
                 whileInView={{ opacity: 1, x: 0 }}
-                className="absolute -bottom-10 -right-10 bg-white p-10 rounded-2xl border border-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.1)] z-20 max-w-[300px]"
+                className="absolute -bottom-10 -right-10 bg-white p-10 rounded-lg border border-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.1)] z-20 max-w-[300px]"
               >
                 <div className="flex items-center gap-4 mb-4">
                   <div className="w-12 h-12 bg-brand-teal/10 rounded-xl flex items-center justify-center text-brand-teal">
@@ -392,7 +392,7 @@ export function Home() {
                 whileInView={{ opacity: 1, scale: 1 }}
                  viewport={{ once: true }}
                  transition={{ delay: i * 0.1 }}
-                 className="bg-white rounded-2xl p-10 border border-slate-100 hover:border-brand-teal/30 transition-all group overflow-hidden relative shadow-xl"
+                 className="bg-white rounded-xl p-10 border border-slate-100 hover:border-brand-teal/30 transition-all group overflow-hidden relative shadow-xl"
                >
                 <div className="absolute top-0 left-0 w-1 h-full bg-brand-teal scale-y-0 group-hover:scale-y-100 transition-transform origin-top" />
                 <h4 className="text-xl font-bold text-slate-900 mb-4 flex gap-4 font-serif leading-tight">
@@ -410,7 +410,7 @@ export function Home() {
       {/* CTA Section */}
        <section className="py-32 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
-          <div className="relative rounded-3xl bg-slate-900 p-12 lg:p-24 overflow-hidden text-center shadow-2xl group">
+          <div className="relative rounded-xl bg-slate-900 p-12 lg:p-24 overflow-hidden text-center shadow-2xl group">
             {/* Decoration */}
             <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-brand-teal/10 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2 group-hover:bg-brand-teal/20 transition-all duration-1000" />
             
