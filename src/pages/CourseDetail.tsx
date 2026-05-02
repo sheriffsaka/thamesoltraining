@@ -82,32 +82,41 @@ export function CourseDetail() {
 
   return (
     <div className="bg-slate-50 min-h-screen pt-20 text-sharp">
-      <section className="relative h-[500px] flex items-end overflow-hidden">
+      <section className="relative h-[600px] flex items-end overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <img src={course.image_url || course.image} alt={course.title} className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent" />
+          <img 
+            src={course.image_url || course.image} 
+            alt={course.title} 
+            className="w-full h-full object-cover scale-105" 
+          />
+          <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-[2px]" />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/60 to-brand-teal/20" />
         </div>
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 text-white">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24 text-white">
           <motion.button 
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
             onClick={() => navigate(-1)}
-            className="flex items-center gap-2 text-white hover:text-brand-teal transition-colors mb-8 font-bold text-[10px] uppercase tracking-[0.2em] bg-white/10 backdrop-blur-md px-6 py-2.5 rounded-full border border-white/20 shadow-xl"
+            className="flex items-center gap-2 text-white hover:bg-white/20 transition-all mb-12 font-black text-[10px] uppercase tracking-[0.2em] bg-white/10 backdrop-blur-xl px-8 py-3 rounded-full border border-white/30 shadow-2xl"
           >
             <ArrowLeft size={16} />
-            Back to Courses
+            Back to Catalog
           </motion.button>
-          <div className="flex flex-wrap gap-4 mb-6">
-            <span className="px-6 py-2 bg-brand-teal text-white rounded-full text-[10px] font-black w-fit uppercase tracking-[0.2em] shadow-lg shadow-brand-teal/20">
+          
+          <div className="flex flex-wrap gap-4 mb-8">
+            <span className="px-8 py-2.5 bg-brand-teal text-white rounded-full text-[10px] font-black uppercase tracking-[0.2em] shadow-2xl shadow-brand-teal/40 border border-white/20">
               {course.category?.replace(/-/g, ' ')}
             </span>
             {(course.sub_category || course.subCategory || course.level) && (
-              <span className="px-6 py-2 bg-brand-accent text-white rounded-full text-[10px] font-black w-fit uppercase tracking-[0.2em] shadow-lg shadow-brand-accent/20">
+              <span className="px-8 py-2.5 bg-white/10 backdrop-blur-md text-white rounded-full text-[10px] font-black uppercase tracking-[0.2em] shadow-2xl border border-white/20">
                 {course.sub_category || course.subCategory || course.level}
               </span>
             )}
           </div>
-          <h1 className="text-4xl md:text-7xl font-bold max-w-4xl font-serif leading-tight select-none tracking-tight">{course.title}</h1>
+          
+          <h1 className="text-5xl md:text-8xl font-bold max-w-5xl font-serif leading-[1.1] select-none tracking-tight text-white drop-shadow-2xl">
+            {course.title}
+          </h1>
         </div>
       </section>
 
