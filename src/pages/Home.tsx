@@ -48,7 +48,7 @@ export function Home() {
       title: "Health and Social Care",
       subtitle: "Professional Excellence",
       desc: "Empowering healthcare professionals with accredited Level 2 to Level 5 diplomas and specialized childcare qualifications.",
-      video: "https://res.cloudinary.com/di7okmjsx/video/upload/v1777508500/the-healthcare-worker-in-blue-scrubs-gently-pushes_hhxtqz.mp4",
+      video: "https://res.cloudinary.com/di7okmjsx/video/upload/v1777656040/healthcarevideo1_w1owbd.mp4",
       link: "/courses?category=health-and-social-care"
     },
     {
