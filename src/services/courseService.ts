@@ -1,22 +1,40 @@
 import { supabase, Course } from '../lib/supabase';
 
 export async function getCourses(category: string = 'all') {
-  let query = supabase
-    .from('courses')
-    .select('*');
+  try {
+    let query = supabase
+      .from('courses')
+      .select('*');
 
-  if (category !== 'all') {
-    query = query.eq('category', category);
-  }
+    // If category is not 'all', we try to match it
+    // We'll also try a fallback in the UI side, but let's keep this clean
+    if (category !== 'all') {
+      query = query.eq('category', category);
+    }
 
-  const { data, error } = await query.order('created_at', { ascending: false });
+    const { data, error } = await query.order('created_at', { ascending: false });
 
-  if (error) {
-    console.error('Error fetching courses:', error);
+    if (error) {
+      console.error('Error fetching courses:', error);
+      return [];
+    }
+
+    // Double check: if we filtered by slug but got nothing, maybe it's saved with spaces?
+    // This is a safety measure for manual DB edits
+    if (category !== 'all' && (!data || data.length === 0)) {
+       const { data: fallbackData } = await supabase
+        .from('courses')
+        .select('*')
+        .ilike('category', `%${category.replace(/-/g, ' ')}%`);
+       
+       if (fallbackData && fallbackData.length > 0) return fallbackData as Course[];
+    }
+
+    return data as Course[];
+  } catch (err) {
+    console.error('Unexpected error in getCourses:', err);
     return [];
   }
-
-  return data as Course[];
 }
 
 export async function getCourseById(id: string) {

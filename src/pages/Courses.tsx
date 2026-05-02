@@ -32,16 +32,26 @@ export function Courses() {
 
   const filteredCourses = courses.filter(course => {
     const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    // Check various common field names for sub-category/level
     const courseSubCatRaw = (course as any).sub_category || (course as any).subCategory || (course as any).level || '';
+    
+    // Robust comparison for currentLevel filter
     const matchesSubCategory = currentLevel 
-      ? courseSubCatRaw.toString().toLowerCase() === currentLevel.toLowerCase() 
+      ? courseSubCatRaw.toString().toLowerCase().trim() === currentLevel.toLowerCase().trim() 
       : true;
-    return matchesSearch && matchesSubCategory;
+      
+    // Category filter is already applied in useFetch, but we can double check here
+    const matchesCategory = currentCategory === 'all' || course.category === currentCategory;
+    
+    return matchesSearch && matchesSubCategory && matchesCategory;
   });
 
   // Grouping logic for when a category is selected but no specific sub-category is filtered
   const groupedCourses = filteredCourses.reduce((acc, course) => {
-    const groupKey = (course as any).sub_category || (course as any).subCategory || (course as any).level || 'General';
+    const rawKey = (course as any).sub_category || (course as any).subCategory || (course as any).level || 'General';
+    // Clean up the key for grouping
+    const groupKey = rawKey.toString().trim();
     if (!acc[groupKey]) acc[groupKey] = [];
     acc[groupKey].push(course);
     return acc;
