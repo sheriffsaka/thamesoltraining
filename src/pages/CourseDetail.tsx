@@ -97,18 +97,18 @@ export function CourseDetail() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             onClick={() => navigate(-1)}
-            className="flex items-center gap-2 text-white hover:bg-white/20 transition-all mb-12 font-black text-[10px] uppercase tracking-[0.2em] bg-white/10 backdrop-blur-xl px-8 py-3 rounded-full border border-white/30 shadow-2xl"
+            className="flex items-center gap-2 text-white hover:bg-white/20 transition-all mb-12 font-black text-[10px] uppercase tracking-[0.2em] bg-white/10 backdrop-blur-xl px-8 py-3 rounded-xl border border-white/30 shadow-2xl"
           >
             <ArrowLeft size={16} />
             Back to Catalog
           </motion.button>
           
           <div className="flex flex-wrap gap-4 mb-8">
-            <span className="px-8 py-2.5 bg-brand-teal text-white rounded-full text-[10px] font-black uppercase tracking-[0.2em] shadow-2xl shadow-brand-teal/40 border border-white/20">
+            <span className="px-8 py-2.5 bg-brand-teal text-white rounded-xl text-[10px] font-black uppercase tracking-[0.2em] shadow-2xl shadow-brand-teal/40 border border-white/20">
               {course.category?.replace(/-/g, ' ')}
             </span>
             {(course.sub_category || course.subCategory || course.level) && (
-              <span className="px-8 py-2.5 bg-white/10 backdrop-blur-md text-white rounded-full text-[10px] font-black uppercase tracking-[0.2em] shadow-2xl border border-white/20">
+              <span className="px-8 py-2.5 bg-white/10 backdrop-blur-md text-white rounded-xl text-[10px] font-black uppercase tracking-[0.2em] shadow-2xl border border-white/20">
                 {course.sub_category || course.subCategory || course.level}
               </span>
             )}
@@ -149,7 +149,7 @@ export function CourseDetail() {
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {(course.outcomes || []).map((outcome: string, i: number) => (
-                  <div key={i} className="flex gap-4 p-6 rounded-[2rem] bg-white border border-slate-100 hover:border-brand-teal/30 transition-all group shadow-xl">
+                  <div key={i} className="flex gap-4 p-6 rounded-2xl bg-white border border-slate-100 hover:border-brand-teal/30 transition-all group shadow-xl">
                     <CheckCircle2 className="text-brand-teal shrink-0 group-hover:scale-110 transition-transform" size={20} />
                     <span className="text-slate-700 font-bold text-sm leading-tight">{outcome}</span>
                   </div>
@@ -180,7 +180,7 @@ export function CourseDetail() {
                  initial={{ opacity: 0, x: 20 }}
                  whileInView={{ opacity: 1, x: 0 }}
                  viewport={{ once: true }}
-                 className="bg-white rounded-[3rem] p-12 border border-slate-100 self-start shadow-2xl space-y-10"
+                 className="bg-white rounded-3xl p-12 border border-slate-100 self-start shadow-2xl space-y-10"
               >
                 <div className="flex gap-6 items-center">
                   <div className="w-16 h-16 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center text-brand-teal shadow-inner">
@@ -207,7 +207,7 @@ export function CourseDetail() {
 
           {/* Sidebar / CTA */}
           <aside className="space-y-8">
-            <div className="sticky top-32 bg-white border border-slate-100 rounded-[3.5rem] p-12 shadow-2xl relative overflow-hidden group">
+            <div className="sticky top-32 bg-white border border-slate-100 rounded-3xl p-12 shadow-2xl relative overflow-hidden group">
               <div className="absolute top-0 right-0 w-32 h-32 bg-brand-teal/5 rounded-full blur-[40px] -translate-y-1/2 translate-x-1/2 group-hover:bg-brand-teal/10 transition-all" />
               
               <div className="relative z-10 text-center">
@@ -254,7 +254,7 @@ export function CourseDetail() {
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              className="relative w-full max-w-xl max-h-[90vh] overflow-y-auto bg-white rounded-[3rem] shadow-3xl border border-slate-100 scrollbar-hide"
+              className="relative w-full max-w-xl max-h-[90vh] overflow-y-auto bg-white rounded-3xl shadow-3xl border border-slate-100 scrollbar-hide"
             >
               {formStatus === 'success' ? (
                 <div className="p-12 lg:p-20 text-center">

@@ -133,14 +133,14 @@ export function Courses() {
 
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 -mt-10 mb-20 relative z-20">
         {/* Filters */}
-        <div className="bg-white rounded-[2.5rem] shadow-2xl p-8 mb-12 border border-slate-50">
+        <div className="bg-white rounded-2xl shadow-2xl p-8 mb-12 border border-slate-50">
           <div className="flex flex-col lg:flex-row gap-6 items-center">
             <div className="w-full lg:flex-1 relative">
               <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
               <input
                 type="text"
                 placeholder="Search courses..."
-                className="w-full pl-14 pr-4 py-4.5 rounded-2xl bg-slate-50 border border-slate-100 focus:border-brand-teal outline-none text-slate-900 transition-all placeholder:text-slate-400 font-medium"
+                className="w-full pl-14 pr-4 py-4.5 rounded-xl bg-slate-50 border border-slate-100 focus:border-brand-teal outline-none text-slate-900 transition-all placeholder:text-slate-400 font-medium"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -151,7 +151,7 @@ export function Courses() {
                   key={cat.id}
                   onClick={() => setSearchParams(cat.id === 'all' ? {} : { category: cat.id })}
                   className={cn(
-                    "px-6 py-4 rounded-2xl font-bold text-xs whitespace-nowrap transition-all border",
+                    "px-6 py-4 rounded-xl font-bold text-xs whitespace-nowrap transition-all border",
                     currentCategory === cat.id
                       ? "bg-brand-teal text-white shadow-lg shadow-brand-teal/20 border-brand-teal"
                       : "bg-slate-50 text-slate-500 border-slate-100 hover:bg-slate-100"
@@ -183,7 +183,7 @@ export function Courses() {
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.05 }}
-                    className="group bg-white rounded-[2.5rem] overflow-hidden shadow-xl hover:shadow-2xl transition-all border border-slate-100 flex flex-col h-full"
+                    className="group bg-white rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all border border-slate-100 flex flex-col h-full"
                   >
                     <div className="relative h-60 overflow-hidden">
                       <img
@@ -222,7 +222,7 @@ export function Courses() {
                       </div>
                       <Link
                         to={`/courses/${course.id}`}
-                        className="w-full py-4.5 text-center bg-slate-50 text-slate-900 border border-slate-100 font-bold rounded-2xl hover:bg-brand-teal hover:text-white transition-all flex items-center justify-center gap-2 group/btn shadow-md"
+                        className="w-full py-4.5 text-center bg-slate-50 text-slate-900 border border-slate-100 font-bold rounded-xl hover:bg-brand-teal hover:text-white transition-all flex items-center justify-center gap-2 group/btn shadow-md"
                       >
                         View Details
                         <ChevronRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
@@ -236,7 +236,7 @@ export function Courses() {
         </div>
 
         {filteredCourses.length === 0 && (
-          <div className="text-center py-24 bg-white rounded-[3rem] border border-slate-100 shadow-2xl">
+          <div className="text-center py-24 bg-white rounded-2xl border border-slate-100 shadow-2xl">
             <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-8 border border-slate-100 text-slate-300">
               <Search size={48} />
             </div>

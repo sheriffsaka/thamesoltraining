@@ -23,10 +23,42 @@ const navLinks: any[] = [
         id: 'hsc',
         path: '/courses?category=health-and-social-care',
         items: [
-          { name: 'Level 2 Qualifications', path: '/courses?category=health-and-social-care&level=Level 2 Qualifications' },
-          { name: 'Level 3 Qualifications', path: '/courses?category=health-and-social-care&level=Level 3 Qualifications' },
-          { name: 'Level 5 Qualifications', path: '/courses?category=health-and-social-care&level=Level 5 Qualifications' },
-          { name: 'Child Care', path: '/courses?category=health-and-social-care&level=Child Care' },
+          { 
+            name: 'Level 2 Qualifications', 
+            path: '/courses?category=health-and-social-care&level=Level 2 Qualifications',
+            items: [
+              { name: 'Adult Social Care Certificate', path: '/courses/hsc-l2-1' },
+              { name: 'Diploma in Clinical Healthcare Support', path: '/courses/hsc-l2-2' },
+              { name: 'Diploma in Care', path: '/courses/hsc-l2-3' },
+            ]
+          },
+          { 
+            name: 'Level 3 Qualifications', 
+            path: '/courses?category=health-and-social-care&level=Level 3 Qualifications',
+            items: [
+              { name: 'Diploma in Adult Care', path: '/courses/hsc-l3-1' },
+              { name: 'Health and Social Care (Adult)', path: '/courses/hsc-l3-2' },
+              { name: 'Healthcare Support Service', path: '/courses/hsc-l3-3' },
+            ]
+          },
+          { 
+            name: 'Level 5 Qualifications', 
+            path: '/courses?category=health-and-social-care&level=Level 5 Qualifications',
+            items: [
+              { name: 'Diploma in HSC and CYP', path: '/courses/hsc-l5-1' },
+              { name: 'Diploma in Leadership & Management', path: '/courses/hsc-l5-2' },
+            ]
+          },
+          { 
+            name: 'Child Care', 
+            path: '/courses?category=health-and-social-care&level=Child Care',
+            items: [
+              { name: 'Diploma for Residential Childcare', path: '/courses/cc-l3-1' },
+              { name: 'Diploma in Early Years Educator', path: '/courses/cc-l3-2' },
+              { name: 'Children’s Learning & Development', path: '/courses/cc-l3-3' },
+              { name: 'L5 Leadership for Residential Childcare', path: '/courses/cc-l5-1' },
+            ]
+          },
         ]
       },
       {
@@ -34,8 +66,14 @@ const navLinks: any[] = [
         id: 'assessor',
         path: '/courses?category=assessor',
         items: [
-          { name: 'Award in Assessing', path: '/courses/ac-l3-1' },
-          { name: 'Certificate in Assessing', path: '/courses/ac-l3-2' },
+          { 
+            name: 'Assessors Awards', 
+            path: '/courses?category=assessor',
+            items: [
+              { name: 'Level 3 Award in Assessing Competency', path: '/courses/ac-l3-1' },
+              { name: 'Level 3 Certificate in Assessing Vocational Achievement', path: '/courses/ac-l3-2' },
+            ]
+          },
         ]
       },
       {
@@ -43,8 +81,14 @@ const navLinks: any[] = [
         id: 'functional',
         path: '/courses?category=functional-skills',
         items: [
-          { name: 'Level 2 English', path: '/courses/fs-en-l2' },
-          { name: 'Level 2 Maths', path: '/courses/fs-mt-l2' },
+          { 
+            name: 'English & Maths', 
+            path: '/courses?category=functional-skills',
+            items: [
+              { name: 'Level 2 English', path: '/courses/fs-en-l2' },
+              { name: 'Level 2 Maths', path: '/courses/fs-mt-l2' },
+            ]
+          },
         ]
       },
       {
@@ -52,7 +96,16 @@ const navLinks: any[] = [
         id: 'mandatory',
         path: '/courses?category=mandatory',
         items: [
-          { name: 'View Compliance Training', path: '/courses?category=mandatory' },
+          { 
+            name: 'Compliance Training', 
+            path: '/courses?category=mandatory',
+            items: [
+              { name: 'Manual Handling', path: '/courses/mt-mh' },
+              { name: 'First Aid', path: '/courses/mt-fa' },
+              { name: 'Health & Safety', path: '/courses/mt-hs' },
+              { name: 'Safeguarding', path: '/courses/mt-sg' },
+            ]
+          },
         ]
       },
       {
@@ -60,7 +113,13 @@ const navLinks: any[] = [
         id: 'care-certificate',
         path: '/courses?category=care-certificate',
         items: [
-          { name: 'Standards 1-15', path: '/courses/cc-15' },
+          { 
+            name: 'Standard Modules', 
+            path: '/courses?category=care-certificate',
+            items: [
+              { name: 'Care Certificate (15 Standards)', path: '/courses/cc-15' },
+            ]
+          },
         ]
       },
     ],
@@ -81,6 +140,7 @@ export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [activeSubMenu, setActiveSubMenu] = useState<string | null>(null);
+  const [activeDeepMenu, setActiveDeepMenu] = useState<string | null>(null);
   const location = useLocation();
   const isHome = location.pathname === '/';
 
@@ -92,10 +152,10 @@ export function Navbar() {
         : "bg-white border-slate-100 shadow-sm"
     )}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-24">
+        <div className="flex justify-between h-32">
           <div className="flex items-center">
             <Link to="/">
-              <Logo dark={true} />
+              <Logo dark={true} size="lg" />
             </Link>
           </div>
 
@@ -114,6 +174,7 @@ export function Navbar() {
                 onMouseLeave={() => {
                   setActiveDropdown(null);
                   setActiveSubMenu(null);
+                  setActiveDeepMenu(null);
                 }}
               >
                 {link.children ? (
@@ -145,18 +206,25 @@ export function Navbar() {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 10 }}
                       className={cn(
-                        "absolute left-0 top-[100%] bg-white rounded-b-2xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-100 overflow-hidden z-50",
-                        link.isHierarchical ? "w-[600px] flex min-h-[300px]" : "w-80 p-3"
+                        "absolute left-0 top-[100%] bg-white rounded-b-xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-100 overflow-hidden z-50",
+                        link.isHierarchical ? "w-[900px] flex min-h-[400px]" : "w-80 p-3"
                       )}
                     >
                       {link.isHierarchical ? (
                         <>
-                          {/* Sidebar Categories */}
-                          <div className="w-[45%] bg-slate-50/50 border-r border-slate-100 py-4">
+                          {/* Categories (Level 1) */}
+                          <div className="w-[30%] bg-slate-50/50 border-r border-slate-100 py-4">
                             {link.children.map((section: any) => (
                               <div
                                 key={section.name}
-                                onMouseEnter={() => setActiveSubMenu(section.name)}
+                                onMouseEnter={() => {
+                                  setActiveSubMenu(section.name);
+                                  if (section.items && section.items.length > 0) {
+                                    setActiveDeepMenu(section.items[0].name);
+                                  } else {
+                                    setActiveDeepMenu(null);
+                                  }
+                                }}
                                 className={cn(
                                   "flex items-center justify-between px-8 py-5 transition-all cursor-pointer group",
                                   activeSubMenu === section.name ? "bg-white text-brand-teal" : "text-slate-600"
@@ -169,8 +237,9 @@ export function Navbar() {
                               </div>
                             ))}
                           </div>
-                          {/* Sub-menu Content */}
-                          <div className="flex-1 bg-white p-8">
+
+                          {/* Sub-categories (Level 2) */}
+                          <div className="w-[30%] bg-white border-r border-slate-100 py-4">
                             <AnimatePresence mode="wait">
                               {activeSubMenu && (
                                 <motion.div
@@ -178,27 +247,66 @@ export function Navbar() {
                                   initial={{ opacity: 0, x: 10 }}
                                   animate={{ opacity: 1, x: 0 }}
                                   exit={{ opacity: 0, x: -10 }}
+                                >
+                                  {((link.children.find((s: any) => s.name === activeSubMenu) as any)?.items || []).map((subCat: any) => (
+                                    <div
+                                      key={subCat.name}
+                                      onMouseEnter={() => setActiveDeepMenu(subCat.name)}
+                                      className={cn(
+                                        "flex items-center justify-between px-8 py-4 transition-all cursor-pointer group",
+                                        activeDeepMenu === subCat.name ? "bg-slate-50 text-brand-teal" : "text-slate-500"
+                                      )}
+                                    >
+                                      <span className="text-[11px] font-bold uppercase tracking-widest leading-tight pr-4">
+                                        {subCat.name}
+                                      </span>
+                                      {subCat.items && subCat.items.length > 0 && <ChevronDown size={14} className="-rotate-90 opacity-40 group-hover:translate-x-1 transition-transform" />}
+                                    </div>
+                                  ))}
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
+                          </div>
+
+                          {/* Final Courses (Level 3) */}
+                          <div className="flex-1 bg-white p-8">
+                            <AnimatePresence mode="wait">
+                              {activeDeepMenu && (
+                                <motion.div
+                                  key={activeDeepMenu}
+                                  initial={{ opacity: 0, x: 10 }}
+                                  animate={{ opacity: 1, x: 0 }}
+                                  exit={{ opacity: 0, x: -10 }}
                                   className="space-y-6"
                                 >
-                                  <Link 
-                                    to={link.children.find((s: any) => s.name === activeSubMenu)?.path || '#'}
-                                    className="block group"
-                                  >
-                                    <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-teal mb-6 border-b border-slate-100 pb-4 inline-block group-hover:text-brand-accent transition-colors">
-                                      View All {activeSubMenu}
-                                    </h4>
-                                  </Link>
+                                  <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-teal mb-6 border-b border-slate-100 pb-4 inline-block">
+                                    {activeDeepMenu}
+                                  </h4>
                                   <div className="grid grid-cols-1 gap-4">
-                                    {((link.children.find((s: any) => s.name === activeSubMenu) as any)?.items || []).map((item: any) => (
+                                    {(
+                                      (link.children.find((s: any) => s.name === activeSubMenu)?.items || [])
+                                      .find((sub: any) => sub.name === activeDeepMenu)?.items || []
+                                    ).map((course: any) => (
                                       <Link
-                                        key={item.name}
-                                        to={item.path}
+                                        key={course.name}
+                                        to={course.path}
                                         className="text-[13px] font-bold text-slate-500 hover:text-brand-teal transition-all leading-tight flex items-center gap-2 hover:translate-x-1"
                                       >
                                         <div className="w-1 h-1 bg-brand-teal/20 rounded-full" />
-                                        {item.name}
+                                        {course.name}
                                       </Link>
                                     ))}
+                                    {/* If no items (like Mandatory Training might not have a 3rd level in data yet) */}
+                                    {((link.children.find((s: any) => s.name === activeSubMenu)?.items || [])
+                                      .find((sub: any) => sub.name === activeDeepMenu)?.items || []).length === 0 && (
+                                        <Link
+                                          to={((link.children.find((s: any) => s.name === activeSubMenu)?.items || [])
+                                            .find((sub: any) => sub.name === activeDeepMenu)?.path || '#')}
+                                          className="text-[13px] font-bold text-slate-500 hover:text-brand-teal transition-all leading-tight flex items-center gap-2"
+                                        >
+                                          View All {activeDeepMenu}
+                                        </Link>
+                                      )}
                                   </div>
                                 </motion.div>
                               )}
@@ -223,7 +331,7 @@ export function Navbar() {
             ))}
             <Link
               to="/login"
-              className="bg-brand-teal text-white px-10 py-3.5 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] hover:bg-brand-accent transition-all shadow-xl shadow-brand-teal/20"
+              className="bg-brand-teal text-white px-10 py-3.5 rounded-xl text-[11px] font-black uppercase tracking-[0.2em] hover:bg-brand-accent transition-all shadow-xl shadow-brand-teal/20"
             >
               LMS Login
             </Link>
