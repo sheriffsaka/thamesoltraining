@@ -76,41 +76,57 @@ export function ManageApplications() {
   async function onboardStudent(app: any) {
     setIsUpdating(true);
     try {
-      // 1. Create/Update Profile with provided details and managed password
-      const { error: profileError } = await supabase
+      // 1. Try to find if a user with this email already exists in profiles
+      const { data: profileData, error: findError } = await supabase
         .from('profiles')
-        .upsert({
-          id: app.id, // Using application ID as placeholder if auth isn't possible yet
-          full_name: app.full_name,
-          email: app.email,
-          phone: app.phone,
-          address: app.address,
-          date_of_birth: app.date_of_birth,
-          emergency_contact: app.emergency_contact,
-          gender: app.gender,
-          employment_status: app.employment_status,
-          managed_password: app.generated_password,
-          role: 'student',
-          updated_at: new Date().toISOString()
-        });
+        .select('id')
+        .eq('email', app.email)
+        .maybeSingle();
 
-      if (profileError) throw profileError;
+      if (findError) throw findError;
 
-      // 2. Create Enrollment
-      const { error: enrollError } = await supabase
-        .from('enrollments')
-        .insert({
-          student_id: app.id,
-          course_id: app.course_id,
-          status: 'active'
-        });
+      let studentId = profileData?.id;
 
-      if (enrollError && enrollError.code !== '23505') throw enrollError; // Ignore if already enrolled
+      if (studentId) {
+        // 2. Update Profile with provided details and managed password
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .update({
+            full_name: app.full_name,
+            phone: app.phone,
+            address: app.address,
+            date_of_birth: app.date_of_birth,
+            emergency_contact: app.emergency_contact,
+            gender: app.gender,
+            employment_status: app.employment_status,
+            managed_password: app.generated_password,
+            role: 'student',
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', studentId);
 
-      // 3. Update application status to onboarded
+        if (profileError) throw profileError;
+
+        // 3. Create Enrollment
+        const { error: enrollError } = await supabase
+          .from('enrollments')
+          .upsert({
+            student_id: studentId,
+            course_id: app.course_id,
+            status: 'active'
+          });
+
+        if (enrollError) throw enrollError;
+      }
+
+      // 4. Update application status to onboarded (always do this if we got here)
       await updateStatus(app.id, 'onboarded');
       
-      alert('Student onboarded successfully! Profile and enrollment created.');
+      if (studentId) {
+        alert('Student onboarded successfully! Profile and enrollment updated.');
+      } else {
+        alert('Application marked as onboarded. Note: The student has not registered an account yet, so a profile was not created. They can proceed to sign up with their email.');
+      }
     } catch (error) {
       console.error('Onboarding error:', error);
       alert('Onboarding failed: ' + (error instanceof Error ? error.message : 'Unknown error'));
@@ -231,21 +247,21 @@ export function ManageApplications() {
       </div>
 
       {/* Application Detail Modal */}
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {selectedApp && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+          <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 lg:p-12 xl:pl-[360px]">
             <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setSelectedApp(null)}
-              className="absolute inset-0 bg-slate-900/60 backdrop-blur-xl"
+              className="absolute inset-0 bg-slate-900/40 backdrop-blur-md"
             />
             <motion.div 
-              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              initial={{ scale: 0.95, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              className="relative bg-white w-full max-w-4xl rounded-[3.5rem] shadow-3xl overflow-hidden flex flex-col max-h-[90vh]"
+              exit={{ scale: 0.95, opacity: 0, y: 20 }}
+              className="relative bg-white w-full max-w-5xl rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col max-h-[85vh] z-10"
             >
               {/* Modal Header */}
               <div className="p-10 border-b border-slate-50 bg-slate-50/50 flex justify-between items-center">
