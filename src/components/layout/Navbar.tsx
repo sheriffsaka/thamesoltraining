@@ -299,7 +299,14 @@ export function Navbar() {
                                   <h4 className="text-[12px] font-black uppercase tracking-[0.4em] text-brand-teal mb-8 border-b border-slate-100 pb-4 inline-block font-serif">
                                     {activeSubMenu === 'Health and Social Care' ? activeDeepMenu : activeSubMenu}
                                   </h4>
-                                  <div className="grid grid-cols-1 gap-6">
+                                  <div className={cn(
+                                    "grid gap-x-12 gap-y-6",
+                                    (activeSubMenu === 'Health and Social Care' 
+                                      ? (link.children.find((s: any) => s.name === activeSubMenu)?.items || []).find((sub: any) => sub.name === activeDeepMenu)?.items?.length || 0
+                                      : (link.children.find((s: any) => s.name === activeSubMenu)?.items || []).flatMap((sub: any) => sub.items || []).length || 0) > 8 
+                                      ? "grid-cols-2" 
+                                      : "grid-cols-1"
+                                  )}>
                                     {activeSubMenu === 'Health and Social Care' ? (
                                       // HSC Logic (3 levels)
                                       (
