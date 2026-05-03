@@ -88,7 +88,6 @@ export function ManageApplications() {
           date_of_birth: app.date_of_birth,
           emergency_contact: app.emergency_contact,
           gender: app.gender,
-          ethnicity: app.ethnicity,
           employment_status: app.employment_status,
           managed_password: app.generated_password,
           role: 'student',
@@ -183,9 +182,11 @@ export function ManageApplications() {
                     </td>
                     <td className="px-10 py-8">
                       <div className="text-sm text-slate-700 font-bold max-w-[200px] leading-tight">
-                        {app.courses?.title || 'General Enquiry'}
+                        {app.courses?.title || app.course_title || 'General Enquiry'}
                       </div>
-                      <div className="text-[10px] text-slate-400 font-black uppercase mt-1 tracking-widest">VOCATIONAL</div>
+                      <div className="text-[10px] text-slate-400 font-black uppercase mt-1 tracking-widest">
+                        {app.course_id ? 'VOCATIONAL' : 'GENERAL'}
+                      </div>
                     </td>
                     <td className="px-10 py-8">
                       <div className="text-sm font-bold text-slate-900">
@@ -311,7 +312,7 @@ export function ManageApplications() {
                       <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-6 border-l-4 border-brand-teal pl-4">Enrollment Intent</h3>
                       <div className="bg-white border border-slate-100 p-8 rounded-[2rem] shadow-inner">
                         <div className="text-[10px] font-black text-brand-teal uppercase tracking-widest mb-2">Target Course</div>
-                        <div className="text-xl font-bold text-slate-900 font-serif leading-tight mb-4">{selectedApp.courses?.title}</div>
+                        <div className="text-xl font-bold text-slate-900 font-serif leading-tight mb-4">{selectedApp.courses?.title || selectedApp.course_title}</div>
                         <div className="text-xs text-slate-500 font-medium leading-relaxed italic border-t border-slate-50 pt-4">
                           "{selectedApp.notes || 'No additional notes provided by applicant.'}"
                         </div>

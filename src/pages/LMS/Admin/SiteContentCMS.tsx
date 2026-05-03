@@ -212,6 +212,9 @@ function PagesManager() {
     { id: 'safeguarding_policy', title: 'Safeguarding Policy', section: 'policies', fields: ['title', 'content'] },
     { id: 'disclaimer_content', title: 'Disclaimer Content', section: 'policies', fields: ['title', 'content'] },
     { id: 'policies_intro', title: 'Policy & Procedures Intro', section: 'policies', fields: ['title', 'description'] },
+    { id: 'p_privacy', title: 'Privacy Policy', section: 'policies', fields: ['title', 'content'] },
+    { id: 'p_terms', title: 'Terms of Service', section: 'policies', fields: ['title', 'content'] },
+    { id: 'p_gdpr', title: 'GDPR Policy', section: 'policies', fields: ['title', 'content'] },
   ];
 
   async function handleSave() {

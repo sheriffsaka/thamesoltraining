@@ -1,6 +1,8 @@
+import { useState, useEffect } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { ShieldCheck, Calendar, User, FileText, Download, Printer, Share2 } from 'lucide-react';
+import { supabase } from '@/src/lib/supabase';
 
 const POLICY_DATA: Record<string, any> = {
   privacy: {
@@ -73,7 +75,23 @@ const POLICY_DATA: Record<string, any> = {
 
 export function PolicyDetail() {
   const { id } = useParams<{ id: string }>();
-  const policy = POLICY_DATA[id || ''] || {
+  const [cmsContent, setCmsContent] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchContent() {
+      if (!id) return;
+      const contentId = `p_${id}`;
+      const { data } = await supabase.from('site_contents').select('*').eq('id', contentId).single();
+      if (data) {
+        setCmsContent(data.content);
+      }
+      setLoading(false);
+    }
+    fetchContent();
+  }, [id]);
+
+  const defaultPolicy = POLICY_DATA[id || ''] || {
     title: id?.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') || 'Policy',
     lastUpdated: 'May 2024',
     content: 'The official documentation for this procedure is currently undergoing revision. Please contact our compliance office for the latest authorized version.'
@@ -81,8 +99,8 @@ export function PolicyDetail() {
 
   if (!id) return <Navigate to="/policy" />;
 
-  // Ensure title is Sentence Case if it came from POLICY_DATA
-  const displayTitle = policy.title;
+  const displayTitle = cmsContent?.title || defaultPolicy.title;
+  const displayContent = cmsContent?.content || defaultPolicy.content;
 
   return (
     <div className="bg-white min-h-screen pt-20">
@@ -100,7 +118,7 @@ export function PolicyDetail() {
           <div className="flex flex-wrap gap-8 items-center text-slate-400 font-bold border-t border-slate-200 pt-10 mt-10">
             <div className="flex items-center gap-3">
               <Calendar size={18} className="text-slate-300" />
-              <span className="text-xs uppercase tracking-widest">Revised: {policy.lastUpdated}</span>
+              <span className="text-xs uppercase tracking-widest">Revised: {cmsContent?.updated_at ? new Date(cmsContent.updated_at).toLocaleDateString() : (defaultPolicy.lastUpdated || 'May 2024')}</span>
             </div>
             <div className="flex items-center gap-3">
               <User size={18} className="text-slate-300" />
@@ -113,30 +131,36 @@ export function PolicyDetail() {
           </div>
         </div>
       </section>
-
-      <section className="py-24 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="prose prose-slate prose-lg max-w-none prose-headings:font-serif prose-headings:text-slate-900 prose-headings:tracking-tight prose-p:text-slate-600 prose-p:font-medium prose-p:leading-relaxed prose-strong:text-slate-900">
-          <div className="whitespace-pre-line">
-            {policy.content}
-          </div>
+      
+      {loading ? (
+        <div className="py-32 flex justify-center">
+          <div className="w-10 h-10 border-4 border-brand-teal border-t-transparent rounded-full animate-spin" />
         </div>
-        
-        <div className="mt-24 pt-12 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-8">
-          <p className="text-slate-400 text-sm font-medium italic">
-            This document is the property of Thames Solution Training & Consultancy Ltd.
-          </p>
-          <div className="flex gap-4">
-            <button className="flex items-center gap-2 text-slate-400 hover:text-brand-teal transition-colors text-xs font-black uppercase tracking-widest">
-              <Printer size={16} />
-              Print
-            </button>
-            <button className="flex items-center gap-2 text-slate-400 hover:text-brand-teal transition-colors text-xs font-black uppercase tracking-widest">
-              <Share2 size={16} />
-              Share
-            </button>
+      ) : (
+        <section className="py-24 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="prose prose-slate prose-lg max-w-none prose-headings:font-serif prose-headings:text-slate-900 prose-headings:tracking-tight prose-p:text-slate-600 prose-p:font-medium prose-p:leading-relaxed prose-strong:text-slate-900">
+            <div className="whitespace-pre-line">
+              {displayContent}
+            </div>
           </div>
-        </div>
-      </section>
+          
+          <div className="mt-24 pt-12 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-8">
+            <p className="text-slate-400 text-sm font-medium italic">
+              This document is the property of Thames Solution Training & Consultancy Ltd.
+            </p>
+            <div className="flex gap-4">
+              <button className="flex items-center gap-2 text-slate-400 hover:text-brand-teal transition-colors text-xs font-black uppercase tracking-widest">
+                <Printer size={16} />
+                Print
+              </button>
+              <button className="flex items-center gap-2 text-slate-400 hover:text-brand-teal transition-colors text-xs font-black uppercase tracking-widest">
+                <Share2 size={16} />
+                Share
+              </button>
+            </div>
+          </div>
+        </section>
+      )}
     </div>
   );
 }

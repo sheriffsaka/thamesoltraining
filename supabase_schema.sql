@@ -108,13 +108,13 @@ END $$;
 -- 4. Course Applications
 CREATE TABLE IF NOT EXISTS applications (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  course_id UUID REFERENCES courses(id) ON DELETE CASCADE,
+  course_id TEXT, -- Changed from UUID to TEXT to support mock IDs (like 'hsc-l2-1')
+  course_title TEXT, -- Added for easier reference if IDs don't match
   full_name TEXT NOT NULL,
   email TEXT NOT NULL,
   phone TEXT NOT NULL,
   date_of_birth TEXT,
   gender TEXT,
-  ethnicity TEXT,
   employment_status TEXT,
   address TEXT,
   emergency_contact TEXT,
@@ -130,9 +130,28 @@ ALTER TABLE profiles ADD COLUMN IF NOT EXISTS address TEXT;
 ALTER TABLE profiles ADD COLUMN IF NOT EXISTS date_of_birth TEXT;
 ALTER TABLE profiles ADD COLUMN IF NOT EXISTS emergency_contact TEXT;
 ALTER TABLE profiles ADD COLUMN IF NOT EXISTS gender TEXT;
-ALTER TABLE profiles ADD COLUMN IF NOT EXISTS ethnicity TEXT;
 ALTER TABLE profiles ADD COLUMN IF NOT EXISTS employment_status TEXT;
 ALTER TABLE profiles ADD COLUMN IF NOT EXISTS managed_password TEXT;
+
+-- Migration for applications table if it already exists
+DO $$ 
+BEGIN 
+  -- Drop constraint if it exists so we can change type
+  IF EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'applications_course_id_fkey') THEN
+    ALTER TABLE applications DROP CONSTRAINT applications_course_id_fkey;
+  END IF;
+  
+  -- Remove ethnicity column if it exists (as requested to remove from form)
+  IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='applications' AND column_name='ethnicity') THEN
+    ALTER TABLE applications DROP COLUMN ethnicity;
+  END IF;
+  
+  IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='profiles' AND column_name='ethnicity') THEN
+    ALTER TABLE profiles DROP COLUMN ethnicity;
+  END IF;
+END $$;
+ALTER TABLE applications ALTER COLUMN course_id TYPE TEXT;
+ALTER TABLE applications ADD COLUMN IF NOT EXISTS course_title TEXT;
 
 -- 5. Enquiries
 CREATE TABLE IF NOT EXISTS enquiries (

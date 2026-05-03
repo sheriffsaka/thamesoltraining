@@ -51,7 +51,8 @@ export function CourseDetail() {
       const { error: appError } = await supabase
         .from('applications')
         .insert([{
-          course_id: course.id,
+          course_id: String(course.id),
+          course_title: course.title,
           full_name: fullName,
           email: email,
           phone: phone,
@@ -68,11 +69,17 @@ export function CourseDetail() {
 
       // 2. If user is logged in, also create an actual enrollment
       const { data: { user } } = await supabase.auth.getUser();
-      if (user && course) {
+      
+      // We only try to create an enrollment if:
+      // a) User is logged in
+      // b) course.id is a valid UUID (required for enrollments table FK)
+      const isValidUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(course.id);
+
+      if (user && course && isValidUUID) {
         const { error: enrollError } = await supabase
           .from('enrollments')
           .insert([{
-            student_id: user.id, // Fixed: was user_id
+            student_id: user.id,
             course_id: course.id,
             progress: 0,
             status: 'active'
@@ -86,8 +93,8 @@ export function CourseDetail() {
       setFormStatus('success');
     } catch (error) {
       console.error('Application submission error:', error);
-      // In a real app we'd show an error, but here we stay resilient
-      setFormStatus('success'); 
+      alert('Submission failed: ' + (error instanceof Error ? error.message : 'Unknown error'));
+      setFormStatus('idle'); 
     }
   };
 
