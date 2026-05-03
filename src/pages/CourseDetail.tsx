@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { CheckCircle2, Clock, Award, Shield, ArrowLeft, Mail, Phone, User, MessageSquare } from 'lucide-react';
+import { CheckCircle2, Clock, Award, Shield, ArrowLeft, Mail, Phone, User, MessageSquare, MapPin } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { supabase } from '@/src/lib/supabase';
 import { getCourseById } from '@/src/services/courseService';
@@ -39,17 +39,27 @@ export function CourseDetail() {
     const fullName = formData.get('fullName') as string;
     const email = formData.get('email') as string;
     const phone = formData.get('phone') as string;
+    const dob = formData.get('dob') as string;
+    const gender = formData.get('gender') as string;
+    const employmentStatus = formData.get('employmentStatus') as string;
+    const address = formData.get('address') as string;
+    const emergencyContact = formData.get('emergencyContact') as string;
     const notes = formData.get('notes') as string;
 
     try {
       // 1. Always create an application entry (lead generation)
       const { error: appError } = await supabase
-        .from('applications' as any)
+        .from('applications')
         .insert([{
           course_id: course.id,
           full_name: fullName,
           email: email,
           phone: phone,
+          date_of_birth: dob,
+          gender: gender,
+          employment_status: employmentStatus,
+          address: address,
+          emergency_contact: emergencyContact,
           notes: notes,
           status: 'pending'
         }]);
@@ -62,11 +72,11 @@ export function CourseDetail() {
         const { error: enrollError } = await supabase
           .from('enrollments')
           .insert([{
-            user_id: user.id,
+            student_id: user.id, // Fixed: was user_id
             course_id: course.id,
             progress: 0,
             status: 'active'
-          }] as any);
+          }]);
           
         if (enrollError && enrollError.code !== '23505') { 
           console.error('Enrollment error:', enrollError);
@@ -334,6 +344,46 @@ export function CourseDetail() {
                           className="w-full pl-14 pr-5 py-3.5 bg-slate-50 border border-slate-100 rounded-xl focus:border-brand-teal outline-none text-slate-900 transition-all placeholder:text-slate-400 font-medium text-sm"
                         />
                       </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="relative">
+                          <Clock className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+                          <input
+                            required
+                            name="dob"
+                            type="date"
+                            placeholder="Date of Birth"
+                            className="w-full pl-14 pr-5 py-3.5 bg-slate-50 border border-slate-100 rounded-xl focus:border-brand-teal outline-none text-slate-900 transition-all placeholder:text-slate-400 font-medium text-sm"
+                          />
+                        </div>
+                        <div className="relative">
+                          <User className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+                          <select
+                            required
+                            name="gender"
+                            className="w-full pl-14 pr-5 py-3.5 bg-slate-50 border border-slate-100 rounded-xl focus:border-brand-teal outline-none text-slate-900 transition-all placeholder:text-slate-400 font-medium text-sm appearance-none"
+                          >
+                            <option value="">Select Gender</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
+                            <option value="prefer-not-to-say">Prefer not to say</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div className="relative">
+                        <Shield className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+                        <select
+                          required
+                          name="employmentStatus"
+                          className="w-full pl-14 pr-5 py-3.5 bg-slate-50 border border-slate-100 rounded-xl focus:border-brand-teal outline-none text-slate-900 transition-all placeholder:text-slate-400 font-medium text-sm appearance-none"
+                        >
+                          <option value="">Employment Status</option>
+                          <option value="employed">Employed</option>
+                          <option value="unemployed">Unemployed</option>
+                          <option value="student">Student</option>
+                          <option value="retired">Retired</option>
+                        </select>
+                      </div>
                       <div className="relative">
                         <Phone className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
                         <input
@@ -345,7 +395,27 @@ export function CourseDetail() {
                         />
                       </div>
                       <div className="relative">
-                        <MessageSquare className="absolute left-5 top-4.5 text-slate-400" size={16} />
+                        <Shield className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+                        <input
+                          required
+                          name="emergencyContact"
+                          type="text"
+                          placeholder="Emergency Contact (Name & Phone)"
+                          className="w-full pl-14 pr-5 py-3.5 bg-slate-50 border border-slate-100 rounded-xl focus:border-brand-teal outline-none text-slate-900 transition-all placeholder:text-slate-400 font-medium text-sm"
+                        />
+                      </div>
+                      <div className="relative">
+                        <MapPin className="absolute left-5 top-5 text-slate-400" size={16} />
+                        <textarea
+                          required
+                          name="address"
+                          placeholder="Home Address"
+                          rows={2}
+                          className="w-full pl-14 pr-5 py-3.5 bg-slate-50 border border-slate-100 rounded-xl focus:border-brand-teal outline-none text-slate-900 transition-all placeholder:text-slate-400 resize-none font-medium text-sm"
+                        />
+                      </div>
+                      <div className="relative">
+                        <MessageSquare className="absolute left-5 top-5 text-slate-400" size={16} />
                         <textarea
                           name="notes"
                           placeholder="Any specific questions or goals?"

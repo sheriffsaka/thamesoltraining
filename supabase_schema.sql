@@ -112,10 +112,27 @@ CREATE TABLE IF NOT EXISTS applications (
   full_name TEXT NOT NULL,
   email TEXT NOT NULL,
   phone TEXT NOT NULL,
+  date_of_birth TEXT,
+  gender TEXT,
+  ethnicity TEXT,
+  employment_status TEXT,
+  address TEXT,
+  emergency_contact TEXT,
   notes TEXT,
-  status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected')),
+  status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected', 'onboarded')),
+  generated_password TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
+-- Ensure profiles has required fields
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS phone TEXT;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS address TEXT;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS date_of_birth TEXT;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS emergency_contact TEXT;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS gender TEXT;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS ethnicity TEXT;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS employment_status TEXT;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS managed_password TEXT;
 
 -- 5. Enquiries
 CREATE TABLE IF NOT EXISTS enquiries (

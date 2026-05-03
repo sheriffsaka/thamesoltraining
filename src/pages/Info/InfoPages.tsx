@@ -1,9 +1,31 @@
+import { useState, useEffect } from 'react';
 import { ShieldAlert, BookText, Globe } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
+import { supabase } from '@/src/lib/supabase';
 
 export function InfoPage({ type }: { type: 'prevent' | 'values' | 'employability' }) {
-  const content = {
+  const [cmsContent, setCmsContent] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchContent() {
+      const contentId = {
+        prevent: 'prevent_duty',
+        values: 'british_values',
+        employability: 'employability_support'
+      }[type];
+
+      const { data } = await supabase.from('site_contents').select('*').eq('id', contentId).single();
+      if (data) {
+        setCmsContent(data.content);
+      }
+      setLoading(false);
+    }
+    fetchContent();
+  }, [type]);
+
+  const defaultContent = {
     prevent: {
       title: 'Prevent Duty',
       subtitle: 'TMS Commitment to Safeguarding',
@@ -74,7 +96,22 @@ export function InfoPage({ type }: { type: 'prevent' | 'values' | 'employability
     }
   }[type];
 
-  const Icon = content.icon;
+  const activeContent = {
+    ...defaultContent,
+    title: cmsContent?.title || defaultContent.title,
+    subtitle: cmsContent?.subtitle || defaultContent.subtitle,
+    text: cmsContent?.text || defaultContent.text,
+    details: cmsContent?.details_json || defaultContent.details,
+    icon: defaultContent.icon
+  };
+
+  const Icon = activeContent.icon;
+
+  if (loading) return (
+    <div className="bg-white min-h-screen pt-20 flex items-center justify-center">
+      <div className="w-10 h-10 border-4 border-brand-teal border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
 
   return (
     <div className="bg-white min-h-screen pt-20">
@@ -85,8 +122,8 @@ export function InfoPage({ type }: { type: 'prevent' | 'values' | 'employability
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="flex flex-col md:flex-row gap-12 items-end justify-between mb-12">
             <div className="max-w-3xl">
-              <p className="text-brand-teal font-black uppercase tracking-[0.3em] text-xs mb-4">{content.subtitle}</p>
-              <h1 className="text-5xl lg:text-7xl font-bold tracking-tighter font-serif text-slate-900">{content.title}</h1>
+              <p className="text-brand-teal font-black uppercase tracking-[0.3em] text-xs mb-4">{activeContent.subtitle}</p>
+              <h1 className="text-5xl lg:text-7xl font-bold tracking-tighter font-serif text-slate-900">{activeContent.title}</h1>
             </div>
             <div className="text-slate-200 hidden md:block">
               <Icon size={120} strokeWidth={1} />
@@ -95,7 +132,7 @@ export function InfoPage({ type }: { type: 'prevent' | 'values' | 'employability
 
           <div className="max-w-4xl">
             <p className="text-2xl text-slate-600 font-medium leading-relaxed mb-12 italic font-serif">
-              "{content.text}"
+              "{activeContent.text}"
             </p>
           </div>
         </div>
@@ -105,7 +142,7 @@ export function InfoPage({ type }: { type: 'prevent' | 'values' | 'employability
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl">
             <div className="space-y-24">
-              {content.details.map((item, idx) => (
+              {activeContent.details.map((item: any, idx: number) => (
                 <div key={idx} className="border-l-4 border-brand-teal pl-12 relative">
                   <div className="absolute -left-[9px] top-0 w-4 h-4 bg-white border-2 border-brand-teal rounded-full" />
                   <h3 className="text-3xl font-bold text-slate-900 mb-6 font-serif tracking-tight">{item.title}</h3>

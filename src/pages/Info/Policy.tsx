@@ -1,7 +1,23 @@
+import { useState, useEffect } from 'react';
 import { FileText, Shield, Scale, Eye, UserCheck, MessageSquare } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { supabase } from '@/src/lib/supabase';
 
 export function Policy() {
+  const [cmsContent, setCmsContent] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchContent() {
+      const { data } = await supabase.from('site_contents').select('*').eq('id', 'policies_intro').single();
+      if (data) {
+        setCmsContent(data.content);
+      }
+      setLoading(false);
+    }
+    fetchContent();
+  }, []);
+
   const policies = [
     { id: 'privacy', title: 'Privacy Policy', icon: Eye, color: 'text-brand-teal' },
     { id: 'terms', title: 'Terms of Service', icon: Scale, color: 'text-brand-teal' },
@@ -17,9 +33,11 @@ export function Policy() {
         <div className="absolute top-0 right-0 w-1/2 h-full bg-brand-teal/[0.02] -skew-x-12 translate-x-32" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <p className="text-brand-teal font-black uppercase tracking-[0.4em] text-xs mb-6">Compliance & Governance</p>
-          <h1 className="text-5xl lg:text-8xl font-bold text-slate-900 mb-8 font-serif tracking-tighter leading-none">Policy &<br />Procedures</h1>
+          <h1 className="text-5xl lg:text-8xl font-bold text-slate-900 mb-8 font-serif tracking-tighter leading-none">
+            {cmsContent?.title || 'Policy & Procedures'}
+          </h1>
           <p className="text-2xl text-slate-600 max-w-3xl font-serif leading-relaxed italic">
-            "We are committed to transparency and the highest standards of governance. Our operational framework ensures quality and safety for all learners."
+            "{cmsContent?.description || 'We are committed to transparency and the highest standards of governance. Our operational framework ensures quality and safety for all learners.'}"
           </p>
         </div>
       </section>

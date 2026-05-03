@@ -206,16 +206,36 @@ function PagesManager() {
     { id: 'home_hero', title: 'Home Hero Section', section: 'home', fields: ['title', 'subtitle', 'cta_primary', 'cta_secondary'] },
     { id: 'home_about', title: 'Home About Section', section: 'home', fields: ['title', 'description', 'cta_label', 'cta_link'] },
     { id: 'about_page', title: 'About Page Content', section: 'about', fields: ['title', 'description', 'mission'] },
+    { id: 'prevent_duty', title: 'Prevent Duty', section: 'compliance', fields: ['title', 'subtitle', 'text', 'details_json'] },
+    { id: 'british_values', title: 'British Values', section: 'compliance', fields: ['title', 'subtitle', 'text', 'details_json'] },
+    { id: 'employability_support', title: 'Employability Support', section: 'services', fields: ['title', 'subtitle', 'text', 'details_json'] },
+    { id: 'safeguarding_policy', title: 'Safeguarding Policy', section: 'policies', fields: ['title', 'content'] },
+    { id: 'disclaimer_content', title: 'Disclaimer Content', section: 'policies', fields: ['title', 'content'] },
+    { id: 'policies_intro', title: 'Policy & Procedures Intro', section: 'policies', fields: ['title', 'description'] },
   ];
 
   async function handleSave() {
     if (!editingPage) return;
+    
+    // Parse JSON fields if necessary
+    const contentToSave = { ...editingPage.content };
+    for (const key in contentToSave) {
+      if (key.endsWith('_json') && typeof contentToSave[key] === 'string') {
+        try {
+          contentToSave[key] = JSON.parse(contentToSave[key]);
+        } catch (e) {
+          alert(`Invalid JSON format in ${key}. Please check your syntax.`);
+          return;
+        }
+      }
+    }
+
     const { error } = await supabase
       .from('site_contents')
       .upsert({
         id: editingPage.id,
         section: editingPage.section,
-        content: editingPage.content,
+        content: contentToSave,
         updated_at: new Date().toISOString()
       });
 
@@ -323,13 +343,23 @@ function PagesManager() {
                {editingPage.fields.map((field: string) => (
                  <div key={field} className="space-y-2">
                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] pl-2">{field.replace(/_/g, ' ')}</label>
-                    {field.includes('description') || field.includes('subtitle') || field.includes('mission') ? (
+                    {field.includes('description') || field.includes('subtitle') || field.includes('mission') || field.includes('content') || field === 'text' ? (
                       <textarea 
                         className="w-full h-32 p-6 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:border-brand-teal font-bold text-slate-900 text-sm"
                         value={editingPage.content[field] || ''}
                         onChange={(e) => updateField(field, e.target.value)}
                         placeholder={`Enter ${field.replace(/_/g, ' ')}...`}
                       />
+                    ) : field === 'details_json' ? (
+                      <div className="space-y-4">
+                        <textarea 
+                          className="w-full h-48 p-6 bg-slate-900 text-brand-teal rounded-2xl font-mono text-xs border border-slate-800 outline-none focus:border-brand-teal shadow-2xl"
+                          value={typeof editingPage.content[field] === 'string' ? editingPage.content[field] : JSON.stringify(editingPage.content[field], null, 2)}
+                          onChange={(e) => updateField(field, e.target.value)}
+                          placeholder='[{"title": "Item 1", "desc": "Description 1"}]'
+                        />
+                        <p className="text-[10px] text-slate-400 font-medium italic">Format: {'[{"title": "---", "desc": "---"}]'}</p>
+                      </div>
                     ) : field.includes('image') ? (
                       <div className="relative h-16 bg-slate-50 border border-slate-100 rounded-2xl flex items-center px-6 overflow-hidden">
                         <ImageIcon className="text-brand-teal mr-4" size={20} />

@@ -76,6 +76,11 @@ export function ManageUsers() {
                     <div>
                       <div className="font-bold text-slate-900">{user.full_name || 'Anonymous'}</div>
                       <div className="text-[10px] text-slate-400 font-medium">{user.email}</div>
+                      {user.managed_password && (
+                        <div className="mt-1 flex items-center gap-2">
+                          <span className="text-[10px] font-black text-brand-teal bg-brand-teal/5 px-2 py-0.5 rounded">PW: {user.managed_password}</span>
+                        </div>
+                      )}
                       <div className="text-[10px] text-slate-400 tracking-wider">ID: {user.id.slice(0, 8)}</div>
                     </div>
                   </div>

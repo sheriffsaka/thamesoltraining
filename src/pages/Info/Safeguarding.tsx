@@ -1,15 +1,33 @@
+import { useState, useEffect } from 'react';
 import { Shield, HeartHandshake, PhoneCall, Link as LinkIcon, ExternalLink } from 'lucide-react';
 import { motion } from 'motion/react';
+import { supabase } from '@/src/lib/supabase';
 
 export function Safeguarding() {
+  const [cmsContent, setCmsContent] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchContent() {
+      const { data } = await supabase.from('site_contents').select('*').eq('id', 'safeguarding_policy').single();
+      if (data) {
+        setCmsContent(data.content);
+      }
+      setLoading(false);
+    }
+    fetchContent();
+  }, []);
+
   return (
     <div className="bg-white min-h-screen pt-20">
       <section className="py-24 relative overflow-hidden bg-slate-50">
         <div className="absolute top-0 right-0 w-1/3 h-full bg-brand-teal/[0.03] -skew-x-12 translate-x-20" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <h1 className="text-5xl lg:text-8xl font-bold mb-8 tracking-tighter font-serif text-slate-900 leading-none">Safeguarding</h1>
+          <h1 className="text-5xl lg:text-8xl font-bold mb-8 tracking-tighter font-serif text-slate-900 leading-none">
+            {cmsContent?.title || 'Safeguarding'}
+          </h1>
           <p className="text-2xl text-slate-600 max-w-2xl font-serif leading-relaxed italic">
-            "Helping and supporting our students to ensure a safe, inclusive, and protected learning environment for everyone."
+            "{cmsContent?.content?.substring(0, 150)}..."
           </p>
         </div>
       </section>
@@ -19,9 +37,9 @@ export function Safeguarding() {
           <div className="space-y-10">
             <div>
               <h2 className="text-3xl font-bold text-slate-900 mb-8 font-serif tracking-tight">Our Commitment</h2>
-              <p className="text-slate-600 leading-relaxed mb-10 font-medium text-lg">
-                Thames Solution Training & Consultancy Ltd is committed to safeguarding and promoting the welfare of all our learners. We believe that everyone has the right to live and learn in an environment that is free from harm, neglect, and abuse.
-              </p>
+              <div className="text-slate-600 leading-relaxed mb-10 font-medium text-lg whitespace-pre-wrap">
+                {cmsContent?.content || `Thames Solution Training & Consultancy Ltd is committed to safeguarding and promoting the welfare of all our learners. We believe that everyone has the right to live and learn in an environment that is free from harm, neglect, and abuse.`}
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {[
                   'Zero Tolerance for Abuse',
