@@ -1,5 +1,6 @@
 -- Comprehensive Supabase SQL Schema for Thames Solution
 -- This script is idempotent and can be run multiple times safely.
+-- IMPORTANT: Use THIS file (supabase_schema.sql) for all database updates.
 
 -- 1. Profiles
 CREATE TABLE IF NOT EXISTS public.profiles (
@@ -244,58 +245,63 @@ CREATE TABLE IF NOT EXISTS public.notifications (
 );
 
 -- 8. Policies
-DO $$ 
-BEGIN
-    -- Profiles
-    ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
-    DROP POLICY IF EXISTS "Public profiles are viewable by everyone." ON public.profiles;
-    DROP POLICY IF EXISTS "Users can update own profile." ON public.profiles;
-    CREATE POLICY "Public profiles are viewable by everyone." ON public.profiles FOR SELECT USING (true);
-    CREATE POLICY "Users can update own profile." ON public.profiles FOR UPDATE USING (auth.uid() = id);
+-- Enable RLS on all tables
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.courses ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.applications ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.site_contents ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.categories ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.announcements ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.faqs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.testimonials ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.enrollments ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.enquiries ENABLE ROW LEVEL SECURITY;
 
-    -- Courses
-    ALTER TABLE public.courses ENABLE ROW LEVEL SECURITY;
-    DROP POLICY IF EXISTS "Courses are viewable by everyone." ON public.courses;
-    DROP POLICY IF EXISTS "Admins can manage courses." ON public.courses;
-    CREATE POLICY "Courses are viewable by everyone." ON public.courses FOR SELECT USING (is_published = true OR EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'));
-    CREATE POLICY "Admins can manage courses." ON public.courses FOR ALL USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'));
+-- Profiles: Viewable by all, editable by owner
+DROP POLICY IF EXISTS "Public profiles are viewable by everyone." ON public.profiles;
+CREATE POLICY "Public profiles are viewable by everyone." ON public.profiles FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Users can update own profile." ON public.profiles;
+CREATE POLICY "Users can update own profile." ON public.profiles FOR UPDATE USING (auth.uid() = id);
 
-    -- Applications
-    ALTER TABLE public.applications ENABLE ROW LEVEL SECURITY;
-    DROP POLICY IF EXISTS "Anyone can apply." ON public.applications;
-    DROP POLICY IF EXISTS "Admins can view applications." ON public.applications;
-    CREATE POLICY "Anyone can apply." ON public.applications FOR INSERT WITH CHECK (true);
-    CREATE POLICY "Admins can view applications." ON public.applications FOR SELECT USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'));
+-- Courses: Published viewable by all, all viewable by admins
+DROP POLICY IF EXISTS "Courses are viewable by everyone." ON public.courses;
+CREATE POLICY "Courses are viewable by everyone." ON public.courses FOR SELECT USING (is_published = true OR EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'));
+DROP POLICY IF EXISTS "Admins can manage courses." ON public.courses;
+CREATE POLICY "Admins can manage courses." ON public.courses FOR ALL USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'));
 
-    -- Site Contents
-    ALTER TABLE public.site_contents ENABLE ROW LEVEL SECURITY;
-    DROP POLICY IF EXISTS "Site content is viewable by everyone." ON public.site_contents;
-    DROP POLICY IF EXISTS "Admins can manage site content." ON public.site_contents;
-    CREATE POLICY "Site content is viewable by everyone." ON public.site_contents FOR SELECT USING (true);
-    CREATE POLICY "Admins can manage site content." ON public.site_contents FOR ALL USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'));
+-- Applications: Anyone can insert, admins can view
+-- CRITICAL FIX: Explicitly allow INSERT for both anonymous and authenticated users
+DROP POLICY IF EXISTS "Anyone can apply." ON public.applications;
+CREATE POLICY "Anyone can apply." ON public.applications FOR INSERT WITH CHECK (true);
+DROP POLICY IF EXISTS "Admins can view applications." ON public.applications;
+CREATE POLICY "Admins can view applications." ON public.applications FOR SELECT USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'));
 
-    -- Generic Public Read Policies
-    ALTER TABLE public.categories ENABLE ROW LEVEL SECURITY;
-    DROP POLICY IF EXISTS "Categories are viewable by everyone." ON public.categories;
-    CREATE POLICY "Categories are viewable by everyone." ON public.categories FOR SELECT USING (true);
+-- Site Contents: Viewable by all, admins can manage
+DROP POLICY IF EXISTS "Site content is viewable by everyone." ON public.site_contents;
+CREATE POLICY "Site content is viewable by everyone." ON public.site_contents FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Admins can manage site content." ON public.site_contents;
+CREATE POLICY "Admins can manage site content." ON public.site_contents FOR ALL USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'));
 
-    ALTER TABLE public.announcements ENABLE ROW LEVEL SECURITY;
-    DROP POLICY IF EXISTS "Announcements viewable by everyone." ON public.announcements;
-    CREATE POLICY "Announcements viewable by everyone." ON public.announcements FOR SELECT USING (true);
+-- Generic Public Read Policies
+DROP POLICY IF EXISTS "Categories are viewable by everyone." ON public.categories;
+CREATE POLICY "Categories are viewable by everyone." ON public.categories FOR SELECT USING (true);
 
-    ALTER TABLE public.faqs ENABLE ROW LEVEL SECURITY;
-    DROP POLICY IF EXISTS "FAQs are viewable by everyone." ON public.faqs;
-    CREATE POLICY "FAQs are viewable by everyone." ON public.faqs FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Announcements viewable by everyone." ON public.announcements;
+CREATE POLICY "Announcements viewable by everyone." ON public.announcements FOR SELECT USING (true);
 
-    ALTER TABLE public.testimonials ENABLE ROW LEVEL SECURITY;
-    DROP POLICY IF EXISTS "Testimonials are viewable by everyone." ON public.testimonials;
-    CREATE POLICY "Testimonials are viewable by everyone." ON public.testimonials FOR SELECT USING (true);
+DROP POLICY IF EXISTS "FAQs are viewable by everyone." ON public.faqs;
+CREATE POLICY "FAQs are viewable by everyone." ON public.faqs FOR SELECT USING (true);
 
-    -- Enrollments
-    ALTER TABLE public.enrollments ENABLE ROW LEVEL SECURITY;
-    DROP POLICY IF EXISTS "Users can view own enrollments." ON public.enrollments;
-    CREATE POLICY "Users can view own enrollments." ON public.enrollments FOR SELECT USING (auth.uid() = student_id);
-END $$;
+DROP POLICY IF EXISTS "Testimonials are viewable by everyone." ON public.testimonials;
+CREATE POLICY "Testimonials are viewable by everyone." ON public.testimonials FOR SELECT USING (true);
+
+-- Enrollments: Users view own
+DROP POLICY IF EXISTS "Users can view own enrollments." ON public.enrollments;
+CREATE POLICY "Users can view own enrollments." ON public.enrollments FOR SELECT USING (auth.uid() = student_id);
+
+-- Enquiries: Anyone can insert
+DROP POLICY IF EXISTS "Anyone can send enquiries." ON public.enquiries;
+CREATE POLICY "Anyone can send enquiries." ON public.enquiries FOR INSERT WITH CHECK (true);
 
 -- 9. Seed Data
 INSERT INTO public.categories (name, slug, icon, order_index) VALUES
@@ -307,6 +313,7 @@ ON CONFLICT (slug) DO NOTHING;
 INSERT INTO public.site_contents (id, section, content) VALUES
 ('safeguarding_policy', 'safeguarding', '{
   "title": "Safeguarding",
+  "subtitle": "Protecting our community and ensuring a safe learning environment for all. We provide dedicated support for every learner to thrive.",
   "content": "Thames Solution Training & Consultancy Ltd is committed to safeguarding and promoting the welfare of all our learners. We believe that everyone has the right to live and learn in an environment that is free from harm, neglect, and abuse. Protecting our learners, staff, and visitors is our highest priority. We provide a safe, supportive, and inclusive environment for everyone to achieve their potential."
 }'::jsonb)
 ON CONFLICT (id) DO UPDATE SET content = EXCLUDED.content;

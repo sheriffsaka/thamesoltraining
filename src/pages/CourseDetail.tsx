@@ -65,10 +65,9 @@ export function CourseDetail() {
 
       console.log('Attempting to submit application:', applicationPayload);
 
-      const { data: appData, error: appError } = await supabase
+      const { error: appError } = await supabase
         .from('applications')
-        .insert([applicationPayload])
-        .select();
+        .insert([applicationPayload]);
 
       if (appError) {
         console.error('Database insertion error:', appError);
@@ -76,7 +75,7 @@ export function CourseDetail() {
         throw new Error(`Database error: ${detail} (Code: ${appError.code})`);
       }
 
-      console.log('Application submitted successfully:', appData);
+      console.log('Application submitted successfully');
 
       // 2. If user is logged in, also create an actual enrollment
       const { data: authData } = await supabase.auth.getUser();
