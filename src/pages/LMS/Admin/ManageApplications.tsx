@@ -19,12 +19,7 @@ export function ManageApplications() {
     try {
       const { data, error } = await supabase
         .from('applications')
-        .select(`
-          *,
-          courses (
-            title
-          )
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -67,11 +62,16 @@ export function ManageApplications() {
     }
   }
 
-  const filteredApps = applications.filter(app => 
-    app.full_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    app.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    app.courses?.title?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredApps = applications.filter(app => {
+    const search = searchQuery.toLowerCase();
+    const fullName = (app.full_name || '').toLowerCase();
+    const email = (app.email || '').toLowerCase();
+    const courseTitle = (app.courses?.title || app.course_title || '').toLowerCase();
+    
+    return fullName.includes(search) || 
+           email.includes(search) || 
+           courseTitle.includes(search);
+  });
 
   async function onboardStudent(app: any) {
     setIsUpdating(true);
@@ -167,7 +167,17 @@ export function ManageApplications() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50">
-                {filteredApps.map((app) => (
+                {filteredApps.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="py-32 text-center">
+                      <div className="flex flex-col items-center gap-4 text-slate-400">
+                        <FileText size={48} className="opacity-20" />
+                        <p className="font-bold">No application records found</p>
+                        <p className="text-xs">Try adjusting your search or check if the database is populated.</p>
+                      </div>
+                    </td>
+                  </tr>
+                ) : filteredApps.map((app) => (
                   <tr key={app.id} className="hover:bg-brand-teal/[0.02] transition-all group">
                     <td className="px-10 py-8">
                       <div className="flex items-center gap-4">

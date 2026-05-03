@@ -16,7 +16,7 @@ function RecentApplicationsList() {
     async function fetch() {
       const { data } = await supabase
         .from('applications')
-        .select(`*, courses(title)`)
+        .select(`*`)
         .order('created_at', { ascending: false })
         .limit(5);
       if (data) setApps(data);
