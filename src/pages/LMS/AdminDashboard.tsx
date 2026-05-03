@@ -1,17 +1,56 @@
-import { Users, BookOpen, Clock, CheckCircle, Search, Filter, ShieldCheck, Layout } from 'lucide-react';
+import { Users, BookOpen, Clock, CheckCircle, Search, Filter, ShieldCheck, Layout, FileText, Mail } from 'lucide-react';
 import { motion } from 'motion/react';
 import { cn } from '@/src/lib/utils';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { SiteContentCMS } from './Admin/SiteContentCMS';
 import { ManageUsers } from './Admin/ManageUsers';
+import { ManageApplications } from './Admin/ManageApplications';
+import { ManageEnquiries } from './Admin/ManageEnquiries';
+import { supabase } from '@/src/lib/supabase';
 
 export function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState<'overview' | 'cms' | 'users'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'cms' | 'users' | 'applications' | 'enquiries'>('overview');
+  const [stats, setStats] = useState([
+    { label: 'Total Users', value: '...', icon: Users, color: 'text-blue-600', bg: 'bg-blue-50', border: 'border-blue-100' },
+    { label: 'Courses', value: '...', icon: BookOpen, color: 'text-brand-teal', bg: 'bg-brand-teal/5', border: 'border-brand-teal/10' },
+    { label: 'Pending Apps', value: '...', icon: Clock, color: 'text-amber-600', bg: 'bg-amber-50', border: 'border-amber-100' },
+    { label: 'Enrollments', value: '...', icon: CheckCircle, color: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-100' },
+  ]);
+
+  useEffect(() => {
+    async function fetchStats() {
+      try {
+        const [
+          { count: usersCount },
+          { count: coursesCount },
+          { count: appsCount },
+          { count: enrollCount }
+        ] = await Promise.all([
+          supabase.from('profiles').select('*', { count: 'exact', head: true }),
+          supabase.from('courses').select('*', { count: 'exact', head: true }),
+          supabase.from('applications').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
+          supabase.from('enrollments').select('*', { count: 'exact', head: true })
+        ]);
+
+        setStats([
+          { label: 'Total Users', value: (usersCount || 0).toString(), icon: Users, color: 'text-blue-600', bg: 'bg-blue-50', border: 'border-blue-100' },
+          { label: 'Courses', value: (coursesCount || 0).toString(), icon: BookOpen, color: 'text-brand-teal', bg: 'bg-brand-teal/5', border: 'border-brand-teal/10' },
+          { label: 'Pending Apps', value: (appsCount || 0).toString(), icon: Clock, color: 'text-amber-600', bg: 'bg-amber-50', border: 'border-amber-100' },
+          { label: 'Enrollments', value: (enrollCount || 0).toString(), icon: CheckCircle, color: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-100' },
+        ]);
+      } catch (error) {
+        console.error('Error fetching stats:', error);
+      }
+    }
+    fetchStats();
+  }, []);
 
   const navItems = [
     { id: 'overview', label: 'Overview', icon: Layout },
     { id: 'cms', label: 'Site Content', icon: BookOpen },
     { id: 'users', label: 'Manage Users', icon: Users },
+    { id: 'applications', label: 'Applications', icon: FileText },
+    { id: 'enquiries', label: 'Enquiries', icon: Mail },
   ];
 
   return (
@@ -42,13 +81,14 @@ export function AdminDashboard() {
         <>
           {/* Stats Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {[
-              { label: 'Total Users', value: '1,280', icon: Users, color: 'text-blue-600', bg: 'bg-blue-50', border: 'border-blue-100' },
-              { label: 'Courses', value: '42', icon: BookOpen, color: 'text-brand-teal', bg: 'bg-brand-teal/5', border: 'border-brand-teal/10' },
-              { label: 'Pending Apps', value: '12', icon: Clock, color: 'text-amber-600', bg: 'bg-amber-50', border: 'border-amber-100' },
-              { label: 'Enrollments', value: '850', icon: CheckCircle, color: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-100' },
-            ].map((stat, i) => (
-              <div key={i} className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-2xl relative overflow-hidden group">
+            {stats.map((stat, i) => (
+              <div key={i} 
+                onClick={() => stat.label === 'Pending Apps' && setActiveTab('applications')}
+                className={cn(
+                  "bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-2xl relative overflow-hidden group",
+                  stat.label === 'Pending Apps' && "cursor-pointer hover:border-brand-teal"
+                )}
+              >
                 <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center mb-6 border shadow-sm group-hover:scale-110 transition-transform", stat.bg, stat.border)}>
                   <stat.icon className={stat.color} size={28} />
                 </div>
@@ -113,6 +153,8 @@ export function AdminDashboard() {
 
       {activeTab === 'cms' && <SiteContentCMS />}
       {activeTab === 'users' && <ManageUsers />}
+      {activeTab === 'applications' && <ManageApplications />}
+      {activeTab === 'enquiries' && <ManageEnquiries />}
     </div>
   );
 }

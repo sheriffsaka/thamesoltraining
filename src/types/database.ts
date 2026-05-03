@@ -234,6 +234,67 @@ export interface Database {
           content?: Json
           updated_at?: string | null
         }
+      },
+      applications: {
+        Row: {
+          id: string
+          course_id: string | null
+          full_name: string
+          email: string
+          phone: string
+          notes: string | null
+          status: 'pending' | 'approved' | 'rejected'
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          course_id?: string | null
+          full_name: string
+          email: string
+          phone: string
+          notes?: string | null
+          status?: 'pending' | 'approved' | 'rejected'
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          course_id?: string | null
+          full_name?: string
+          email?: string
+          phone?: string
+          notes?: string | null
+          status?: 'pending' | 'approved' | 'rejected'
+          created_at?: string
+        }
+      },
+      enquiries: {
+        Row: {
+          id: string
+          full_name: string
+          email: string
+          subject: string | null
+          message: string
+          status: 'unread' | 'read' | 'archived'
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          full_name: string
+          email: string
+          subject?: string | null
+          message: string
+          status?: 'unread' | 'read' | 'archived'
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          full_name?: string
+          email?: string
+          subject?: string | null
+          message?: string
+          status?: 'unread' | 'read' | 'archived'
+          created_at?: string
+        }
       }
     }
     Views: {
