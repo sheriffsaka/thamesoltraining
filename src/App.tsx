@@ -11,6 +11,7 @@ import { Contact } from './pages/Contact';
 import { Policy } from './pages/Info/Policy';
 import { PolicyDetail } from './pages/Info/PolicyDetail';
 import { Disclaimer } from './pages/Info/Disclaimer';
+import { FAQ } from './pages/Info/FAQ';
 import { Privacy } from './pages/Info/Privacy';
 import { Terms } from './pages/Info/Terms';
 import { DashboardLayout } from './components/layout/DashboardLayout';
@@ -79,6 +80,7 @@ export default function App() {
         <Route path="policy" element={<Policy />} />
         <Route path="policy/:id" element={<PolicyDetail />} />
         <Route path="disclaimer" element={<Disclaimer />} />
+        <Route path="faqs" element={<FAQ />} />
         <Route path="privacy" element={<Privacy />} />
         <Route path="terms" element={<Terms />} />
         <Route path="courses" element={<Courses />} />

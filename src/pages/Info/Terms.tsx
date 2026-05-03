@@ -4,18 +4,25 @@ import { Scale, FileText, CheckCircle2, AlertCircle } from 'lucide-react';
 export function Terms() {
   return (
     <div className="bg-white min-h-screen pt-20">
-      <section className="py-24 relative overflow-hidden bg-slate-50">
-        <div className="absolute top-0 right-0 w-1/3 h-full bg-brand-teal/[0.03] -skew-x-12 translate-x-32" />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <section className="relative min-h-[50vh] flex items-center overflow-hidden border-b border-slate-100 bg-slate-900">
+        <div className="absolute inset-0 z-0">
+          <img 
+            src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&q=80&w=2000" 
+            alt="Terms Banner" 
+            className="w-full h-full object-cover opacity-30"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/40 to-transparent z-10" />
+        </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="w-20 h-20 bg-brand-teal/10 text-brand-teal rounded-lg flex items-center justify-center mb-10 border border-brand-teal/20"
+            className="w-20 h-20 bg-brand-teal/10 text-brand-teal rounded-lg flex items-center justify-center mb-10 border border-brand-teal/20 backdrop-blur-sm"
           >
             <Scale size={36} />
           </motion.div>
-          <h1 className="text-5xl lg:text-8xl font-bold mb-8 tracking-tighter font-serif text-slate-900 leading-none">Terms of<br />Service</h1>
-          <p className="text-2xl text-slate-600 max-w-3xl font-serif leading-relaxed italic">
+          <h1 className="text-5xl lg:text-8xl font-bold mb-8 tracking-tighter font-serif text-white leading-none">Terms of<br />Service</h1>
+          <p className="text-2xl text-slate-300 max-w-3xl font-serif leading-relaxed italic border-l-4 border-brand-teal pl-8">
             "Professional standards and operational agreements governing your relationship with Thames Solution Training & Consultancy Ltd."
           </p>
         </div>

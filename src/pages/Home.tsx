@@ -385,7 +385,7 @@ export function Home() {
           </div>
 
           <div className="max-w-4xl mx-auto space-y-6">
-            {faqs.map((faq, i) => (
+            {faqs.slice(0, 3).map((faq, i) => (
               <motion.div
                 key={faq.id || i}
                 initial={{ opacity: 0, scale: 0.95 }}
@@ -403,6 +403,16 @@ export function Home() {
                 </p>
               </motion.div>
             ))}
+          </div>
+
+          <div className="mt-16 text-center">
+            <Link 
+              to="/faqs"
+              className="inline-flex items-center gap-4 text-brand-teal font-black text-xs uppercase tracking-[0.3em] hover:text-brand-accent transition-all group"
+            >
+              View All Frequently Asked Questions
+              <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+            </Link>
           </div>
         </div>
       </section>

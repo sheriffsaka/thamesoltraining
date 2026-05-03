@@ -19,7 +19,7 @@ export function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 mb-20">
           <div className="space-y-8">
-            <Logo dark={true} />
+            <Logo dark={true} size="lg" />
             <p className="text-slate-500 text-sm leading-[1.8] font-medium">
               High-performance training and consultancy for professionals and institutions. Empowering individuals through excellence in London.
             </p>
@@ -46,6 +46,7 @@ export function Footer() {
           <div>
             <h4 className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-900 mb-8">Support</h4>
             <ul className="space-y-5 text-[13px] font-bold">
+              <li><Link to="/faqs" className="hover:text-brand-teal transition-colors">Our FAQs</Link></li>
               <li><Link to="/safeguarding" className="hover:text-brand-teal transition-colors">Safeguarding Hub</Link></li>
               <li><Link to="/prevent-duty" className="hover:text-brand-teal transition-colors">Prevent Duty</Link></li>
               <li><Link to="/policy" className="hover:text-brand-teal transition-colors">Policy & Procedures</Link></li>

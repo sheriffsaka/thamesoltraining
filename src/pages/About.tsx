@@ -40,26 +40,41 @@ export function About() {
   return (
     <div className="bg-slate-50 min-h-screen pt-20 text-sharp">
       {/* Hero */}
-      <section className="relative py-24 overflow-hidden border-b border-slate-100 bg-white">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-brand-teal rounded-full blur-[150px] -translate-x-1/2 -translate-y-1/2" />
+      <section className="relative min-h-[60vh] flex items-center overflow-hidden border-b border-slate-100 bg-slate-900">
+        <div className="absolute inset-0 z-0">
+          <img 
+            src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=2000" 
+            alt="About Us Banner" 
+            className="w-full h-full object-cover opacity-40"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/60 to-transparent z-10" />
         </div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center text-slate-900">
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-5xl lg:text-7xl font-bold mb-8 font-serif whitespace-pre-line"
-          >
-            {content.title.split('\n')[0]} <br /> <span className="text-brand-teal font-sans italic">{content.title.split('\n')[1] || ''}</span>
-          </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed"
-          >
-            {content.description}
-          </motion.p>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 text-left">
+          <div className="max-w-3xl">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="text-xs font-black text-brand-teal uppercase tracking-[0.5em] mb-6"
+            >
+              Our Legacy & Mission
+            </motion.div>
+            <motion.h1 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-5xl lg:text-8xl font-bold mb-8 font-serif text-white tracking-tighter leading-none"
+            >
+              {content.title.split('\n')[0]} <br /> 
+              <span className="text-brand-teal font-sans italic">{content.title.split('\n')[1] || ''}</span>
+            </motion.h1>
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="text-xl text-slate-300 leading-relaxed font-serif italic max-w-2xl border-l-4 border-brand-teal pl-8"
+            >
+              {content.description}
+            </motion.p>
+          </div>
         </div>
       </section>
 

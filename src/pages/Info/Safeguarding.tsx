@@ -20,13 +20,21 @@ export function Safeguarding() {
 
   return (
     <div className="bg-white min-h-screen pt-20">
-      <section className="py-24 relative overflow-hidden bg-slate-50">
-        <div className="absolute top-0 right-0 w-1/3 h-full bg-brand-teal/[0.03] -skew-x-12 translate-x-20" />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <h1 className="text-5xl lg:text-8xl font-bold mb-8 tracking-tighter font-serif text-slate-900 leading-none">
-            {cmsContent?.title || 'Safeguarding'}
+      <section className="relative min-h-[50vh] flex items-center overflow-hidden border-b border-slate-100 bg-slate-900">
+        <div className="absolute inset-0 z-0">
+          <img 
+            src="https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&q=80&w=2000" 
+            alt="Safeguarding Banner" 
+            className="w-full h-full object-cover opacity-40 shadow-2xl"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/40 to-transparent z-10" />
+        </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20">
+          <p className="text-brand-teal font-black uppercase tracking-[0.4em] text-xs mb-6">Safe & Inclusive Environment</p>
+          <h1 className="text-5xl lg:text-8xl font-bold mb-8 tracking-tighter font-serif text-white leading-none">
+            {cmsContent?.title || 'Safeguarding'} Hub
           </h1>
-          <p className="text-2xl text-slate-600 max-w-2xl font-serif leading-relaxed italic">
+          <p className="text-2xl text-slate-300 max-w-2xl font-serif leading-relaxed italic border-l-4 border-brand-teal pl-8">
             "{cmsContent?.content?.substring(0, 150)}..."
           </p>
         </div>

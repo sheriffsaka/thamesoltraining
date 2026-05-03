@@ -19,15 +19,22 @@ export function Disclaimer() {
 
   return (
     <div className="bg-white min-h-screen pt-20">
-      <section className="py-24 relative overflow-hidden bg-slate-50">
-        <div className="absolute top-0 right-0 w-1/3 h-full bg-brand-teal/[0.03] -skew-x-12 translate-x-32" />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <section className="relative min-h-[50vh] flex items-center overflow-hidden border-b border-slate-100 bg-slate-900">
+        <div className="absolute inset-0 z-0">
+          <img 
+            src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&q=80&w=2000" 
+            alt="Legal Banner" 
+            className="w-full h-full object-cover opacity-30"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/40 to-transparent z-10" />
+        </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20">
           <div className="max-w-3xl">
             <p className="text-brand-teal font-black uppercase tracking-[0.4em] text-xs mb-6">Legal Notice & Disclosure</p>
-            <h1 className="text-5xl lg:text-8xl font-bold tracking-tighter font-serif text-slate-900 leading-none">
+            <h1 className="text-5xl lg:text-8xl font-bold tracking-tighter font-serif text-white leading-none">
               {cmsContent?.title || 'Disclaimer'}
             </h1>
-            <p className="text-2xl text-slate-600 mt-8 font-serif leading-relaxed italic">
+            <p className="text-2xl text-slate-300 mt-8 font-serif leading-relaxed italic border-l-4 border-brand-teal pl-8">
               "Official legal statements regarding the use of our services, information accuracy, and institutional liability."
             </p>
           </div>
