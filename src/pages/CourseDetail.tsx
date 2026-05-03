@@ -134,7 +134,7 @@ export function CourseDetail() {
                 Course Overview
               </h2>
               <p className="text-slate-600 text-lg leading-relaxed whitespace-pre-line font-medium">
-                {course.description || course.longDesc}
+                {course.longDesc || course.description || course.desc}
               </p>
             </motion.div>
 

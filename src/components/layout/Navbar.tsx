@@ -206,8 +206,10 @@ export function Navbar() {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 10 }}
                       className={cn(
-                        "absolute left-0 top-[100%] bg-white rounded-b-lg shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-100 overflow-hidden z-50",
-                        link.isHierarchical ? "w-[1000px] flex min-h-[500px]" : "w-80 p-3"
+                        "bg-white rounded-b-lg shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-100 overflow-hidden z-50",
+                        link.isHierarchical 
+                          ? "fixed left-1/2 -translate-x-1/2 top-32 w-[calc(100vw-2rem)] max-w-7xl flex min-h-[550px]" 
+                          : "absolute left-0 top-[100%] w-80 p-3"
                       )}
                     >
                       {link.isHierarchical ? (
