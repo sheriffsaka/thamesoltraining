@@ -7,19 +7,8 @@ import { useSiteSettings } from '@/src/hooks/useSiteSettings';
 
 export function Contact() {
   const [formStatus, setFormStatus] = useState<'idle' | 'submitting' | 'success'>('idle');
-  const [faqs, setFaqs] = useState<any[]>([]);
-  const [openFaq, setOpenFaq] = useState<string | null>(null);
   const { settings } = useSiteSettings();
 
-  useEffect(() => {
-    async function fetchFaqs() {
-      const { data } = await supabase.from('faqs').select('*').eq('is_active', true).order('order_index', { ascending: true });
-      if (data) setFaqs(data);
-    }
-    fetchFaqs();
-  }, []);
-  
-  // ... existing handleSubmit ...
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setFormStatus('submitting');
@@ -219,45 +208,6 @@ export function Contact() {
           </div>
         </div>
       </section>
-
-      {/* FAQ Section */}
-      {faqs.length > 0 && (
-        <section className="py-32 bg-white border-t border-slate-100">
-          <div className="max-w-4xl mx-auto px-4">
-            <div className="text-center mb-20 text-slate-900 font-serif">
-              <h2 className="text-4xl font-bold mb-6 font-serif tracking-tight">Frequently Asked Questions</h2>
-              <p className="text-slate-600 font-medium text-lg">Find quick answers to common questions about our services.</p>
-            </div>
-            <div className="space-y-4">
-              {faqs.map((faq) => (
-                <div key={faq.id} className="bg-slate-50 border border-slate-100 rounded-2xl overflow-hidden shadow-sm hover:border-brand-teal/30 transition-all">
-                  <button 
-                    onClick={() => setOpenFaq(openFaq === faq.id ? null : faq.id)}
-                    className="w-full px-8 py-6 text-left flex justify-between items-center group"
-                  >
-                    <span className="font-bold text-slate-900 font-serif text-lg">{faq.question}</span>
-                    <ChevronDown className={cn("text-slate-400 group-hover:text-brand-teal transition-all", openFaq === faq.id && "rotate-180")} size={20} />
-                  </button>
-                  <AnimatePresence>
-                    {openFaq === faq.id && (
-                      <motion.div 
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        className="px-8 pb-8"
-                      >
-                        <div className="pt-4 border-t border-slate-200/60 text-slate-600 leading-relaxed font-medium">
-                          {faq.answer}
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* Map Placeholder */}
       <section className="h-[400px] bg-slate-50 relative grayscale hover:grayscale-0 transition-all duration-700">

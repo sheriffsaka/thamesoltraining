@@ -166,14 +166,18 @@ export function About() {
             </div>
           </div>
           <div className="relative">
-            <div className="aspect-square bg-white rounded-xl border border-slate-100 flex items-center justify-center overflow-hidden shadow-2xl">
-               <Users size={200} className="text-brand-teal/5" />
-               <div className="absolute inset-0 bg-gradient-to-t from-slate-50 to-transparent opacity-60" />
+            <div className="aspect-square bg-white rounded-[3rem] border border-slate-100 flex items-center justify-center overflow-hidden shadow-2xl relative group">
+               <img 
+                 src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&q=80&w=1000" 
+                 alt="Collaboration and Quality" 
+                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
+               />
+               <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent opacity-60" />
             </div>
             <motion.div 
               initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}
-              className="absolute -bottom-6 -right-6 p-8 bg-brand-teal rounded-xl text-white shadow-2xl max-w-xs"
+              className="absolute -bottom-6 -right-6 p-8 bg-brand-teal rounded-3xl text-white shadow-2xl max-w-xs backdrop-blur-md bg-brand-teal/90"
             >
                <p className="text-lg font-bold leading-tight">"Excellence is not an act, but a habit."</p>
                <p className="text-[10px] text-white/70 mt-3 font-black uppercase tracking-[0.2em]">— Our Founding Principle</p>
