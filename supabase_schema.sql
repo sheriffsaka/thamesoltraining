@@ -1,27 +1,35 @@
--- Supabase SQL Schema for Thames Solution Training & Consultancy
--- Comprehensive script to set up all tables and initial data
+-- Comprehensive Supabase SQL Schema for Thames Solution
+-- This script is idempotent and can be run multiple times safely.
 
--- 1. Profiles (with email column to handle user's requirement and promotion)
-CREATE TABLE IF NOT EXISTS profiles (
+-- 1. Profiles
+CREATE TABLE IF NOT EXISTS public.profiles (
   id UUID REFERENCES auth.users ON DELETE CASCADE PRIMARY KEY,
   full_name TEXT,
   email TEXT,
+  phone TEXT,
+  address TEXT,
+  date_of_birth TEXT,
+  emergency_contact TEXT,
+  gender TEXT,
+  employment_status TEXT,
+  managed_password TEXT,
   role TEXT DEFAULT 'student' CHECK (role IN ('student', 'instructor', 'admin')),
   avatar_url TEXT,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Ensure columns exist if table was already created
-ALTER TABLE profiles ADD COLUMN IF NOT EXISTS email TEXT;
-ALTER TABLE profiles ADD COLUMN IF NOT EXISTS role TEXT DEFAULT 'student';
-DO $$ 
-BEGIN 
-  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'profiles_role_check') THEN
-    ALTER TABLE profiles ADD CONSTRAINT profiles_role_check CHECK (role IN ('student', 'instructor', 'admin'));
-  END IF;
-END $$;
+-- Ensure columns exist
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS email TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS phone TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS address TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS date_of_birth TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS emergency_contact TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS gender TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS employment_status TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS managed_password TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS role TEXT DEFAULT 'student';
 
--- Trigger to create profile and sync email on signup
+-- Trigger to create profile on signup
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -42,47 +50,34 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- Cleanup existing trigger if exists
 DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE PROCEDURE public.handle_new_user();
 
--- Promote existing users if they already signed up
-UPDATE profiles SET role = 'admin' WHERE email IN ('thamestraining@outlook.com', 'sheriffdeenalade@gmail.com');
+-- Promote existing users to admin
+UPDATE public.profiles SET role = 'admin' WHERE email IN ('thamestraining@outlook.com', 'sheriffdeenalade@gmail.com');
 
--- 1.5 Storage Setup
--- Note: You may need to run these separately or via the Supabase Dashboard if they fail to run in the SQL Editor due to permissions
+-- 2. Storage Setup
 INSERT INTO storage.buckets (id, name, public) 
 VALUES ('uploads', 'uploads', true)
 ON CONFLICT (id) DO NOTHING;
 
--- Storage Policies
-CREATE POLICY "Public Read Access"
-ON storage.objects FOR SELECT
-USING (bucket_id = 'uploads');
+DO $$ 
+BEGIN
+    DROP POLICY IF EXISTS "Public Read Access" ON storage.objects;
+    DROP POLICY IF EXISTS "Authenticated Upload" ON storage.objects;
+    DROP POLICY IF EXISTS "Admin All Access" ON storage.objects;
+END $$;
 
-CREATE POLICY "Authenticated Upload"
-ON storage.objects FOR INSERT
-TO authenticated
-WITH CHECK (
-  bucket_id = 'uploads'
-);
+CREATE POLICY "Public Read Access" ON storage.objects FOR SELECT USING (bucket_id = 'uploads');
+CREATE POLICY "Authenticated Upload" ON storage.objects FOR INSERT TO authenticated WITH CHECK (bucket_id = 'uploads');
+CREATE POLICY "Admin All Access" ON storage.objects FOR ALL TO authenticated 
+USING (bucket_id = 'uploads' AND EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'))
+WITH CHECK (bucket_id = 'uploads' AND EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'));
 
-CREATE POLICY "Admin All Access"
-ON storage.objects FOR ALL
-TO authenticated
-USING (
-  bucket_id = 'uploads' AND 
-  EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
-)
-WITH CHECK (
-  bucket_id = 'uploads' AND 
-  EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
-);
-
--- 2. Categories
-CREATE TABLE IF NOT EXISTS categories (
+-- 3. Categories & Courses
+CREATE TABLE IF NOT EXISTS public.categories (
   id SERIAL PRIMARY KEY,
   name TEXT NOT NULL,
   slug TEXT UNIQUE NOT NULL,
@@ -91,12 +86,11 @@ CREATE TABLE IF NOT EXISTS categories (
   order_index INTEGER DEFAULT 0
 );
 
--- 3. Courses (Extended with required fields from CMS)
-CREATE TABLE IF NOT EXISTS courses (
-  id TEXT PRIMARY KEY, -- Changed to TEXT to support stable IDs from navbar/mock data
-  category_id INTEGER REFERENCES categories(id) ON DELETE SET NULL,
-  category TEXT, -- For backward compatibility with some code parts
-  sub_category TEXT, -- For groupings like 'Level 2 Qualifications'
+CREATE TABLE IF NOT EXISTS public.courses (
+  id TEXT PRIMARY KEY,
+  category_id INTEGER REFERENCES public.categories(id) ON DELETE SET NULL,
+  category TEXT,
+  sub_category TEXT,
   title TEXT NOT NULL,
   slug TEXT UNIQUE,
   description TEXT,
@@ -106,59 +100,55 @@ CREATE TABLE IF NOT EXISTS courses (
   duration TEXT,
   certification_info TEXT,
   image_url TEXT,
-  instructor_id UUID REFERENCES profiles(id) ON DELETE SET NULL,
+  instructor_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
   is_published BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE
+);
+
+-- Ensure course columns
+ALTER TABLE public.courses ADD COLUMN IF NOT EXISTS category_id INTEGER REFERENCES public.categories(id) ON DELETE SET NULL;
+ALTER TABLE public.courses ADD COLUMN IF NOT EXISTS outcomes TEXT[];
+ALTER TABLE public.courses ADD COLUMN IF NOT EXISTS requirements TEXT[];
+ALTER TABLE public.courses ADD COLUMN IF NOT EXISTS long_description TEXT;
+ALTER TABLE public.courses ADD COLUMN IF NOT EXISTS instructor_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL;
+ALTER TABLE public.courses ADD COLUMN IF NOT EXISTS is_published BOOLEAN DEFAULT TRUE;
+
+-- 4. Enrollments & Lessons
+CREATE TABLE IF NOT EXISTS public.lessons (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  course_id TEXT NOT NULL,
+  title TEXT NOT NULL,
+  content TEXT,
+  video_url TEXT,
+  order_index INTEGER NOT NULL,
+  duration TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Migration for courses table if it already exists
-DO $$ 
-BEGIN 
-  -- Remove FKs from dependents before changing type
-  IF EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'announcements_course_id_fkey') THEN
-    ALTER TABLE announcements DROP CONSTRAINT announcements_course_id_fkey;
-  END IF;
-  IF EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'enrollments_course_id_fkey') THEN
-    ALTER TABLE enrollments DROP CONSTRAINT enrollments_course_id_fkey;
-  END IF;
-  IF EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'lessons_course_id_fkey') THEN
-    ALTER TABLE lessons DROP CONSTRAINT lessons_course_id_fkey;
-  END IF;
-
-  -- Change types
-  ALTER TABLE courses ALTER COLUMN id TYPE TEXT;
-  ALTER TABLE announcements ALTER COLUMN course_id TYPE TEXT;
-  ALTER TABLE enrollments ALTER COLUMN course_id TYPE TEXT;
-  -- If lessons table exists (it might from SupabaseSchema.sql)
-  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'lessons') THEN
-    ALTER TABLE lessons ALTER COLUMN course_id TYPE TEXT;
-  END IF;
-END $$;
-
--- Ensure columns exist if table was already created
-ALTER TABLE courses ADD COLUMN IF NOT EXISTS category_id INTEGER REFERENCES categories(id) ON DELETE SET NULL;
-ALTER TABLE courses ADD COLUMN IF NOT EXISTS category TEXT;
-ALTER TABLE courses ADD COLUMN IF NOT EXISTS outcomes TEXT[];
-ALTER TABLE courses ADD COLUMN IF NOT EXISTS requirements TEXT[];
-ALTER TABLE courses ADD COLUMN IF NOT EXISTS long_description TEXT;
-ALTER TABLE courses ADD COLUMN IF NOT EXISTS instructor_id UUID REFERENCES profiles(id) ON DELETE SET NULL;
-ALTER TABLE courses ADD COLUMN IF NOT EXISTS certification_info TEXT;
-ALTER TABLE courses ADD COLUMN IF NOT EXISTS is_published BOOLEAN DEFAULT TRUE;
-ALTER TABLE courses ADD COLUMN IF NOT EXISTS sub_category TEXT;
-ALTER TABLE courses ADD COLUMN IF NOT EXISTS slug TEXT;
-ALTER TABLE courses ADD COLUMN IF NOT EXISTS syllabus_url TEXT;
-DO $$ 
-BEGIN 
-  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'courses_slug_key') THEN
-    ALTER TABLE courses ADD CONSTRAINT courses_slug_key UNIQUE (slug);
-  END IF;
-END $$;
-
--- 4. Course Applications
-CREATE TABLE IF NOT EXISTS applications (
+CREATE TABLE IF NOT EXISTS public.enrollments (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  course_id TEXT, -- Changed from UUID to TEXT to support mock IDs (like 'hsc-l2-1')
-  course_title TEXT, -- Added for easier reference if IDs don't match
+  student_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
+  course_id TEXT NOT NULL,
+  status TEXT DEFAULT 'active' CHECK (status IN ('active', 'completed', 'dropped')),
+  progress INTEGER DEFAULT 0,
+  enrolled_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  UNIQUE(student_id, course_id)
+);
+
+-- Handle migration from user_id to student_id if needed
+DO $$ 
+BEGIN 
+  IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='enrollments' AND column_name='user_id') THEN
+    ALTER TABLE public.enrollments RENAME COLUMN user_id TO student_id;
+  END IF;
+END $$;
+
+-- 5. Applications & Enquiries
+CREATE TABLE IF NOT EXISTS public.applications (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  course_id TEXT,
+  course_title TEXT,
   full_name TEXT NOT NULL,
   email TEXT NOT NULL,
   phone TEXT NOT NULL,
@@ -173,37 +163,17 @@ CREATE TABLE IF NOT EXISTS applications (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Ensure profiles has required fields
-ALTER TABLE profiles ADD COLUMN IF NOT EXISTS phone TEXT;
-ALTER TABLE profiles ADD COLUMN IF NOT EXISTS address TEXT;
-ALTER TABLE profiles ADD COLUMN IF NOT EXISTS date_of_birth TEXT;
-ALTER TABLE profiles ADD COLUMN IF NOT EXISTS emergency_contact TEXT;
-ALTER TABLE profiles ADD COLUMN IF NOT EXISTS gender TEXT;
-ALTER TABLE profiles ADD COLUMN IF NOT EXISTS employment_status TEXT;
-ALTER TABLE profiles ADD COLUMN IF NOT EXISTS managed_password TEXT;
+-- Ensure all columns exist for applications
+ALTER TABLE public.applications ADD COLUMN IF NOT EXISTS course_title TEXT;
+ALTER TABLE public.applications ADD COLUMN IF NOT EXISTS date_of_birth TEXT;
+ALTER TABLE public.applications ADD COLUMN IF NOT EXISTS gender TEXT;
+ALTER TABLE public.applications ADD COLUMN IF NOT EXISTS employment_status TEXT;
+ALTER TABLE public.applications ADD COLUMN IF NOT EXISTS address TEXT;
+ALTER TABLE public.applications ADD COLUMN IF NOT EXISTS emergency_contact TEXT;
+ALTER TABLE public.applications ADD COLUMN IF NOT EXISTS notes TEXT;
+ALTER TABLE public.applications ADD COLUMN IF NOT EXISTS generated_password TEXT;
 
--- Migration for applications table if it already exists
-DO $$ 
-BEGIN 
-  -- Drop constraint if it exists so we can change type
-  IF EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'applications_course_id_fkey') THEN
-    ALTER TABLE applications DROP CONSTRAINT applications_course_id_fkey;
-  END IF;
-  
-  -- Remove ethnicity column if it exists (as requested to remove from form)
-  IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='applications' AND column_name='ethnicity') THEN
-    ALTER TABLE applications DROP COLUMN ethnicity;
-  END IF;
-  
-  IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='profiles' AND column_name='ethnicity') THEN
-    ALTER TABLE profiles DROP COLUMN ethnicity;
-  END IF;
-END $$;
-ALTER TABLE applications ALTER COLUMN course_id TYPE TEXT;
-ALTER TABLE applications ADD COLUMN IF NOT EXISTS course_title TEXT;
-
--- 5. Enquiries
-CREATE TABLE IF NOT EXISTS enquiries (
+CREATE TABLE IF NOT EXISTS public.enquiries (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   full_name TEXT NOT NULL,
   email TEXT NOT NULL,
@@ -213,16 +183,15 @@ CREATE TABLE IF NOT EXISTS enquiries (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- 6. Site Contents (Page CMS)
-CREATE TABLE IF NOT EXISTS site_contents (
-  id TEXT PRIMARY KEY, -- e.g. 'about_page', 'home_hero'
-  section TEXT NOT NULL, -- e.g. 'about', 'home'
+-- 6. CMS & Support
+CREATE TABLE IF NOT EXISTS public.site_contents (
+  id TEXT PRIMARY KEY,
+  section TEXT NOT NULL,
   content JSONB NOT NULL DEFAULT '{}'::jsonb,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- 7. FAQs
-CREATE TABLE IF NOT EXISTS faqs (
+CREATE TABLE IF NOT EXISTS public.faqs (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   category TEXT,
   question TEXT NOT NULL,
@@ -232,11 +201,7 @@ CREATE TABLE IF NOT EXISTS faqs (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-ALTER TABLE faqs ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT TRUE;
-ALTER TABLE faqs ADD COLUMN IF NOT EXISTS order_index INTEGER DEFAULT 0;
-
--- 8. Team Members
-CREATE TABLE IF NOT EXISTS team_members (
+CREATE TABLE IF NOT EXISTS public.team_members (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   name TEXT NOT NULL,
   role TEXT NOT NULL,
@@ -246,34 +211,31 @@ CREATE TABLE IF NOT EXISTS team_members (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- 9. Testimonials
-CREATE TABLE IF NOT EXISTS testimonials (
+CREATE TABLE IF NOT EXISTS public.testimonials (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   student_name TEXT NOT NULL,
-  course_name TEXT, -- The course they took
+  course_name TEXT,
   content TEXT NOT NULL,
   rating INTEGER DEFAULT 5,
   image_url TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- 10. Announcements
-CREATE TABLE IF NOT EXISTS announcements (
+-- 7. Announcements & Notifications
+CREATE TABLE IF NOT EXISTS public.announcements (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  course_id TEXT, 
+  course_id TEXT,
   title TEXT NOT NULL,
   content TEXT NOT NULL,
   is_active BOOLEAN DEFAULT TRUE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Ensure course_id exists if table was created without it
-ALTER TABLE announcements ADD COLUMN IF NOT EXISTS course_id TEXT;
+ALTER TABLE public.announcements ADD COLUMN IF NOT EXISTS course_id TEXT;
 
--- 11. Notifications
-CREATE TABLE IF NOT EXISTS notifications (
+CREATE TABLE IF NOT EXISTS public.notifications (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  user_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
+  user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
   title TEXT NOT NULL,
   message TEXT NOT NULL,
   is_read BOOLEAN DEFAULT FALSE,
@@ -281,92 +243,70 @@ CREATE TABLE IF NOT EXISTS notifications (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- 12. Enrollments
-CREATE TABLE IF NOT EXISTS enrollments (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  student_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
-  course_id TEXT, -- Changed to TEXT for consistency
-  status TEXT DEFAULT 'active' CHECK (status IN ('active', 'completed', 'dropped')),
-  progress INTEGER DEFAULT 0,
-  enrolled_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  UNIQUE(student_id, course_id)
-);
-
--- RLS Settings
-ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
-ALTER TABLE categories ENABLE ROW LEVEL SECURITY;
-ALTER TABLE courses ENABLE ROW LEVEL SECURITY;
-ALTER TABLE applications ENABLE ROW LEVEL SECURITY;
-ALTER TABLE enquiries ENABLE ROW LEVEL SECURITY;
-ALTER TABLE site_contents ENABLE ROW LEVEL SECURITY;
-ALTER TABLE faqs ENABLE ROW LEVEL SECURITY;
-ALTER TABLE team_members ENABLE ROW LEVEL SECURITY;
-ALTER TABLE testimonials ENABLE ROW LEVEL SECURITY;
-ALTER TABLE announcements ENABLE ROW LEVEL SECURITY;
-ALTER TABLE notifications ENABLE ROW LEVEL SECURITY;
-ALTER TABLE enrollments ENABLE ROW LEVEL SECURITY;
-
--- Policies
+-- 8. Policies
 DO $$ 
 BEGIN
-    DROP POLICY IF EXISTS "Announcements viewable by everyone." ON announcements;
-    DROP POLICY IF EXISTS "Public profiles are viewable by everyone." ON profiles;
-    DROP POLICY IF EXISTS "Users can update own profile." ON profiles;
-    DROP POLICY IF EXISTS "Categories are viewable by everyone." ON categories;
-    DROP POLICY IF EXISTS "Courses are viewable by everyone." ON courses;
-    DROP POLICY IF EXISTS "Admins can manage courses." ON courses;
-    DROP POLICY IF EXISTS "Anyone can apply." ON applications;
-    DROP POLICY IF EXISTS "Admins can view applications." ON applications;
-    DROP POLICY IF EXISTS "Anyone can send enquiries." ON enquiries;
-    DROP POLICY IF EXISTS "Admins can manage enquiries." ON enquiries;
-    DROP POLICY IF EXISTS "Site content is viewable by everyone." ON site_contents;
-    DROP POLICY IF EXISTS "Admins can manage site content." ON site_contents;
-    DROP POLICY IF EXISTS "FAQs are viewable by everyone." ON faqs;
-    DROP POLICY IF EXISTS "Admins can manage FAQs." ON faqs;
-    DROP POLICY IF EXISTS "Team is viewable by everyone." ON team_members;
-    DROP POLICY IF EXISTS "Admins can manage team." ON team_members;
-    DROP POLICY IF EXISTS "Testimonials are viewable by everyone." ON testimonials;
-    DROP POLICY IF EXISTS "Admins can manage testimonials." ON testimonials;
+    -- Profiles
+    ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+    DROP POLICY IF EXISTS "Public profiles are viewable by everyone." ON public.profiles;
+    DROP POLICY IF EXISTS "Users can update own profile." ON public.profiles;
+    CREATE POLICY "Public profiles are viewable by everyone." ON public.profiles FOR SELECT USING (true);
+    CREATE POLICY "Users can update own profile." ON public.profiles FOR UPDATE USING (auth.uid() = id);
+
+    -- Courses
+    ALTER TABLE public.courses ENABLE ROW LEVEL SECURITY;
+    DROP POLICY IF EXISTS "Courses are viewable by everyone." ON public.courses;
+    DROP POLICY IF EXISTS "Admins can manage courses." ON public.courses;
+    CREATE POLICY "Courses are viewable by everyone." ON public.courses FOR SELECT USING (is_published = true OR EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'));
+    CREATE POLICY "Admins can manage courses." ON public.courses FOR ALL USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'));
+
+    -- Applications
+    ALTER TABLE public.applications ENABLE ROW LEVEL SECURITY;
+    DROP POLICY IF EXISTS "Anyone can apply." ON public.applications;
+    DROP POLICY IF EXISTS "Admins can view applications." ON public.applications;
+    CREATE POLICY "Anyone can apply." ON public.applications FOR INSERT WITH CHECK (true);
+    CREATE POLICY "Admins can view applications." ON public.applications FOR SELECT USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'));
+
+    -- Site Contents
+    ALTER TABLE public.site_contents ENABLE ROW LEVEL SECURITY;
+    DROP POLICY IF EXISTS "Site content is viewable by everyone." ON public.site_contents;
+    DROP POLICY IF EXISTS "Admins can manage site content." ON public.site_contents;
+    CREATE POLICY "Site content is viewable by everyone." ON public.site_contents FOR SELECT USING (true);
+    CREATE POLICY "Admins can manage site content." ON public.site_contents FOR ALL USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'));
+
+    -- Generic Public Read Policies
+    ALTER TABLE public.categories ENABLE ROW LEVEL SECURITY;
+    DROP POLICY IF EXISTS "Categories are viewable by everyone." ON public.categories;
+    CREATE POLICY "Categories are viewable by everyone." ON public.categories FOR SELECT USING (true);
+
+    ALTER TABLE public.announcements ENABLE ROW LEVEL SECURITY;
+    DROP POLICY IF EXISTS "Announcements viewable by everyone." ON public.announcements;
+    CREATE POLICY "Announcements viewable by everyone." ON public.announcements FOR SELECT USING (true);
+
+    ALTER TABLE public.faqs ENABLE ROW LEVEL SECURITY;
+    DROP POLICY IF EXISTS "FAQs are viewable by everyone." ON public.faqs;
+    CREATE POLICY "FAQs are viewable by everyone." ON public.faqs FOR SELECT USING (true);
+
+    ALTER TABLE public.testimonials ENABLE ROW LEVEL SECURITY;
+    DROP POLICY IF EXISTS "Testimonials are viewable by everyone." ON public.testimonials;
+    CREATE POLICY "Testimonials are viewable by everyone." ON public.testimonials FOR SELECT USING (true);
+
+    -- Enrollments
+    ALTER TABLE public.enrollments ENABLE ROW LEVEL SECURITY;
+    DROP POLICY IF EXISTS "Users can view own enrollments." ON public.enrollments;
+    CREATE POLICY "Users can view own enrollments." ON public.enrollments FOR SELECT USING (auth.uid() = student_id);
 END $$;
 
-CREATE POLICY "Public profiles are viewable by everyone." ON profiles FOR SELECT USING (true);
-CREATE POLICY "Users can update own profile." ON profiles FOR UPDATE USING (auth.uid() = id);
-CREATE POLICY "Categories are viewable by everyone." ON categories FOR SELECT USING (true);
-CREATE POLICY "Courses are viewable by everyone." ON courses FOR SELECT USING (is_published = true OR EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin'));
-CREATE POLICY "Admins can manage courses." ON courses FOR ALL USING (EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin'));
-CREATE POLICY "Anyone can apply." ON applications FOR INSERT WITH CHECK (true);
-CREATE POLICY "Admins can view applications." ON applications FOR SELECT USING (EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin'));
-CREATE POLICY "Anyone can send enquiries." ON enquiries FOR INSERT WITH CHECK (true);
-CREATE POLICY "Admins can manage enquiries." ON enquiries FOR ALL USING (EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin'));
-CREATE POLICY "Site content is viewable by everyone." ON site_contents FOR SELECT USING (true);
-CREATE POLICY "Admins can manage site content." ON site_contents FOR ALL USING (EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin'));
-CREATE POLICY "FAQs are viewable by everyone." ON faqs FOR SELECT USING (is_active = true);
-CREATE POLICY "Admins can manage FAQs." ON faqs FOR ALL USING (EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin'));
-CREATE POLICY "Team is viewable by everyone." ON team_members FOR SELECT USING (true);
-CREATE POLICY "Admins can manage team." ON team_members FOR ALL USING (EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin'));
-CREATE POLICY "Testimonials are viewable by everyone." ON testimonials FOR SELECT USING (true);
-CREATE POLICY "Admins can manage testimonials." ON testimonials FOR ALL USING (EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin'));
-CREATE POLICY "Announcements viewable by everyone." ON announcements FOR SELECT USING (true);
-
--- Initial Data - Categories
-INSERT INTO categories (name, slug, icon, order_index) VALUES
+-- 9. Seed Data
+INSERT INTO public.categories (name, slug, icon, order_index) VALUES
 ('Health & Social Care', 'health-and-social-care', 'Heart', 1),
 ('Assessor Courses', 'assessor', 'CheckCircle', 2),
-('Functional Skills', 'functional-skills', 'BookOpen', 3),
-('Mandatory Training', 'mandatory', 'ShieldAlert', 4),
-('Care Certificate', 'care-certificate', 'Award', 5)
+('Functional Skills', 'functional-skills', 'BookOpen', 3)
 ON CONFLICT (slug) DO NOTHING;
 
--- Initial Data - FAQs
-INSERT INTO faqs (question, answer, order_index) VALUES
-('What qualifications do I need to enroll?', 'Most of our level 2 and 3 courses don''t require specific previous qualifications, just a good understanding of English and a commitment to learning.', 1),
-('Are the courses accredited?', 'Yes, all our vocational qualifications are accredited by recognised UK awarding bodies and meet national standards.', 2),
-('How long does a typical course take?', 'Duration varies by level: Level 2 usually takes 6 months, Level 3 takes 12 months, and Level 5 takes 18 months.', 3)
-ON CONFLICT DO NOTHING;
-
--- Initial Data - Team
-INSERT INTO team_members (name, role, order_index) VALUES
-('Sarah Johnson', 'Director of Training', 1),
-('Michael Chen', 'Lead Clinical Instructor', 2),
-('Emma Davies', 'IQA & Compliance Manager', 3)
-ON CONFLICT DO NOTHING;
+INSERT INTO public.site_contents (id, section, content) VALUES
+('safeguarding_policy', 'safeguarding', '{
+  "title": "Safeguarding",
+  "content": "Thames Solution Training & Consultancy Ltd is committed to safeguarding and promoting the welfare of all our learners. We believe that everyone has the right to live and learn in an environment that is free from harm, neglect, and abuse. Protecting our learners, staff, and visitors is our highest priority. We provide a safe, supportive, and inclusive environment for everyone to achieve their potential."
+}'::jsonb)
+ON CONFLICT (id) DO UPDATE SET content = EXCLUDED.content;
