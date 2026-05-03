@@ -291,10 +291,6 @@ export function ManageApplications() {
                           <div className="text-sm font-bold text-slate-900 capitalize">{selectedApp.gender || 'Not specified'}</div>
                         </div>
                         <div>
-                          <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Ethnicity</div>
-                          <div className="text-sm font-bold text-slate-900 capitalize">{selectedApp.ethnicity || 'Not specified'}</div>
-                        </div>
-                        <div>
                           <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Employment</div>
                           <div className="text-sm font-bold text-slate-900 capitalize">{selectedApp.employment_status || 'Not set'}</div>
                         </div>

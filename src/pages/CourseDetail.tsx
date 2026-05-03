@@ -48,24 +48,29 @@ export function CourseDetail() {
 
     try {
       // 1. Always create an application entry (lead generation)
+      const applicationPayload = {
+        course_id: String(course.id),
+        course_title: course.title,
+        full_name: fullName,
+        email: email,
+        phone: phone,
+        date_of_birth: dob,
+        gender: gender,
+        employment_status: employmentStatus,
+        address: address,
+        emergency_contact: emergencyContact,
+        notes: notes,
+        status: 'pending'
+      };
+
       const { error: appError } = await supabase
         .from('applications')
-        .insert([{
-          course_id: String(course.id),
-          course_title: course.title,
-          full_name: fullName,
-          email: email,
-          phone: phone,
-          date_of_birth: dob,
-          gender: gender,
-          employment_status: employmentStatus,
-          address: address,
-          emergency_contact: emergencyContact,
-          notes: notes,
-          status: 'pending'
-        }]);
+        .insert([applicationPayload]);
 
-      if (appError) throw appError;
+      if (appError) {
+        console.error('Database insertion error:', appError);
+        throw new Error(`Database error: ${appError.message || appError.details || 'Check if the applications table exists and has all required columns.'}`);
+      }
 
       // 2. If user is logged in, also create an actual enrollment
       const { data: { user } } = await supabase.auth.getUser();

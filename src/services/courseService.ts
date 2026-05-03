@@ -66,7 +66,7 @@ export async function getEnrollments(userId: string) {
   const { data, error } = await supabase
     .from('enrollments')
     .select('*, courses(*)')
-    .eq('user_id', userId);
+    .eq('student_id', userId);
 
   if (error) {
     console.error('Error fetching enrollments:', error);

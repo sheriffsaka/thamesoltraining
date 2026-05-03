@@ -13,260 +13,187 @@ export interface Database {
         Row: {
           id: string
           full_name: string | null
+          email: string | null
           role: 'student' | 'instructor' | 'admin'
           avatar_url: string | null
+          phone: string | null
+          address: string | null
+          date_of_birth: string | null
+          gender: string | null
+          emergency_contact: string | null
+          employment_status: string | null
+          managed_password: string | null
           updated_at: string | null
         }
         Insert: {
           id: string
           full_name?: string | null
+          email?: string | null
           role?: 'student' | 'instructor' | 'admin'
           avatar_url?: string | null
+          phone?: string | null
+          address?: string | null
+          date_of_birth?: string | null
+          gender?: string | null
+          emergency_contact?: string | null
+          employment_status?: string | null
+          managed_password?: string | null
           updated_at?: string | null
         }
         Update: {
           id?: string
           full_name?: string | null
+          email?: string | null
           role?: 'student' | 'instructor' | 'admin'
           avatar_url?: string | null
+          phone?: string | null
+          address?: string | null
+          date_of_birth?: string | null
+          gender?: string | null
+          emergency_contact?: string | null
+          employment_status?: string | null
+          managed_password?: string | null
           updated_at?: string | null
         }
       }
       courses: {
         Row: {
           id: string
+          category_id: number | null
+          category: string | null
+          sub_category: string | null
           title: string
-          category: string
-          level: string | null
+          slug: string | null
           description: string | null
           long_description: string | null
-          outcomes: string[] | Json | null
-          requirements: string[] | Json | null
-          image_url: string | null
+          outcomes: string[] | null
+          requirements: string[] | null
           duration: string | null
+          certification_info: string | null
+          image_url: string | null
+          syllabus_url: string | null
+          instructor_id: string | null
+          is_published: boolean
           created_at: string
-          updated_at: string | null
         }
         Insert: {
           id?: string
+          category_id?: number | null
+          category?: string | null
+          sub_category?: string | null
           title: string
-          category: string
-          level?: string | null
+          slug?: string | null
           description?: string | null
-          image_url?: string | null
+          long_description?: string | null
+          outcomes?: string[] | null
+          requirements?: string[] | null
           duration?: string | null
+          certification_info?: string | null
+          image_url?: string | null
+          syllabus_url?: string | null
+          instructor_id?: string | null
+          is_published?: boolean
           created_at?: string
-          updated_at?: string | null
         }
         Update: {
           id?: string
+          category_id?: number | null
+          category?: string | null
+          sub_category?: string | null
           title?: string
-          category?: string
-          level?: string | null
+          slug?: string | null
           description?: string | null
-          image_url?: string | null
+          long_description?: string | null
+          outcomes?: string[] | null
+          requirements?: string[] | null
           duration?: string | null
+          certification_info?: string | null
+          image_url?: string | null
+          syllabus_url?: string | null
+          instructor_id?: string | null
+          is_published?: boolean
           created_at?: string
-          updated_at?: string | null
         }
       }
-      lessons: {
+      applications: {
         Row: {
           id: string
-          course_id: string
-          title: string
-          content: string | null
-          video_url: string | null
-          order_index: number
-          duration: string | null
+          course_id: string | null
+          course_title: string | null
+          full_name: string
+          email: string
+          phone: string
+          date_of_birth: string | null
+          gender: string | null
+          employment_status: string | null
+          address: string | null
+          emergency_contact: string | null
+          notes: string | null
+          status: 'pending' | 'approved' | 'rejected' | 'onboarded'
+          generated_password: string | null
           created_at: string
         }
         Insert: {
           id?: string
-          course_id: string
-          title: string
-          content?: string | null
-          video_url?: string | null
-          order_index: number
-          duration?: string | null
+          course_id?: string | null
+          course_title?: string | null
+          full_name: string
+          email: string
+          phone: string
+          date_of_birth?: string | null
+          gender?: string | null
+          employment_status?: string | null
+          address?: string | null
+          emergency_contact?: string | null
+          notes?: string | null
+          status?: 'pending' | 'approved' | 'rejected' | 'onboarded'
+          generated_password?: string | null
           created_at?: string
         }
         Update: {
           id?: string
-          course_id?: string
-          title?: string
-          content?: string | null
-          video_url?: string | null
-          order_index?: number
-          duration?: string | null
+          course_id?: string | null
+          course_title?: string | null
+          full_name?: string
+          email?: string
+          phone?: string
+          date_of_birth?: string | null
+          gender?: string | null
+          employment_status?: string | null
+          address?: string | null
+          emergency_contact?: string | null
+          notes?: string | null
+          status?: 'pending' | 'approved' | 'rejected' | 'onboarded'
+          generated_password?: string | null
           created_at?: string
         }
       }
       enrollments: {
         Row: {
           id: string
-          user_id: string
+          student_id: string
           course_id: string
           progress: number
-          status: 'active' | 'completed'
+          status: 'active' | 'completed' | 'dropped'
           enrolled_at: string
         }
         Insert: {
           id?: string
-          user_id: string
+          student_id: string
           course_id: string
           progress?: number
-          status?: 'active' | 'completed'
+          status?: 'active' | 'completed' | 'dropped'
           enrolled_at?: string
         }
         Update: {
           id?: string
-          user_id?: string
+          student_id?: string
           course_id?: string
           progress?: number
-          status?: 'active' | 'completed'
+          status?: 'active' | 'completed' | 'dropped'
           enrolled_at?: string
         }
       }
-      announcements: {
-        Row: {
-          id: string
-          title: string
-          content: string
-          category: string | null
-          is_active: boolean
-          created_at: string
-          created_by: string | null
-        }
-        Insert: {
-          id?: string
-          title: string
-          content: string
-          category?: string | null
-          is_active?: boolean
-          created_at?: string
-          created_by?: string | null
-        }
-        Update: {
-          id?: string
-          title?: string
-          content?: string
-          category?: string | null
-          is_active?: boolean
-          created_at?: string
-          created_by?: string | null
-        }
-      }
-      notifications: {
-        Row: {
-          id: string
-          user_id: string
-          title: string
-          message: string
-          is_read: boolean
-          link: string | null
-          created_at: string
-        }
-        Insert: {
-          id?: string
-          user_id: string
-          title: string
-          message: string
-          is_read?: boolean
-          link?: string | null
-          created_at?: string
-        }
-        Update: {
-          id?: string
-          user_id?: string
-          title?: string
-          message?: string
-          is_read?: boolean
-          link?: string | null
-          created_at?: string
-        }
-      }
-      faqs: {
-        Row: {
-          id: string
-          question: string
-          answer: string
-          category: string | null
-          order_index: number
-          is_active: boolean
-          created_at: string
-        }
-        Insert: {
-          id?: string
-          question: string
-          answer: string
-          category?: string | null
-          order_index?: number
-          is_active?: boolean
-          created_at?: string
-        }
-        Update: {
-          id?: string
-          question?: string
-          answer?: string
-          category?: string | null
-          order_index?: number
-          is_active?: boolean
-          created_at?: string
-        }
-      }
-      site_contents: {
-        Row: {
-          id: string
-          section: string
-          content: Json
-          updated_at: string | null
-        }
-        Insert: {
-          id: string
-          section: string
-          content: Json
-          updated_at?: string | null
-        }
-        Update: {
-          id?: string
-          section?: string
-          content?: Json
-          updated_at?: string | null
-        }
-      },
-      applications: {
-        Row: {
-          id: string
-          course_id: string | null
-          full_name: string
-          email: string
-          phone: string
-          notes: string | null
-          status: 'pending' | 'approved' | 'rejected'
-          created_at: string
-        }
-        Insert: {
-          id?: string
-          course_id?: string | null
-          full_name: string
-          email: string
-          phone: string
-          notes?: string | null
-          status?: 'pending' | 'approved' | 'rejected'
-          created_at?: string
-        }
-        Update: {
-          id?: string
-          course_id?: string | null
-          full_name?: string
-          email?: string
-          phone?: string
-          notes?: string | null
-          status?: 'pending' | 'approved' | 'rejected'
-          created_at?: string
-        }
-      },
       enquiries: {
         Row: {
           id: string
