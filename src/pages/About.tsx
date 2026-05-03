@@ -11,7 +11,6 @@ export function About() {
     description: "Thames Solution Training & Consultancy Ltd is a leading provider of professional training and vocational qualifications in London. We bridge the gap between ambition and employment.",
     mission: "To provide high-quality, accessible, and inclusive training that empowers individuals to achieve their full potential and secure meaningful employment. We are dedicated to excellence in education and consultancy."
   });
-  const [team, setTeam] = useState<any[]>([]);
   const [testimonials, setTestimonials] = useState<any[]>([]);
 
   useEffect(() => {
@@ -20,12 +19,12 @@ export function About() {
       const aboutPage = siteData.find(item => item.id === 'about_page');
       if (aboutPage?.content) setContent(aboutPage.content);
 
-      const [{ data: teamData }, { data: testData }] = await Promise.all([
-        supabase.from('team_members').select('*').order('order_index', { ascending: true }),
-        supabase.from('testimonials').select('*').order('created_at', { ascending: false }).limit(3)
-      ]);
+      const { data: testData } = await supabase
+        .from('testimonials')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(3);
 
-      if (teamData) setTeam(teamData);
       if (testData) setTestimonials(testData);
     }
     loadData();
@@ -167,41 +166,6 @@ export function About() {
           </div>
         </div>
       </section>
-
-      {/* Team Section */}
-      {team.length > 0 && (
-        <section className="py-32 bg-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-20">
-              <h2 className="text-4xl font-bold text-slate-900 font-serif mb-6">Our Experts</h2>
-              <p className="text-slate-600 max-w-2xl mx-auto font-medium">Meet the dedicated professionals who guide our training and consultancy services.</p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-              {team.map((member, i) => (
-                <motion.div 
-                  key={member.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.1 }}
-                  className="group"
-                >
-                  <div className="aspect-[4/5] bg-slate-100 rounded-3xl overflow-hidden mb-6 border border-slate-200 relative shadow-inner">
-                    {member.image_url ? (
-                      <img src={member.image_url} alt={member.name} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105" />
-                    ) : (
-                      <div className="absolute inset-0 flex items-center justify-center text-slate-300">
-                        <Users size={64} />
-                      </div>
-                    )}
-                  </div>
-                  <h4 className="text-xl font-bold text-slate-900 mb-1 font-serif">{member.name}</h4>
-                  <p className="text-xs font-black text-brand-teal uppercase tracking-[0.2em]">{member.role}</p>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* Testimonials */}
       {testimonials.length > 0 && (
