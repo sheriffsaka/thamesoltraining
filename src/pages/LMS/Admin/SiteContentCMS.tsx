@@ -224,6 +224,7 @@ function CourseManager() {
       category: formData.get('category'),
       sub_category: formData.get('sub_category'),
       description: formData.get('description'),
+      long_description: formData.get('long_description'),
       duration: formData.get('duration'),
       image_url: editingCourse?.image_url,
       outcomes: (formData.get('outcomes') as string)?.split('\n').filter(Boolean) || [],
@@ -365,8 +366,12 @@ function CourseManager() {
                 </div>
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">Description</label>
-                <textarea name="description" defaultValue={editingCourse.description} className="w-full h-32 bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-brand-teal font-bold" />
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">Brief Description</label>
+                <textarea name="description" defaultValue={editingCourse.description} className="w-full h-24 bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-brand-teal font-bold" />
+              </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">Detailed Course Overview (Long Description)</label>
+                <textarea name="long_description" defaultValue={editingCourse.long_description} className="w-full h-64 bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-brand-teal font-bold" />
               </div>
               <div className="space-y-2">
                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">What You Will Learn (One per line)</label>

@@ -104,6 +104,15 @@ const navLinks: any[] = [
               { name: 'First Aid', path: '/courses/mt-fa' },
               { name: 'Health & Safety', path: '/courses/mt-hs' },
               { name: 'Safeguarding', path: '/courses/mt-sg' },
+              { name: 'GDPR', path: '/courses/mt-gdpr' },
+              { name: 'Fire Safety', path: '/courses/mt-fs' },
+              { name: 'Dementia Awareness', path: '/courses/mt-da' },
+              { name: 'End of Life Care', path: '/courses/mt-eol' },
+              { name: 'Equally & Diversity', path: '/courses/mt-ed' },
+              { name: 'Infection Control', path: '/courses/mt-ic' },
+              { name: 'Medication Awareness', path: '/courses/mt-ma' },
+              { name: 'Mental Capacity', path: '/courses/mt-mc' },
+              { name: 'Food Hygiene', path: '/courses/mt-fh' },
             ]
           },
         ]
@@ -151,7 +160,7 @@ export function Navbar() {
         ? "bg-white/80 backdrop-blur-md border-slate-100 shadow-sm" 
         : "bg-white border-slate-100 shadow-sm"
     )}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         <div className="flex justify-between h-32">
           <div className="flex items-center">
             <Link to="/">
@@ -206,10 +215,10 @@ export function Navbar() {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 10 }}
                       className={cn(
-                        "bg-white rounded-b-lg shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-100 overflow-hidden z-50",
+                        "bg-white shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-100 z-50",
                         link.isHierarchical 
-                          ? "fixed left-1/2 -translate-x-1/2 top-32 w-[calc(100vw-2rem)] max-w-7xl flex min-h-[550px]" 
-                          : "absolute left-0 top-[100%] w-80 p-3"
+                          ? "fixed left-1/2 -translate-x-1/2 top-[128px] w-[calc(100vw-2rem)] max-w-7xl flex min-h-[600px] rounded-b-2xl overflow-hidden" 
+                          : "absolute left-0 top-full w-80 p-3 rounded-b-lg overflow-hidden"
                       )}
                     >
                       {link.isHierarchical ? (

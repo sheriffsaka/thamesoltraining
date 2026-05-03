@@ -340,7 +340,7 @@ It provides the highest level of assessment credentials, enabling practitioners 
   },
   { 
     id: 'mt-ed', 
-    title: 'Equality & Diversity', 
+    title: 'Equally & Diversity', 
     category: 'mandatory', 
     desc: 'Promoting inclusive and respectful environments in care.', 
     longDesc: 'This training explores the importance of equality, diversity, and social inclusion within the workplace and care delivery. It covers legal requirements, identifying unconscious bias, and practical strategies to foster an organizational culture that celebrates difference and ensures equitable treatment for all.', 

@@ -134,27 +134,8 @@ export function CourseDetail() {
                 Course Overview
               </h2>
               <p className="text-slate-600 text-lg leading-relaxed whitespace-pre-line font-medium">
-                {course.longDesc || course.description || course.desc}
+                {course.long_description || course.longDesc || course.description || course.desc}
               </p>
-            </motion.div>
-
-            <motion.div
-               initial={{ opacity: 0, y: 20 }}
-               whileInView={{ opacity: 1, y: 0 }}
-               viewport={{ once: true }}
-            >
-              <h2 className="text-2xl font-bold text-slate-900 mb-8 font-serif flex items-center gap-6">
-                <div className="w-12 h-1 bg-brand-teal rounded-full" />
-                What You Will Learn
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {(course.outcomes || []).map((outcome: string, i: number) => (
-                  <div key={i} className="flex gap-4 p-6 rounded-lg bg-white border border-slate-100 hover:border-brand-teal/30 transition-all group shadow-xl">
-                    <CheckCircle2 className="text-brand-teal shrink-0 group-hover:scale-110 transition-transform" size={20} />
-                    <span className="text-slate-700 font-bold text-sm leading-tight">{outcome}</span>
-                  </div>
-                ))}
-              </div>
             </motion.div>
 
             <motion.div

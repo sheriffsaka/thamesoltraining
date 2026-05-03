@@ -39,6 +39,9 @@ export interface Database {
           category: string
           level: string | null
           description: string | null
+          long_description: string | null
+          outcomes: string[] | Json | null
+          requirements: string[] | Json | null
           image_url: string | null
           duration: string | null
           created_at: string
