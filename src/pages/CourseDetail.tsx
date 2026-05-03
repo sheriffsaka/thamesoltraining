@@ -50,7 +50,7 @@ export function CourseDetail() {
       // 1. Always create an application entry (lead generation)
       const applicationPayload = {
         course_id: String(course.id),
-        course_title: course.title,
+        course_title: course.title || '',
         full_name: fullName,
         email: email,
         phone: phone,
@@ -63,42 +63,67 @@ export function CourseDetail() {
         status: 'pending'
       };
 
-      const { error: appError } = await supabase
+      console.log('Attempting to submit application:', applicationPayload);
+
+      const { data: appData, error: appError } = await supabase
         .from('applications')
-        .insert([applicationPayload]);
+        .insert([applicationPayload])
+        .select();
 
       if (appError) {
         console.error('Database insertion error:', appError);
-        throw new Error(`Database error: ${appError.message || appError.details || 'Check if the applications table exists and has all required columns.'}`);
+        const detail = appError.message || appError.details || JSON.stringify(appError);
+        throw new Error(`Database error: ${detail} (Code: ${appError.code})`);
       }
 
-      // 2. If user is logged in, also create an actual enrollment
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      // We only try to create an enrollment if:
-      // a) User is logged in
-      // b) course.id is a valid UUID (required for enrollments table FK)
-      const isValidUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(course.id);
+      console.log('Application submitted successfully:', appData);
 
-      if (user && course && isValidUUID) {
+      // 2. If user is logged in, also create an actual enrollment
+      const { data: authData } = await supabase.auth.getUser();
+      const user = authData?.user;
+      
+      if (user && course) {
+        // Try both student_id and user_id just in case of schema variations
+        const enrollmentPayload = {
+          student_id: user.id,
+          course_id: course.id,
+          progress: 0,
+          status: 'active'
+        };
+
         const { error: enrollError } = await supabase
           .from('enrollments')
-          .insert([{
-            student_id: user.id,
-            course_id: course.id,
-            progress: 0,
-            status: 'active'
-          }]);
+          .insert([enrollmentPayload]);
           
-        if (enrollError && enrollError.code !== '23505') { 
-          console.error('Enrollment error:', enrollError);
+        if (enrollError) {
+          console.error('Enrollment creation failed (might be schema mismatch):', enrollError);
+          
+          // Fallback if student_id column is actually named user_id
+          if (enrollError.message.includes('column "student_id" does not exist')) {
+            await supabase
+              .from('enrollments')
+              .insert([{
+                user_id: user.id,
+                course_id: course.id,
+                progress: 0,
+                status: 'active'
+              }]);
+          }
         }
       }
 
       setFormStatus('success');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Application submission error:', error);
-      alert('Submission failed: ' + (error instanceof Error ? error.message : 'Unknown error'));
+      let errorMessage = 'Unknown error';
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if (typeof error === 'object' && error !== null) {
+        errorMessage = error.message || error.details || JSON.stringify(error);
+      } else {
+        errorMessage = String(error);
+      }
+      alert('Submission failed: ' + errorMessage);
       setFormStatus('idle'); 
     }
   };

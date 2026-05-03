@@ -34,6 +34,9 @@ export function Safeguarding() {
           <h1 className="text-5xl lg:text-8xl font-bold mb-8 tracking-tighter font-serif text-white leading-none">
             {cmsContent?.title || 'Safeguarding'} Hub
           </h1>
+          <p className="text-xl lg:text-2xl text-slate-300 max-w-3xl font-medium mb-12 leading-relaxed">
+            Protecting our learners, staff, and visitors is our highest priority. We provide a safe, supportive, and inclusive environment for everyone to achieve their potential.
+          </p>
           <p className="text-2xl text-slate-300 max-w-2xl font-serif leading-relaxed italic border-l-4 border-brand-teal pl-8">
             "{cmsContent?.content?.substring(0, 150)}..."
           </p>

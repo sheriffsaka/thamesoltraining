@@ -430,15 +430,16 @@ function CourseManager() {
   }
 
   async function syncFromMock() {
-     if (!confirm('This will sync all courses from the navbar configuration into the database. Existing courses with matching IDs will be updated. Continue?')) return;
+     if (!confirm('This will sync all courses from the navbar configuration into the database. This ensures CMS courses match exactly with the navbar. Continue?')) return;
      
      setIsSyncing(true);
      try {
+       // We can now use String IDs safely since we changed the DB column type to TEXT
        for (const mc of mockCourses) {
          const { error } = await supabase.from('courses').upsert({
-           id: mc.id,
+           id: String(mc.id),
            title: mc.title,
-           slug: mc.id,
+           slug: mc.slug || mc.id,
            category: mc.category,
            sub_category: mc.subCategory || mc.level,
            description: mc.desc,
@@ -448,15 +449,15 @@ function CourseManager() {
            requirements: mc.requirements || [],
            outcomes: mc.outcomes || [],
            updated_at: new Date().toISOString()
-         }, { onConflict: 'id' });
+         });
          
          if (error) console.error(`Error syncing ${mc.title}:`, error);
        }
-       alert('Sync completed successfully!');
+       alert('Standardization completed! Your CMS now matches the navbar courses.');
        fetchCourses();
      } catch (err) {
        console.error('Sync failed:', err);
-       alert('Failed to sync courses.');
+       alert('Failed to sync courses. Check the console for details.');
      } finally {
        setIsSyncing(false);
      }

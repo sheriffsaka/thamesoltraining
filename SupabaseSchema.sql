@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS public.profiles (
 
 -- COURSES: The main catalog
 CREATE TABLE IF NOT EXISTS public.courses (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  id TEXT PRIMARY KEY,
   title TEXT NOT NULL,
   category TEXT NOT NULL,
   level TEXT,
@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS public.courses (
 -- LESSONS: Content for each course
 CREATE TABLE IF NOT EXISTS public.lessons (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  course_id UUID REFERENCES public.courses(id) ON DELETE CASCADE NOT NULL,
+  course_id TEXT NOT NULL,
   title TEXT NOT NULL,
   content TEXT,
   video_url TEXT,
@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS public.lessons (
 CREATE TABLE IF NOT EXISTS public.enrollments (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
-  course_id UUID REFERENCES public.courses(id) ON DELETE CASCADE NOT NULL,
+  course_id TEXT NOT NULL,
   progress INTEGER DEFAULT 0 CHECK (progress >= 0 AND progress <= 100),
   status TEXT DEFAULT 'active' CHECK (status IN ('active', 'completed')),
   enrolled_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
@@ -51,6 +51,7 @@ CREATE TABLE IF NOT EXISTS public.enrollments (
 -- ANNOUNCEMENTS: Global system messages
 CREATE TABLE IF NOT EXISTS public.announcements (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  course_id TEXT, -- Added for consistency
   title TEXT NOT NULL,
   content TEXT NOT NULL,
   category TEXT DEFAULT 'general',
@@ -58,6 +59,8 @@ CREATE TABLE IF NOT EXISTS public.announcements (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
   created_by UUID REFERENCES public.profiles(id)
 );
+
+ALTER TABLE public.announcements ADD COLUMN IF NOT EXISTS course_id TEXT;
 
 -- NOTIFICATIONS: User-specific alerts
 CREATE TABLE IF NOT EXISTS public.notifications (
@@ -111,63 +114,60 @@ CREATE TABLE IF NOT EXISTS public.testimonials (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- 2. Row Level Security (RLS) Policies (Continued)
+-- 2. Row Level Security (RLS) Policies
+DO $$ 
+BEGIN
+    DROP POLICY IF EXISTS "Announcements viewable by everyone." ON public.announcements;
+    DROP POLICY IF EXISTS "Users view own notifications." ON public.notifications;
+    DROP POLICY IF EXISTS "FAQs viewable by everyone." ON public.faqs;
+    DROP POLICY IF EXISTS "Site contents viewable by everyone." ON public.site_contents;
+    DROP POLICY IF EXISTS "Only admins can modify site contents." ON public.site_contents;
+    DROP POLICY IF EXISTS "Team viewable by everyone." ON public.team_members;
+    DROP POLICY IF EXISTS "Only admins can modify team." ON public.team_members;
+    DROP POLICY IF EXISTS "Testimonials viewable by everyone." ON public.testimonials;
+    DROP POLICY IF EXISTS "Only admins can modify testimonials." ON public.testimonials;
+    DROP POLICY IF EXISTS "Public profiles are viewable by everyone." ON public.profiles;
+    DROP POLICY IF EXISTS "Users can update own profile." ON public.profiles;
+    DROP POLICY IF EXISTS "Courses are viewable by everyone." ON public.courses;
+    DROP POLICY IF EXISTS "Only admins can modify courses." ON public.courses;
+    DROP POLICY IF EXISTS "Lessons are viewable by enrolled students or admins." ON public.lessons;
+    DROP POLICY IF EXISTS "Users can view own enrollments." ON public.enrollments;
+    DROP POLICY IF EXISTS "Admins can view all enrollments." ON public.enrollments;
+END $$;
 
--- Announcements: Publicly viewable, Admin only write
 ALTER TABLE public.announcements ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Announcements viewable by everyone." ON public.announcements FOR SELECT USING (true);
 
--- Notifications: Private to user
 ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users view own notifications." ON public.notifications FOR SELECT USING (auth.uid() = user_id);
 
--- FAQs: Public viewable
 ALTER TABLE public.faqs ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "FAQs viewable by everyone." ON public.faqs FOR SELECT USING (true);
 
--- Site Contents: Public viewable, Admin only write
 ALTER TABLE public.site_contents ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Site contents viewable by everyone." ON public.site_contents FOR SELECT USING (true);
 CREATE POLICY "Only admins can modify site contents." ON public.site_contents 
   FOR ALL USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'));
 
--- Team Members: Public viewable, Admin only write
 ALTER TABLE public.team_members ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Team viewable by everyone." ON public.team_members FOR SELECT USING (true);
 CREATE POLICY "Only admins can modify team." ON public.team_members 
   FOR ALL USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'));
 
--- Testimonials: Public viewable, Admin only write
 ALTER TABLE public.testimonials ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Testimonials viewable by everyone." ON public.testimonials FOR SELECT USING (true);
 CREATE POLICY "Only admins can modify testimonials." ON public.testimonials 
   FOR ALL USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'));
 
--- 4. Initial Seed Data
-INSERT INTO public.announcements (title, content, category)
-VALUES 
-('System Maintenance', 'System maintenance scheduled for Saturday at 10 PM.', 'Global Admin'),
-('New Resources', 'New resources added to Communication module.', 'Course Update');
-
-INSERT INTO public.faqs (question, answer, category, order_index)
-VALUES 
-('How do I enroll in a course?', 'To enroll, simply browse our courses and click Apply Now.', 'General', 1),
-('Are the certificates recognized?', 'Yes, all our courses are accredited by leading UK awarding bodies.', 'General', 2);
-
--- 2. Row Level Security (RLS) Policies
-
--- Profiles
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Public profiles are viewable by everyone." ON public.profiles FOR SELECT USING (true);
 CREATE POLICY "Users can update own profile." ON public.profiles FOR UPDATE USING (auth.uid() = id);
 
--- Courses
 ALTER TABLE public.courses ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Courses are viewable by everyone." ON public.courses FOR SELECT USING (true);
 CREATE POLICY "Only admins can modify courses." ON public.courses 
   FOR ALL USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'));
 
--- Lessons
 ALTER TABLE public.lessons ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Lessons are viewable by enrolled students or admins." ON public.lessons
   FOR SELECT USING (
@@ -176,7 +176,6 @@ CREATE POLICY "Lessons are viewable by enrolled students or admins." ON public.l
     OR EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'instructor')
   );
 
--- Enrollments
 ALTER TABLE public.enrollments ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can view own enrollments." ON public.enrollments FOR SELECT USING (auth.uid() = user_id);
 CREATE POLICY "Admins can view all enrollments." ON public.enrollments FOR SELECT USING (

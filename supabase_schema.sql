@@ -31,18 +31,13 @@ BEGIN
     NEW.raw_user_meta_data->>'full_name',
     NEW.email,
     CASE 
-      WHEN NEW.email = 'thamestraining@outlook.com' THEN 'admin'
-      WHEN NEW.email = 'sheriffdeenalade@gmail.com' THEN 'admin'
+      WHEN NEW.email IN ('thamestraining@outlook.com', 'sheriffdeenalade@gmail.com') THEN 'admin'
       ELSE 'student'
     END
   )
   ON CONFLICT (id) DO UPDATE SET 
     email = EXCLUDED.email,
-    full_name = COALESCE(EXCLUDED.full_name, profiles.full_name),
-    role = CASE 
-      WHEN EXCLUDED.email IN ('thamestraining@outlook.com', 'sheriffdeenalade@gmail.com') THEN 'admin'
-      ELSE profiles.role
-    END;
+    full_name = COALESCE(EXCLUDED.full_name, profiles.full_name);
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
@@ -98,7 +93,7 @@ CREATE TABLE IF NOT EXISTS categories (
 
 -- 3. Courses (Extended with required fields from CMS)
 CREATE TABLE IF NOT EXISTS courses (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  id TEXT PRIMARY KEY, -- Changed to TEXT to support stable IDs from navbar/mock data
   category_id INTEGER REFERENCES categories(id) ON DELETE SET NULL,
   category TEXT, -- For backward compatibility with some code parts
   sub_category TEXT, -- For groupings like 'Level 2 Qualifications'
@@ -115,6 +110,30 @@ CREATE TABLE IF NOT EXISTS courses (
   is_published BOOLEAN DEFAULT TRUE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
+-- Migration for courses table if it already exists
+DO $$ 
+BEGIN 
+  -- Remove FKs from dependents before changing type
+  IF EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'announcements_course_id_fkey') THEN
+    ALTER TABLE announcements DROP CONSTRAINT announcements_course_id_fkey;
+  END IF;
+  IF EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'enrollments_course_id_fkey') THEN
+    ALTER TABLE enrollments DROP CONSTRAINT enrollments_course_id_fkey;
+  END IF;
+  IF EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'lessons_course_id_fkey') THEN
+    ALTER TABLE lessons DROP CONSTRAINT lessons_course_id_fkey;
+  END IF;
+
+  -- Change types
+  ALTER TABLE courses ALTER COLUMN id TYPE TEXT;
+  ALTER TABLE announcements ALTER COLUMN course_id TYPE TEXT;
+  ALTER TABLE enrollments ALTER COLUMN course_id TYPE TEXT;
+  -- If lessons table exists (it might from SupabaseSchema.sql)
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'lessons') THEN
+    ALTER TABLE lessons ALTER COLUMN course_id TYPE TEXT;
+  END IF;
+END $$;
 
 -- Ensure columns exist if table was already created
 ALTER TABLE courses ADD COLUMN IF NOT EXISTS category_id INTEGER REFERENCES categories(id) ON DELETE SET NULL;
@@ -241,12 +260,15 @@ CREATE TABLE IF NOT EXISTS testimonials (
 -- 10. Announcements
 CREATE TABLE IF NOT EXISTS announcements (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  course_id UUID REFERENCES courses(id) ON DELETE CASCADE,
+  course_id TEXT, 
   title TEXT NOT NULL,
   content TEXT NOT NULL,
   is_active BOOLEAN DEFAULT TRUE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
+-- Ensure course_id exists if table was created without it
+ALTER TABLE announcements ADD COLUMN IF NOT EXISTS course_id TEXT;
 
 -- 11. Notifications
 CREATE TABLE IF NOT EXISTS notifications (
@@ -263,7 +285,7 @@ CREATE TABLE IF NOT EXISTS notifications (
 CREATE TABLE IF NOT EXISTS enrollments (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   student_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
-  course_id UUID REFERENCES courses(id) ON DELETE CASCADE,
+  course_id TEXT, -- Changed to TEXT for consistency
   status TEXT DEFAULT 'active' CHECK (status IN ('active', 'completed', 'dropped')),
   progress INTEGER DEFAULT 0,
   enrolled_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
@@ -285,48 +307,46 @@ ALTER TABLE notifications ENABLE ROW LEVEL SECURITY;
 ALTER TABLE enrollments ENABLE ROW LEVEL SECURITY;
 
 -- Policies
-DROP POLICY IF EXISTS "Public profiles are viewable by everyone." ON profiles;
+DO $$ 
+BEGIN
+    DROP POLICY IF EXISTS "Announcements viewable by everyone." ON announcements;
+    DROP POLICY IF EXISTS "Public profiles are viewable by everyone." ON profiles;
+    DROP POLICY IF EXISTS "Users can update own profile." ON profiles;
+    DROP POLICY IF EXISTS "Categories are viewable by everyone." ON categories;
+    DROP POLICY IF EXISTS "Courses are viewable by everyone." ON courses;
+    DROP POLICY IF EXISTS "Admins can manage courses." ON courses;
+    DROP POLICY IF EXISTS "Anyone can apply." ON applications;
+    DROP POLICY IF EXISTS "Admins can view applications." ON applications;
+    DROP POLICY IF EXISTS "Anyone can send enquiries." ON enquiries;
+    DROP POLICY IF EXISTS "Admins can manage enquiries." ON enquiries;
+    DROP POLICY IF EXISTS "Site content is viewable by everyone." ON site_contents;
+    DROP POLICY IF EXISTS "Admins can manage site content." ON site_contents;
+    DROP POLICY IF EXISTS "FAQs are viewable by everyone." ON faqs;
+    DROP POLICY IF EXISTS "Admins can manage FAQs." ON faqs;
+    DROP POLICY IF EXISTS "Team is viewable by everyone." ON team_members;
+    DROP POLICY IF EXISTS "Admins can manage team." ON team_members;
+    DROP POLICY IF EXISTS "Testimonials are viewable by everyone." ON testimonials;
+    DROP POLICY IF EXISTS "Admins can manage testimonials." ON testimonials;
+END $$;
+
 CREATE POLICY "Public profiles are viewable by everyone." ON profiles FOR SELECT USING (true);
-DROP POLICY IF EXISTS "Users can update own profile." ON profiles;
 CREATE POLICY "Users can update own profile." ON profiles FOR UPDATE USING (auth.uid() = id);
-
-DROP POLICY IF EXISTS "Categories are viewable by everyone." ON categories;
 CREATE POLICY "Categories are viewable by everyone." ON categories FOR SELECT USING (true);
-
-DROP POLICY IF EXISTS "Courses are viewable by everyone." ON courses;
 CREATE POLICY "Courses are viewable by everyone." ON courses FOR SELECT USING (is_published = true OR EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin'));
-DROP POLICY IF EXISTS "Admins can manage courses." ON courses;
 CREATE POLICY "Admins can manage courses." ON courses FOR ALL USING (EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin'));
-
-DROP POLICY IF EXISTS "Anyone can apply." ON applications;
 CREATE POLICY "Anyone can apply." ON applications FOR INSERT WITH CHECK (true);
-DROP POLICY IF EXISTS "Admins can view applications." ON applications;
 CREATE POLICY "Admins can view applications." ON applications FOR SELECT USING (EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin'));
-
-DROP POLICY IF EXISTS "Anyone can send enquiries." ON enquiries;
 CREATE POLICY "Anyone can send enquiries." ON enquiries FOR INSERT WITH CHECK (true);
-DROP POLICY IF EXISTS "Admins can manage enquiries." ON enquiries;
 CREATE POLICY "Admins can manage enquiries." ON enquiries FOR ALL USING (EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin'));
-
-DROP POLICY IF EXISTS "Site content is viewable by everyone." ON site_contents;
 CREATE POLICY "Site content is viewable by everyone." ON site_contents FOR SELECT USING (true);
-DROP POLICY IF EXISTS "Admins can manage site content." ON site_contents;
 CREATE POLICY "Admins can manage site content." ON site_contents FOR ALL USING (EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin'));
-
-DROP POLICY IF EXISTS "FAQs are viewable by everyone." ON faqs;
 CREATE POLICY "FAQs are viewable by everyone." ON faqs FOR SELECT USING (is_active = true);
-DROP POLICY IF EXISTS "Admins can manage FAQs." ON faqs;
 CREATE POLICY "Admins can manage FAQs." ON faqs FOR ALL USING (EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin'));
-
-DROP POLICY IF EXISTS "Team is viewable by everyone." ON team_members;
 CREATE POLICY "Team is viewable by everyone." ON team_members FOR SELECT USING (true);
-DROP POLICY IF EXISTS "Admins can manage team." ON team_members;
 CREATE POLICY "Admins can manage team." ON team_members FOR ALL USING (EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin'));
-
-DROP POLICY IF EXISTS "Testimonials are viewable by everyone." ON testimonials;
 CREATE POLICY "Testimonials are viewable by everyone." ON testimonials FOR SELECT USING (true);
-DROP POLICY IF EXISTS "Admins can manage testimonials." ON testimonials;
 CREATE POLICY "Admins can manage testimonials." ON testimonials FOR ALL USING (EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin'));
+CREATE POLICY "Announcements viewable by everyone." ON announcements FOR SELECT USING (true);
 
 -- Initial Data - Categories
 INSERT INTO categories (name, slug, icon, order_index) VALUES
