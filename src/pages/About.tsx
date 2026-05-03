@@ -61,7 +61,7 @@ export function About() {
             <motion.h1 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-6xl lg:text-9xl font-bold mb-8 font-serif text-white tracking-tighter leading-none"
+              className="text-5xl lg:text-7xl font-bold mb-8 font-serif text-white tracking-tighter leading-none"
             >
               {content.title.split('\n')[0]} <br /> 
               <span className="text-brand-teal font-sans italic">{content.title.split('\n')[1] || ''}</span>
@@ -205,19 +205,19 @@ export function About() {
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.1 }}
-                  className="bg-white p-12 rounded-[3rem] border border-slate-100 shadow-2xl shadow-slate-200/50 hover:-translate-y-4 transition-all duration-500"
+                  className="bg-white p-8 rounded-2xl border border-slate-100 shadow-xl shadow-slate-200/40 hover:-translate-y-2 transition-all duration-500"
                 >
-                  <div className="mb-10 flex gap-1">
+                  <div className="mb-6 flex gap-1">
                     {[...Array(5)].map((_, i) => <Star key={i} size={16} className="fill-brand-teal text-brand-teal" />)}
                   </div>
-                  <p className="text-2xl font-serif italic text-slate-700 leading-[1.6] mb-12 relative">
-                    <span className="text-4xl text-brand-teal/20 absolute -top-8 -left-6">"</span>
+                  <p className="text-xl font-serif italic text-slate-700 leading-relaxed mb-8 relative">
+                    <span className="text-3xl text-brand-teal/20 absolute -top-6 -left-4">"</span>
                     {t.content}
-                    <span className="text-4xl text-brand-teal/20 absolute -bottom-16 -right-2">"</span>
+                    <span className="text-3xl text-brand-teal/20 absolute -bottom-10 -right-2">"</span>
                   </p>
-                  <div className="mt-auto border-t border-slate-50 pt-8">
-                    <div className="font-black text-xl text-slate-900">{t.student_name}</div>
-                    <div className="text-xs font-black uppercase tracking-widest text-brand-teal mt-2">{t.course_name}</div>
+                  <div className="mt-auto border-t border-slate-50 pt-6">
+                    <div className="font-bold text-lg text-slate-900">{t.student_name}</div>
+                    <div className="text-[10px] font-black uppercase tracking-widest text-brand-teal mt-1">{t.course_name}</div>
                   </div>
                 </motion.div>
               ))}

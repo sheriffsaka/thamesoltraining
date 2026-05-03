@@ -91,7 +91,7 @@ function RecentEnquiriesList() {
     </div>
   );
 }
-export function AdminDashboard() {
+export function AdminDashboard({ activeTabOverride }: { activeTabOverride?: 'overview' | 'cms' | 'users' | 'applications' | 'enquiries' }) {
   const [activeTab, setActiveTab] = useState<'overview' | 'cms' | 'users' | 'applications' | 'enquiries'>('overview');
   const [stats, setStats] = useState([
     { label: 'Total Users', value: '...', icon: Users, color: 'text-blue-600', bg: 'bg-blue-50', border: 'border-blue-100' },
@@ -99,6 +99,14 @@ export function AdminDashboard() {
     { label: 'Pending Apps', value: '...', icon: Clock, color: 'text-amber-600', bg: 'bg-amber-50', border: 'border-amber-100' },
     { label: 'Enrollments', value: '...', icon: CheckCircle, color: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-100' },
   ]);
+
+  useEffect(() => {
+    if (activeTabOverride) {
+      setActiveTab(activeTabOverride);
+    } else {
+      setActiveTab('overview');
+    }
+  }, [activeTabOverride]);
 
   useEffect(() => {
     async function fetchStats() {
@@ -128,35 +136,19 @@ export function AdminDashboard() {
     fetchStats();
   }, []);
 
-  const navItems = [
-    { id: 'overview', label: 'Overview', icon: Layout },
-    { id: 'cms', label: 'Site Content', icon: BookOpen },
-    { id: 'users', label: 'Manage Users', icon: Users },
-    { id: 'applications', label: 'Applications', icon: FileText },
-    { id: 'enquiries', label: 'Enquiries', icon: Mail },
-  ];
-
   return (
     <div className="space-y-10">
       <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
-          <h1 className="text-4xl font-bold text-slate-900 mb-2 font-serif tracking-tight">Admin Hub</h1>
-          <p className="text-slate-500 font-medium">System-wide overview and site content management.</p>
-        </div>
-        <div className="flex bg-slate-100 p-1.5 rounded-2xl border border-slate-200 shadow-inner">
-          {navItems.map((item) => (
-            <button 
-              key={item.id}
-              onClick={() => setActiveTab(item.id as any)}
-              className={cn(
-                "flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold transition-all",
-                activeTab === item.id ? "bg-brand-teal text-white shadow-xl shadow-brand-teal/20" : "text-slate-500 hover:text-slate-900"
-              )}
-            >
-              <item.icon size={14} />
-              {item.label}
-            </button>
-          ))}
+          <h1 className="text-4xl font-bold text-slate-900 mb-2 font-serif tracking-tight">
+            {activeTab === 'overview' ? 'Admin Hub' : 
+             activeTab === 'cms' ? 'Site Content' : 
+             activeTab === 'users' ? 'User Management' : 
+             activeTab === 'applications' ? 'Applications' : 'Enquiries'}
+          </h1>
+          <p className="text-slate-500 font-medium">
+            {activeTab === 'overview' ? 'System-wide overview and site content management.' : 'Manage and update your platform records efficiently.'}
+          </p>
         </div>
       </header>
 

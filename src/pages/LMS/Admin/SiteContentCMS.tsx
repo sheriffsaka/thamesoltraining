@@ -409,11 +409,14 @@ function PagesManager() {
   );
 }
 
+import { mockCourses, categories } from '@/src/constants/courses';
+
 function CourseManager() {
   const [courses, setCourses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingCourse, setEditingCourse] = useState<any>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
 
   useEffect(() => {
     fetchCourses();
@@ -424,6 +427,39 @@ function CourseManager() {
     const { data } = await supabase.from('courses').select('*').order('created_at', { ascending: false });
     if (data) setCourses(data);
     setLoading(false);
+  }
+
+  async function syncFromMock() {
+     if (!confirm('This will sync all courses from the navbar configuration into the database. Existing courses with matching IDs will be updated. Continue?')) return;
+     
+     setIsSyncing(true);
+     try {
+       for (const mc of mockCourses) {
+         const { error } = await supabase.from('courses').upsert({
+           id: mc.id,
+           title: mc.title,
+           slug: mc.id,
+           category: mc.category,
+           sub_category: mc.subCategory || mc.level,
+           description: mc.desc,
+           long_description: mc.longDesc,
+           duration: mc.duration,
+           image_url: mc.image,
+           requirements: mc.requirements || [],
+           outcomes: mc.outcomes || [],
+           updated_at: new Date().toISOString()
+         }, { onConflict: 'id' });
+         
+         if (error) console.error(`Error syncing ${mc.title}:`, error);
+       }
+       alert('Sync completed successfully!');
+       fetchCourses();
+     } catch (err) {
+       console.error('Sync failed:', err);
+       alert('Failed to sync courses.');
+     } finally {
+       setIsSyncing(false);
+     }
   }
 
   async function handleSave(e: React.FormEvent) {
@@ -493,13 +529,23 @@ function CourseManager() {
           <h3 className="text-2xl font-bold text-slate-900 font-serif mb-2">Manage Courses</h3>
           <p className="text-sm text-slate-500 font-medium">Add, edit or remove courses from the public listing.</p>
         </div>
-        <button 
-          onClick={() => setEditingCourse({})}
-          className="bg-brand-teal text-white px-8 py-3.5 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-brand-accent transition-all flex items-center gap-2 shadow-lg shadow-brand-teal/20"
-        >
-          <Plus size={16} />
-          Add Course
-        </button>
+        <div className="flex gap-4">
+          <button 
+            onClick={syncFromMock}
+            disabled={isSyncing}
+            className="px-6 py-3.5 rounded-xl text-[10px] font-black uppercase tracking-widest border border-slate-200 text-slate-500 hover:bg-slate-100 transition-all flex items-center gap-2 disabled:opacity-50"
+          >
+            <Clock size={16} className={isSyncing ? "animate-spin" : ""} />
+            {isSyncing ? 'Syncing...' : 'Standardize with Navbar'}
+          </button>
+          <button 
+            onClick={() => setEditingCourse({})}
+            className="bg-brand-teal text-white px-8 py-3.5 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-brand-accent transition-all flex items-center gap-2 shadow-lg shadow-brand-teal/20"
+          >
+            <Plus size={16} />
+            Add Course
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

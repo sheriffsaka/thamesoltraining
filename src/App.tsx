@@ -32,7 +32,8 @@ import {
   Settings, 
   User,
   ShieldCheck,
-  Users
+  Users,
+  Mail
 } from 'lucide-react';
 
 // Placeholder Pages
@@ -64,10 +65,11 @@ const instructorMenu = [
 ];
 
 const adminMenu = [
-  { name: 'Admin Hub', path: '/admin', icon: ShieldCheck },
+  { name: 'Admin Hub', path: '/admin', icon: LayoutDashboard },
+  { name: 'Site Content', path: '/admin/cms', icon: BookOpen },
   { name: 'Manage Users', path: '/admin/users', icon: Users },
-  { name: 'Manage Courses', path: '/admin/courses', icon: BookOpen },
   { name: 'Applications', path: '/admin/applications', icon: FileText },
+  { name: 'Enquiries', path: '/admin/enquiries', icon: Mail },
   { name: 'System Settings', path: '/admin/settings', icon: Settings },
 ];
 
@@ -109,9 +111,10 @@ export default function App() {
       <Route path="/instructor/profile" element={<DashboardLayout userRole="Instructor" menuItems={instructorMenu}><Profile /></DashboardLayout>} />
       
       <Route path="/admin" element={<DashboardLayout userRole="Admin" menuItems={adminMenu}><AdminDashboard /></DashboardLayout>} />
-      <Route path="/admin/users" element={<DashboardLayout userRole="Admin" menuItems={adminMenu}><PlaceholderPage title="Manage Users" /></DashboardLayout>} />
-      <Route path="/admin/courses" element={<DashboardLayout userRole="Admin" menuItems={adminMenu}><PlaceholderPage title="Manage Courses" /></DashboardLayout>} />
-      <Route path="/admin/applications" element={<DashboardLayout userRole="Admin" menuItems={adminMenu}><AdminManageApplications /></DashboardLayout>} />
+      <Route path="/admin/cms" element={<DashboardLayout userRole="Admin" menuItems={adminMenu}><AdminDashboard activeTabOverride="cms" /></DashboardLayout>} />
+      <Route path="/admin/users" element={<DashboardLayout userRole="Admin" menuItems={adminMenu}><AdminDashboard activeTabOverride="users" /></DashboardLayout>} />
+      <Route path="/admin/applications" element={<DashboardLayout userRole="Admin" menuItems={adminMenu}><AdminDashboard activeTabOverride="applications" /></DashboardLayout>} />
+      <Route path="/admin/enquiries" element={<DashboardLayout userRole="Admin" menuItems={adminMenu}><AdminDashboard activeTabOverride="enquiries" /></DashboardLayout>} />
       <Route path="/admin/settings" element={<DashboardLayout userRole="Admin" menuItems={adminMenu}><PlaceholderPage title="System Settings" /></DashboardLayout>} />
     </Routes>
   );
