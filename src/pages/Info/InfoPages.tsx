@@ -106,9 +106,9 @@ export function InfoPage({ type }: { type: 'prevent' | 'values' | 'employability
   };
 
   const bannerImage = {
-    prevent: 'https://images.unsplash.com/photo-1541829070764-84a7d30dee9b?auto=format&fit=crop&q=80&w=2000',
-    values: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&q=80&w=2000',
-    employability: 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&q=80&w=2000'
+    prevent: 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&q=80&w=2000',
+    values: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=2000',
+    employability: 'https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&q=80&w=2000'
   }[type];
 
   const Icon = activeContent.icon;

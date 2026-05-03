@@ -40,14 +40,14 @@ export function About() {
   return (
     <div className="bg-slate-50 min-h-screen pt-20 text-sharp">
       {/* Hero */}
-      <section className="relative min-h-[60vh] flex items-center overflow-hidden border-b border-slate-100 bg-slate-900">
+      <section className="relative min-h-[70vh] flex items-center overflow-hidden border-b border-slate-100 bg-slate-900">
         <div className="absolute inset-0 z-0">
           <img 
-            src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=2000" 
-            alt="About Us Banner" 
-            className="w-full h-full object-cover opacity-40"
+            src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&q=80&w=2000" 
+            alt="Thames Solution Modern Office" 
+            className="w-full h-full object-cover opacity-60"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/60 to-transparent z-10" />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/40 to-transparent z-10" />
         </div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 text-left">
           <div className="max-w-3xl">
@@ -61,7 +61,7 @@ export function About() {
             <motion.h1 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-5xl lg:text-8xl font-bold mb-8 font-serif text-white tracking-tighter leading-none"
+              className="text-6xl lg:text-9xl font-bold mb-8 font-serif text-white tracking-tighter leading-none"
             >
               {content.title.split('\n')[0]} <br /> 
               <span className="text-brand-teal font-sans italic">{content.title.split('\n')[1] || ''}</span>
@@ -70,7 +70,7 @@ export function About() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-xl text-slate-300 leading-relaxed font-serif italic max-w-2xl border-l-4 border-brand-teal pl-8"
+              className="text-2xl text-slate-200 leading-relaxed font-serif italic max-w-2xl border-l-4 border-brand-teal pl-8 shadow-sm"
             >
               {content.description}
             </motion.p>
@@ -188,33 +188,36 @@ export function About() {
 
       {/* Testimonials */}
       {testimonials.length > 0 && (
-        <section className="py-32 bg-slate-900 text-white overflow-hidden relative">
-          <div className="absolute top-0 right-0 p-20 opacity-5">
-            <Quote size={200} />
+        <section className="py-40 bg-slate-50 relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-20 opacity-[0.03] text-slate-900">
+            <Quote size={400} />
           </div>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div className="mb-20">
-              <h2 className="text-4xl font-bold font-serif mb-4">Student Success Stories</h2>
-              <div className="h-1 w-20 bg-brand-teal" />
+            <div className="text-center mb-24">
+              <p className="text-brand-teal font-black uppercase tracking-[0.4em] text-xs mb-6">Real Results</p>
+              <h2 className="text-5xl md:text-7xl font-bold font-serif text-slate-900 mb-8 tracking-tighter">Student Success Stories</h2>
+              <div className="h-1.5 w-32 bg-brand-teal mx-auto rounded-full" />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
               {testimonials.map((t, i) => (
                 <motion.div 
                   key={t.id}
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.1 }}
-                  className="space-y-8"
+                  className="bg-white p-12 rounded-[3rem] border border-slate-100 shadow-2xl shadow-slate-200/50 hover:-translate-y-4 transition-all duration-500"
                 >
-                  <div className="flex gap-1">
-                    {[...Array(5)].map((_, i) => <Star key={i} size={14} className="fill-brand-teal text-brand-teal" />)}
+                  <div className="mb-10 flex gap-1">
+                    {[...Array(5)].map((_, i) => <Star key={i} size={16} className="fill-brand-teal text-brand-teal" />)}
                   </div>
-                  <p className="text-xl font-serif italic text-white/80 leading-relaxed">
-                    "{t.content}"
+                  <p className="text-2xl font-serif italic text-slate-700 leading-[1.6] mb-12 relative">
+                    <span className="text-4xl text-brand-teal/20 absolute -top-8 -left-6">"</span>
+                    {t.content}
+                    <span className="text-4xl text-brand-teal/20 absolute -bottom-16 -right-2">"</span>
                   </p>
-                  <div>
-                    <div className="font-bold text-lg">{t.student_name}</div>
-                    <div className="text-xs font-black uppercase tracking-widest text-brand-teal mt-1">{t.course_name}</div>
+                  <div className="mt-auto border-t border-slate-50 pt-8">
+                    <div className="font-black text-xl text-slate-900">{t.student_name}</div>
+                    <div className="text-xs font-black uppercase tracking-widest text-brand-teal mt-2">{t.course_name}</div>
                   </div>
                 </motion.div>
               ))}

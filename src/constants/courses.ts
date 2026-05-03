@@ -318,7 +318,7 @@ It provides the highest level of assessment credentials, enabling practitioners 
     desc: 'Fire prevention, emergency response, and evacuation training.', 
     longDesc: 'Fire Safety training is a mandatory requirement for all care staff. This course includes fire prevention awareness, the correct use of fire-fighting equipment, evacuation protocols, and understanding the fire risk assessment process within a residential or clinical facility to protect all occupants effectively.', 
     duration: '1 Day', 
-    image: 'https://images.unsplash.com/photo-1510003051059-e93da0183188?auto=format&fit=crop&q=80&w=600' 
+    image: 'https://images.unsplash.com/photo-1585351049911-3f62e3075677?auto=format&fit=crop&q=80&w=600' 
   },
   { 
     id: 'mt-da', 
@@ -327,7 +327,7 @@ It provides the highest level of assessment credentials, enabling practitioners 
     desc: 'Understanding the impact of dementia and how to provide person-centered care.', 
     longDesc: 'This course provides critical insight into the different types of dementia and their profound impact on individuals. It emphasizes person-centered approaches to communication, behavior management, and emotional support, empowering caregivers to improve the quality of life for those living with dementia.', 
     duration: '1 Day', 
-    image: 'https://images.unsplash.com/photo-1532187863486-abf51ad4b691?auto=format&fit=crop&q=80&w=600' 
+    image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=600' 
   },
   { 
     id: 'mt-eol', 
@@ -354,7 +354,7 @@ It provides the highest level of assessment credentials, enabling practitioners 
     desc: 'Preventing the spread of infection through best practices.', 
     longDesc: 'Infection Control training defines the principles of professional hygiene, effective hand-washing techniques, and the correct use of personal protective equipment (PPE). This training is fundamental to preventing the spread of communicable diseases within care, clinical, and residential environments.', 
     duration: '1 Day', 
-    image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=600' 
+    image: 'https://images.unsplash.com/photo-1584622781564-1d987f7333c1?auto=format&fit=crop&q=80&w=600' 
   },
   { 
     id: 'mt-ma', 
@@ -363,7 +363,7 @@ It provides the highest level of assessment credentials, enabling practitioners 
     desc: 'Safe administration and handling of medications.', 
     longDesc: 'Providing the essential knowledge for the safe handling and administration of medication, this course covers legal frameworks, safe storage, meticulous documentation, and the importance of avoiding administration errors to ensure patient safety and professional compliance.', 
     duration: '1 Day', 
-    image: 'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?auto=format&fit=crop&q=80&w=600' 
+    image: 'https://images.unsplash.com/photo-1631549916768-4119b2e5f926?auto=format&fit=crop&q=80&w=600' 
   },
   { 
     id: 'mt-mc', 

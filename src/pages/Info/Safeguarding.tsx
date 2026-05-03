@@ -23,9 +23,9 @@ export function Safeguarding() {
       <section className="relative min-h-[50vh] flex items-center overflow-hidden border-b border-slate-100 bg-slate-900">
         <div className="absolute inset-0 z-0">
           <img 
-            src="https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&q=80&w=2000" 
-            alt="Safeguarding Banner" 
-            className="w-full h-full object-cover opacity-40 shadow-2xl"
+            src="https://images.unsplash.com/photo-1573497019236-17f8177b81e8?auto=format&fit=crop&q=80&w=2000" 
+            alt="Supportive Office Consultation" 
+            className="w-full h-full object-cover opacity-60 shadow-2xl"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/40 to-transparent z-10" />
         </div>
