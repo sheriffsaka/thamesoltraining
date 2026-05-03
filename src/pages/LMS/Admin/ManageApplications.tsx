@@ -76,57 +76,20 @@ export function ManageApplications() {
   async function onboardStudent(app: any) {
     setIsUpdating(true);
     try {
-      // 1. Try to find if a user with this email already exists in profiles
-      const { data: profileData, error: findError } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('email', app.email)
-        .maybeSingle();
+      // The heavy lifting is now done by the DB trigger when the user signs up
+      // Admin just marks it as "onboarded" or "approved"
+      const { error } = await supabase
+        .from('applications')
+        .update({ status: 'onboarded' })
+        .eq('id', app.id);
 
-      if (findError) throw findError;
-
-      let studentId = profileData?.id;
-
-      if (studentId) {
-        // 2. Update Profile with provided details and managed password
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .update({
-            full_name: app.full_name,
-            phone: app.phone,
-            address: app.address,
-            date_of_birth: app.date_of_birth,
-            emergency_contact: app.emergency_contact,
-            gender: app.gender,
-            employment_status: app.employment_status,
-            managed_password: app.generated_password,
-            role: 'student',
-            updated_at: new Date().toISOString()
-          })
-          .eq('id', studentId);
-
-        if (profileError) throw profileError;
-
-        // 3. Create Enrollment
-        const { error: enrollError } = await supabase
-          .from('enrollments')
-          .upsert({
-            student_id: studentId,
-            course_id: app.course_id,
-            status: 'active'
-          });
-
-        if (enrollError) throw enrollError;
-      }
-
-      // 4. Update application status to onboarded (always do this if we got here)
-      await updateStatus(app.id, 'onboarded');
+      if (error) throw error;
       
-      if (studentId) {
-        alert('Student onboarded successfully! Profile and enrollment updated.');
-      } else {
-        alert('Application marked as onboarded. Note: The student has not registered an account yet, so a profile was not created. They can proceed to sign up with their email.');
-      }
+      // Update local state
+      setApplications(prev => prev.map(a => a.id === app.id ? { ...a, status: 'onboarded' } : a));
+      setSelectedApp(prev => prev ? { ...prev, status: 'onboarded' } : null);
+
+      alert('Application marked as onboarded! The student can now sign up with their email to claim their account and access their course.');
     } catch (error) {
       console.error('Onboarding error:', error);
       alert('Onboarding failed: ' + (error instanceof Error ? error.message : 'Unknown error'));
@@ -249,37 +212,46 @@ export function ManageApplications() {
       {/* Application Detail Modal */}
       <AnimatePresence mode="wait">
         {selectedApp && (
-          <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 lg:p-12 xl:pl-[360px]">
+          <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 lg:p-12 xl:ml-80 transition-all">
             <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setSelectedApp(null)}
-              className="absolute inset-0 bg-slate-900/40 backdrop-blur-md"
+              className="absolute inset-0 bg-slate-900/60 backdrop-blur-md"
             />
             <motion.div 
               initial={{ scale: 0.95, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.95, opacity: 0, y: 20 }}
-              className="relative bg-white w-full max-w-5xl rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col max-h-[85vh] z-10"
+              className="relative bg-white w-full max-w-5xl rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh] z-10"
             >
               {/* Modal Header */}
-              <div className="p-10 border-b border-slate-50 bg-slate-50/50 flex justify-between items-center">
+              <div className="p-8 lg:p-10 border-b border-slate-50 bg-slate-50/50 flex justify-between items-center">
                 <div className="flex items-center gap-6">
-                  <div className="w-16 h-16 bg-brand-teal rounded-[1.5rem] flex items-center justify-center text-white shadow-xl shadow-brand-teal/20">
+                  <div className="w-16 h-16 bg-brand-teal rounded-[1.5rem] flex items-center justify-center text-white shadow-xl shadow-brand-teal/20 shrink-0">
                     <FileText size={32} />
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <div className="text-[10px] font-black text-brand-teal uppercase tracking-[0.3em] mb-1 italic">Application Record</div>
-                    <h2 className="text-3xl font-bold text-slate-900 font-serif">{selectedApp.full_name}</h2>
+                    <h2 className="text-2xl lg:text-3xl font-bold text-slate-900 font-serif truncate">{selectedApp.full_name}</h2>
                   </div>
                 </div>
-                <button 
-                  onClick={() => setSelectedApp(null)}
-                  className="p-4 bg-white rounded-2xl text-slate-400 hover:text-rose-500 transition-all border border-slate-100 shadow-sm"
-                >
-                  <X size={24} />
-                </button>
+                <div className="flex items-center gap-3">
+                  <a 
+                    href={`mailto:${selectedApp.email}?subject=Application Status: ${selectedApp.status}&body=Hello ${selectedApp.full_name},%0D%0A%0D%0AYour application for ${selectedApp.course_title} has been ${selectedApp.status}. %0D%0A%0D%0AYour default password is: ${selectedApp.generated_password}%0D%0A%0D%0APlease sign up at: ${window.location.origin}/signup to claim your account.`}
+                    className="hidden sm:flex items-center gap-2 px-6 py-4 bg-white text-brand-teal rounded-2xl font-bold border border-brand-teal/20 hover:bg-brand-teal hover:text-white transition-all shadow-sm"
+                  >
+                    <Mail size={18} />
+                    Notify via Email
+                  </a>
+                  <button 
+                    onClick={() => setSelectedApp(null)}
+                    className="p-4 bg-white rounded-2xl text-slate-400 hover:text-rose-500 transition-all border border-slate-100 shadow-sm"
+                  >
+                    <X size={24} />
+                  </button>
+                </div>
               </div>
 
               {/* Modal Body */}

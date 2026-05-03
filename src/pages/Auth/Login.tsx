@@ -114,9 +114,12 @@ export function Login() {
             </button>
           </form>
 
-          <div className="mt-8 pt-8 border-t border-gray-100 text-center">
+          <div className="mt-8 pt-8 border-t border-gray-100 text-center space-y-3">
             <p className="text-gray-500 text-sm">
               Not a student yet? <Link to="/courses" className="text-brand-teal font-bold hover:underline">Apply for a course</Link>
+            </p>
+            <p className="text-gray-500 text-sm">
+              Already applied and approved? <Link to="/signup" className="text-brand-teal font-bold hover:underline">Sign up to claim your account</Link>
             </p>
           </div>
         </div>

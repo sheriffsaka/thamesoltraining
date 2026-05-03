@@ -6,6 +6,7 @@ import { CourseDetail } from './pages/CourseDetail';
 import { Safeguarding } from './pages/Info/Safeguarding';
 import { InfoPage } from './pages/Info/InfoPages';
 import { Login } from './pages/Auth/Login';
+import Signup from './pages/Auth/Signup';
 import { About } from './pages/About';
 import { Contact } from './pages/Contact';
 import { Policy } from './pages/Info/Policy';
@@ -95,6 +96,7 @@ export default function App() {
       </Route>
 
       <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
 
       {/* LMS Protected Zones (Mocked Layouts) */}
       <Route path="/dashboard" element={<DashboardLayout userRole="Student" menuItems={studentMenu}><StudentDashboard /></DashboardLayout>} />

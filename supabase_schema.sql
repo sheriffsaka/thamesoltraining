@@ -33,20 +33,52 @@ ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS role TEXT DEFAULT 'student'
 -- Trigger to create profile on signup
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
+DECLARE
+  app_record RECORD;
 BEGIN
-  INSERT INTO public.profiles (id, full_name, email, role)
+  -- 1. Insert/Update Profile
+  INSERT INTO public.profiles (id, full_name, email, role, managed_password)
   VALUES (
     NEW.id,
-    NEW.raw_user_meta_data->>'full_name',
+    COALESCE(NEW.raw_user_meta_data->>'full_name', ''),
     NEW.email,
     CASE 
       WHEN NEW.email IN ('thamestraining@outlook.com', 'sheriffdeenalade@gmail.com') THEN 'admin'
       ELSE 'student'
-    END
+    END,
+    NEW.raw_user_meta_data->>'password'
   )
   ON CONFLICT (id) DO UPDATE SET 
     email = EXCLUDED.email,
     full_name = COALESCE(EXCLUDED.full_name, profiles.full_name);
+
+  -- 2. Check for onboarded application
+  SELECT * INTO app_record FROM public.applications 
+  WHERE email = NEW.email AND status IN ('approved', 'onboarded')
+  ORDER BY created_at DESC
+  LIMIT 1;
+
+  IF app_record.id IS NOT NULL THEN
+    -- Auto enroll
+    INSERT INTO public.enrollments (student_id, course_id, status)
+    VALUES (NEW.id, app_record.course_id, 'active')
+    ON CONFLICT (student_id, course_id) DO NOTHING;
+    
+    -- Sync profile data from application if profile is empty
+    UPDATE public.profiles SET
+      phone = COALESCE(profiles.phone, app_record.phone),
+      address = COALESCE(profiles.address, app_record.address),
+      date_of_birth = COALESCE(profiles.date_of_birth, app_record.date_of_birth),
+      emergency_contact = COALESCE(profiles.emergency_contact, app_record.emergency_contact),
+      gender = COALESCE(profiles.gender, app_record.gender),
+      employment_status = COALESCE(profiles.employment_status, app_record.employment_status),
+      managed_password = COALESCE(profiles.managed_password, app_record.generated_password)
+    WHERE id = NEW.id;
+
+    -- Update application status to onboarded if it was just approved
+    UPDATE public.applications SET status = 'onboarded' WHERE id = app_record.id;
+  END IF;
+
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
