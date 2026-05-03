@@ -265,8 +265,9 @@ function PagesManager() {
       setIsUploading(true);
       const url = await uploadImage(file);
       updateField(key, url);
-    } catch (err) {
-      alert('Upload failed');
+    } catch (err: any) {
+      console.error('Image upload error:', err);
+      alert(`Upload failed: ${err.message || 'Unknown error'}. Make sure the "uploads" bucket exists in Supabase storage.`);
     } finally {
       setIsUploading(false);
     }
@@ -472,8 +473,9 @@ function CourseManager() {
       } else {
         setEditingCourse({ ...editingCourse, syllabus_url: url });
       }
-    } catch (err) {
-      alert('Upload failed');
+    } catch (err: any) {
+      console.error('File upload error:', err);
+      alert(`Upload failed: ${err.message || 'Unknown error'}. Please verify your storage bucket settings.`);
     } finally {
       setIsUploading(false);
     }

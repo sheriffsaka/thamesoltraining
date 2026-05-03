@@ -56,6 +56,36 @@ CREATE TRIGGER on_auth_user_created
 -- Promote existing users if they already signed up
 UPDATE profiles SET role = 'admin' WHERE email IN ('thamestraining@outlook.com', 'sheriffdeenalade@gmail.com');
 
+-- 1.5 Storage Setup
+-- Note: You may need to run these separately or via the Supabase Dashboard if they fail to run in the SQL Editor due to permissions
+INSERT INTO storage.buckets (id, name, public) 
+VALUES ('uploads', 'uploads', true)
+ON CONFLICT (id) DO NOTHING;
+
+-- Storage Policies
+CREATE POLICY "Public Read Access"
+ON storage.objects FOR SELECT
+USING (bucket_id = 'uploads');
+
+CREATE POLICY "Authenticated Upload"
+ON storage.objects FOR INSERT
+TO authenticated
+WITH CHECK (
+  bucket_id = 'uploads'
+);
+
+CREATE POLICY "Admin All Access"
+ON storage.objects FOR ALL
+TO authenticated
+USING (
+  bucket_id = 'uploads' AND 
+  EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+)
+WITH CHECK (
+  bucket_id = 'uploads' AND 
+  EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+);
+
 -- 2. Categories
 CREATE TABLE IF NOT EXISTS categories (
   id SERIAL PRIMARY KEY,

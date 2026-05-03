@@ -48,9 +48,9 @@ export function Profile() {
 
       setProfile({ ...profile, avatar_url: publicUrl });
       setMessage({ type: 'success', text: 'Profile picture updated successfully!' });
-    } catch (err) {
+    } catch (err: any) {
       console.error('Upload error:', err);
-      setMessage({ type: 'error', text: 'Failed to upload image. Make sure the "uploads" bucket exists.' });
+      setMessage({ type: 'error', text: `Failed to upload image: ${err.message || 'Unknown error'}. Make sure the "uploads" bucket exists.` });
     } finally {
       setIsUploading(false);
     }
