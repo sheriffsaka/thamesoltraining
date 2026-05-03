@@ -75,6 +75,7 @@ export function ManageUsers() {
                     </div>
                     <div>
                       <div className="font-bold text-slate-900">{user.full_name || 'Anonymous'}</div>
+                      <div className="text-[10px] text-slate-400 font-medium">{user.email}</div>
                       <div className="text-[10px] text-slate-400 tracking-wider">ID: {user.id.slice(0, 8)}</div>
                     </div>
                   </div>

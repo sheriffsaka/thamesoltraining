@@ -8,6 +8,89 @@ import { ManageApplications } from './Admin/ManageApplications';
 import { ManageEnquiries } from './Admin/ManageEnquiries';
 import { supabase } from '@/src/lib/supabase';
 
+function RecentApplicationsList() {
+  const [apps, setApps] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetch() {
+      const { data } = await supabase
+        .from('applications')
+        .select(`*, courses(title)`)
+        .order('created_at', { ascending: false })
+        .limit(5);
+      if (data) setApps(data);
+      setLoading(false);
+    }
+    fetch();
+  }, []);
+
+  if (loading) return <div className="p-12 flex justify-center"><Clock className="animate-spin text-slate-300" /></div>;
+  if (apps.length === 0) return <div className="p-12 text-center text-slate-400 text-sm font-medium">No recent applications</div>;
+
+  return (
+    <div className="space-y-4">
+      {apps.map((app) => (
+        <div key={app.id} className="p-6 rounded-2xl bg-slate-50 border border-slate-100 flex items-center gap-4">
+          <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-brand-teal border border-slate-100 shadow-sm">
+            <Users size={20} />
+          </div>
+          <div className="flex-1">
+            <div className="font-bold text-slate-900 text-sm">{app.full_name}</div>
+            <div className="text-[10px] text-slate-400 font-bold uppercase">{app.courses?.title || 'Unknown Course'}</div>
+          </div>
+          <div className={cn(
+            "px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest",
+            app.status === 'approved' ? 'bg-emerald-50 text-emerald-600' : 
+            app.status === 'rejected' ? 'bg-rose-50 text-rose-600' : 'bg-amber-50 text-amber-600'
+          )}>
+            {app.status}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function RecentEnquiriesList() {
+  const [enqs, setEnqs] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetch() {
+      const { data } = await supabase
+        .from('enquiries')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(5);
+      if (data) setEnqs(data);
+      setLoading(false);
+    }
+    fetch();
+  }, []);
+
+  if (loading) return <div className="p-12 flex justify-center"><Clock className="animate-spin text-slate-300" /></div>;
+  if (enqs.length === 0) return <div className="p-12 text-center text-slate-400 text-sm font-medium">No recent enquiries</div>;
+
+  return (
+    <div className="space-y-4">
+      {enqs.map((enq) => (
+        <div key={enq.id} className="p-6 rounded-2xl bg-slate-50 border border-slate-100 flex items-center gap-4">
+          <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-slate-400 border border-slate-100 shadow-sm">
+            <Mail size={20} />
+          </div>
+          <div className="flex-1">
+            <div className="font-bold text-slate-900 text-sm truncate max-w-[150px]">{enq.subject}</div>
+            <div className="text-[10px] text-slate-400 font-bold uppercase">{enq.full_name}</div>
+          </div>
+          <div className="text-[10px] text-slate-400 font-bold">
+            {new Date(enq.created_at).toLocaleDateString()}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
 export function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<'overview' | 'cms' | 'users' | 'applications' | 'enquiries'>('overview');
   const [stats, setStats] = useState([
@@ -99,51 +182,61 @@ export function AdminDashboard() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-            {/* Quick Tools */}
-            <div className="lg:col-span-2 space-y-6">
-              <h2 className="text-2xl font-bold text-slate-900 font-serif">Quick Actions</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <button onClick={() => setActiveTab('cms')} className="p-8 bg-white rounded-[2.5rem] border border-slate-100 shadow-xl hover:border-brand-teal transition-all text-left group">
-                  <div className="w-12 h-12 bg-brand-teal/5 rounded-xl flex items-center justify-center text-brand-teal mb-6 group-hover:scale-110 transition-transform">
-                    <BookOpen size={24} />
-                  </div>
-                  <div className="font-bold text-xl text-slate-900 mb-2 font-serif">Manage Content</div>
-                  <p className="text-sm text-slate-500 font-medium">Update courses, FAQs, and pages.</p>
-                </button>
-                <button onClick={() => setActiveTab('users')} className="p-8 bg-white rounded-[2.5rem] border border-slate-100 shadow-xl hover:border-brand-teal transition-all text-left group">
-                  <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 mb-6 group-hover:scale-110 transition-transform">
-                    <ShieldCheck size={24} />
-                  </div>
-                  <div className="font-bold text-xl text-slate-900 mb-2 font-serif">User Permissions</div>
-                  <p className="text-sm text-slate-500 font-medium">Promote users to admin or instructor.</p>
-                </button>
+            {/* Recent Activity */}
+            <div className="lg:col-span-2 space-y-8">
+              <div className="bg-white rounded-[3rem] border border-slate-100 shadow-2xl overflow-hidden flex flex-col min-h-[400px]">
+                <div className="p-8 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                  <h3 className="text-xl font-bold text-slate-900 font-serif">Recent Applications</h3>
+                  <button onClick={() => setActiveTab('applications')} className="text-[10px] font-black text-brand-teal uppercase tracking-widest hover:underline">View All</button>
+                </div>
+                <div className="flex-1 p-8">
+                  <RecentApplicationsList />
+                </div>
+              </div>
+
+              <div className="bg-white rounded-[3rem] border border-slate-100 shadow-2xl overflow-hidden flex flex-col min-h-[400px]">
+                <div className="p-8 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                  <h3 className="text-xl font-bold text-slate-900 font-serif">Recent Enquiries</h3>
+                  <button onClick={() => setActiveTab('enquiries')} className="text-[10px] font-black text-brand-teal uppercase tracking-widest hover:underline">View All</button>
+                </div>
+                <div className="flex-1 p-8">
+                  <RecentEnquiriesList />
+                </div>
               </div>
             </div>
 
-            {/* System Status */}
-            <div className="space-y-6">
-              <h2 className="text-2xl font-bold text-slate-900 font-serif">System Status</h2>
-              <div className="bg-white rounded-[3rem] p-8 border border-slate-100 shadow-2xl space-y-6">
-                <div className="flex items-center justify-between">
-                  <div className="text-xs font-black text-slate-400 uppercase tracking-widest">Database</div>
-                  <div className="flex items-center gap-2 text-emerald-600 font-bold text-sm">
-                    <div className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
-                    Operational
-                  </div>
+            {/* Sidebar Tools */}
+            <div className="space-y-10">
+              <div className="space-y-6">
+                <h2 className="text-2xl font-bold text-slate-900 font-serif">System Status</h2>
+                <div className="bg-white rounded-[3rem] p-8 border border-slate-100 shadow-2xl space-y-6">
+                  {[
+                    { label: 'Database', status: 'Operational' },
+                    { label: 'Storage', status: 'Operational' },
+                    { label: 'Auth Service', status: 'Operational' }
+                  ].map((s) => (
+                    <div key={s.label} className="flex items-center justify-between">
+                      <div className="text-xs font-black text-slate-400 uppercase tracking-widest">{s.label}</div>
+                      <div className="flex items-center gap-2 text-emerald-600 font-bold text-sm">
+                        <div className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
+                        {s.status}
+                      </div>
+                    </div>
+                  ))}
                 </div>
-                <div className="flex items-center justify-between">
-                  <div className="text-xs font-black text-slate-400 uppercase tracking-widest">Storage</div>
-                  <div className="flex items-center gap-2 text-emerald-600 font-bold text-sm">
-                    <div className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
-                    Operational
-                  </div>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="text-xs font-black text-slate-400 uppercase tracking-widest">Auth Service</div>
-                  <div className="flex items-center gap-2 text-emerald-600 font-bold text-sm">
-                    <div className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
-                    Operational
-                  </div>
+              </div>
+
+              <div className="space-y-6">
+                <h2 className="text-2xl font-bold text-slate-900 font-serif">Quick Actions</h2>
+                <div className="grid grid-cols-1 gap-4">
+                  <button onClick={() => setActiveTab('cms')} className="p-6 bg-slate-50 rounded-2xl border border-slate-100 hover:border-brand-teal transition-all text-left group">
+                    <div className="font-bold text-slate-900 mb-1 font-serif">Update Courses</div>
+                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">CMS Manager</p>
+                  </button>
+                  <button onClick={() => setActiveTab('users')} className="p-6 bg-slate-50 rounded-2xl border border-slate-100 hover:border-brand-teal transition-all text-left group">
+                    <div className="font-bold text-slate-900 mb-1 font-serif">Manage Roles</div>
+                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">User Access</p>
+                  </button>
                 </div>
               </div>
             </div>

@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ChevronDown, User } from 'lucide-react';
+import { Menu, X, ChevronDown, User, Bell } from 'lucide-react';
 import { Logo } from '@/src/components/ui/Logo';
 import { cn } from '@/src/lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
+import { useSiteSettings } from '@/src/hooks/useSiteSettings';
 
 const navLinks: any[] = [
   {
@@ -152,9 +153,26 @@ export function Navbar() {
   const [activeDeepMenu, setActiveDeepMenu] = useState<string | null>(null);
   const location = useLocation();
   const isHome = location.pathname === '/';
+  const { settings } = useSiteSettings();
 
   return (
-    <nav className={cn(
+    <>
+      <AnimatePresence>
+        {settings.banner_active && (
+          <motion.div 
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="bg-brand-teal text-white py-3 px-4 text-center text-[10px] font-black uppercase tracking-[0.25em] relative overflow-hidden"
+          >
+            <div className="flex items-center justify-center gap-4 relative z-10">
+              <Bell size={12} className="animate-bounce" />
+              <span>{settings.banner_text}</span>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <nav className={cn(
       "sticky top-0 z-50 border-b transition-all duration-300",
       isHome 
         ? "bg-white/80 backdrop-blur-md border-slate-100 shadow-sm" 
@@ -480,5 +498,6 @@ export function Navbar() {
         )}
       </AnimatePresence>
     </nav>
+    </>
   );
 }

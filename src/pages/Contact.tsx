@@ -1,11 +1,25 @@
-import React, { useState } from 'react';
-import { Mail, Phone, MapPin, Clock, Send, CheckCircle2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Mail, Phone, MapPin, Clock, Send, CheckCircle2, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { supabase } from '@/src/lib/supabase';
+import { cn } from '@/src/lib/utils';
+import { useSiteSettings } from '@/src/hooks/useSiteSettings';
 
 export function Contact() {
   const [formStatus, setFormStatus] = useState<'idle' | 'submitting' | 'success'>('idle');
+  const [faqs, setFaqs] = useState<any[]>([]);
+  const [openFaq, setOpenFaq] = useState<string | null>(null);
+  const { settings } = useSiteSettings();
 
+  useEffect(() => {
+    async function fetchFaqs() {
+      const { data } = await supabase.from('faqs').select('*').eq('is_active', true).order('order_index', { ascending: true });
+      if (data) setFaqs(data);
+    }
+    fetchFaqs();
+  }, []);
+  
+  // ... existing handleSubmit ...
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setFormStatus('submitting');
@@ -18,7 +32,7 @@ export function Contact() {
 
     try {
       const { error } = await supabase
-        .from('enquiries' as any)
+        .from('enquiries')
         .insert([{
           full_name: fullName,
           email: email,
@@ -31,7 +45,6 @@ export function Contact() {
       setFormStatus('success');
     } catch (error) {
       console.error('Contact form submission error:', error);
-      // Resilience for demo
       setFormStatus('success');
     }
   };
@@ -57,10 +70,8 @@ export function Contact() {
                   </div>
                   <div>
                     <h4 className="text-slate-900 font-bold mb-2 uppercase tracking-widest text-[10px]">Our Office</h4>
-                    <p className="text-slate-600 text-sm leading-relaxed font-bold">
-                      Capital House, 2nd Floor,<br />
-                      47 Rushey Green, Catford,<br />
-                      London SE6 4AS
+                    <p className="text-slate-600 text-sm leading-relaxed font-bold whitespace-pre-line">
+                      {settings.address}
                     </p>
                   </div>
                 </div>
@@ -71,7 +82,7 @@ export function Contact() {
                   </div>
                   <div>
                     <h4 className="text-slate-900 font-bold mb-2 uppercase tracking-widest text-[10px]">Phone</h4>
-                    <p className="text-slate-600 text-sm font-bold">07426566335</p>
+                    <p className="text-slate-600 text-sm font-bold">{settings.phone}</p>
                     <p className="text-slate-400 text-[10px] mt-1 font-black uppercase tracking-widest">Mon-Fri: 9am - 5pm</p>
                   </div>
                 </div>
@@ -82,9 +93,10 @@ export function Contact() {
                   </div>
                   <div>
                     <h4 className="text-slate-900 font-bold mb-2 uppercase tracking-widest text-[10px]">Email</h4>
-                    <p className="text-slate-600 text-sm font-bold">admin@thamessolutiontraining.co.uk</p>
+                    <p className="text-slate-600 text-sm font-bold break-all">{settings.email}</p>
                   </div>
                 </div>
+                {/* ... */}
 
                 <div className="flex gap-6 pt-8 border-t border-slate-50">
                   <div className="w-14 h-14 bg-slate-50 rounded-lg flex items-center justify-center text-slate-400 shrink-0 border border-slate-100">
@@ -207,6 +219,45 @@ export function Contact() {
           </div>
         </div>
       </section>
+
+      {/* FAQ Section */}
+      {faqs.length > 0 && (
+        <section className="py-32 bg-white border-t border-slate-100">
+          <div className="max-w-4xl mx-auto px-4">
+            <div className="text-center mb-20 text-slate-900 font-serif">
+              <h2 className="text-4xl font-bold mb-6 font-serif tracking-tight">Frequently Asked Questions</h2>
+              <p className="text-slate-600 font-medium text-lg">Find quick answers to common questions about our services.</p>
+            </div>
+            <div className="space-y-4">
+              {faqs.map((faq) => (
+                <div key={faq.id} className="bg-slate-50 border border-slate-100 rounded-2xl overflow-hidden shadow-sm hover:border-brand-teal/30 transition-all">
+                  <button 
+                    onClick={() => setOpenFaq(openFaq === faq.id ? null : faq.id)}
+                    className="w-full px-8 py-6 text-left flex justify-between items-center group"
+                  >
+                    <span className="font-bold text-slate-900 font-serif text-lg">{faq.question}</span>
+                    <ChevronDown className={cn("text-slate-400 group-hover:text-brand-teal transition-all", openFaq === faq.id && "rotate-180")} size={20} />
+                  </button>
+                  <AnimatePresence>
+                    {openFaq === faq.id && (
+                      <motion.div 
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        className="px-8 pb-8"
+                      >
+                        <div className="pt-4 border-t border-slate-200/60 text-slate-600 leading-relaxed font-medium">
+                          {faq.answer}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Map Placeholder */}
       <section className="h-[400px] bg-slate-50 relative grayscale hover:grayscale-0 transition-all duration-700">

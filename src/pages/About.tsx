@@ -1,8 +1,9 @@
-import { Users, Target, Award, CheckCircle2, Eye, Heart } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Users, Target, Award, CheckCircle2, Eye, Heart, Star, Quote } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useState, useEffect } from 'react';
 import { getSiteContent } from '@/src/services/contentService';
+import { supabase } from '@/src/lib/supabase';
+import { Link } from 'react-router-dom';
 
 export function About() {
   const [content, setContent] = useState<any>({
@@ -10,16 +11,24 @@ export function About() {
     description: "Thames Solution Training & Consultancy Ltd is a leading provider of professional training and vocational qualifications in London. We bridge the gap between ambition and employment.",
     mission: "To provide high-quality, accessible, and inclusive training that empowers individuals to achieve their full potential and secure meaningful employment. We are dedicated to excellence in education and consultancy."
   });
+  const [team, setTeam] = useState<any[]>([]);
+  const [testimonials, setTestimonials] = useState<any[]>([]);
 
   useEffect(() => {
-    async function loadContent() {
-      const data = await getSiteContent('about');
-      const aboutPage = data.find(item => item.id === 'about_page');
-      if (aboutPage?.content) {
-        setContent(aboutPage.content);
-      }
+    async function loadData() {
+      const siteData = await getSiteContent('about');
+      const aboutPage = siteData.find(item => item.id === 'about_page');
+      if (aboutPage?.content) setContent(aboutPage.content);
+
+      const [{ data: teamData }, { data: testData }] = await Promise.all([
+        supabase.from('team_members').select('*').order('order_index', { ascending: true }),
+        supabase.from('testimonials').select('*').order('created_at', { ascending: false }).limit(3)
+      ]);
+
+      if (teamData) setTeam(teamData);
+      if (testData) setTestimonials(testData);
     }
-    loadContent();
+    loadData();
   }, []);
 
   const stats = [
@@ -158,6 +167,78 @@ export function About() {
           </div>
         </div>
       </section>
+
+      {/* Team Section */}
+      {team.length > 0 && (
+        <section className="py-32 bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-20">
+              <h2 className="text-4xl font-bold text-slate-900 font-serif mb-6">Our Experts</h2>
+              <p className="text-slate-600 max-w-2xl mx-auto font-medium">Meet the dedicated professionals who guide our training and consultancy services.</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+              {team.map((member, i) => (
+                <motion.div 
+                  key={member.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.1 }}
+                  className="group"
+                >
+                  <div className="aspect-[4/5] bg-slate-100 rounded-3xl overflow-hidden mb-6 border border-slate-200 relative shadow-inner">
+                    {member.image_url ? (
+                      <img src={member.image_url} alt={member.name} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105" />
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center text-slate-300">
+                        <Users size={64} />
+                      </div>
+                    )}
+                  </div>
+                  <h4 className="text-xl font-bold text-slate-900 mb-1 font-serif">{member.name}</h4>
+                  <p className="text-xs font-black text-brand-teal uppercase tracking-[0.2em]">{member.role}</p>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Testimonials */}
+      {testimonials.length > 0 && (
+        <section className="py-32 bg-slate-900 text-white overflow-hidden relative">
+          <div className="absolute top-0 right-0 p-20 opacity-5">
+            <Quote size={200} />
+          </div>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div className="mb-20">
+              <h2 className="text-4xl font-bold font-serif mb-4">Student Success Stories</h2>
+              <div className="h-1 w-20 bg-brand-teal" />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+              {testimonials.map((t, i) => (
+                <motion.div 
+                  key={t.id}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: i * 0.1 }}
+                  className="space-y-8"
+                >
+                  <div className="flex gap-1">
+                    {[...Array(5)].map((_, i) => <Star key={i} size={14} className="fill-brand-teal text-brand-teal" />)}
+                  </div>
+                  <p className="text-xl font-serif italic text-white/80 leading-relaxed">
+                    "{t.content}"
+                  </p>
+                  <div>
+                    <div className="font-bold text-lg">{t.student_name}</div>
+                    <div className="text-xs font-black uppercase tracking-widest text-brand-teal mt-1">{t.course_name}</div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Contact CTA */}
       <section className="py-32 bg-sky-50/50 border-t border-slate-100">

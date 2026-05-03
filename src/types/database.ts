@@ -296,6 +296,64 @@ export interface Database {
           created_at?: string
         }
       }
+      team_members: {
+        Row: {
+          id: string
+          name: string
+          role: string
+          bio: string | null
+          image_url: string | null
+          order_index: number
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          role: string
+          bio?: string | null
+          image_url?: string | null
+          order_index?: number
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          role?: string
+          bio?: string | null
+          image_url?: string | null
+          order_index?: number
+          created_at?: string
+        }
+      }
+      testimonials: {
+        Row: {
+          id: string
+          student_name: string
+          course_name: string
+          content: string
+          image_url: string | null
+          rating: number
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          student_name: string
+          course_name: string
+          content: string
+          image_url?: string | null
+          rating?: number
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          student_name?: string
+          course_name?: string
+          content?: string
+          image_url?: string | null
+          rating?: number
+          created_at?: string
+        }
+      }
     }
     Views: {
       [_ in never]: never

@@ -20,7 +20,7 @@ import { cn } from '@/src/lib/utils';
 import { supabase } from '@/src/lib/supabase';
 import { uploadImage } from '@/src/lib/storage';
 
-type CMSTab = 'courses' | 'faq' | 'team' | 'testimonials' | 'pages';
+type CMSTab = 'courses' | 'faq' | 'team' | 'testimonials' | 'pages' | 'settings';
 
 export function SiteContentCMS() {
   const [activeTab, setActiveTab] = useState<CMSTab>('courses');
@@ -31,6 +31,7 @@ export function SiteContentCMS() {
     { id: 'faq', label: 'FAQ', icon: HelpCircle },
     { id: 'team', label: 'Our Team', icon: Users },
     { id: 'testimonials', label: 'Testimonials', icon: MessageSquare },
+    { id: 'settings', label: 'Settings', icon: Save },
   ];
 
   return (
@@ -48,7 +49,7 @@ export function SiteContentCMS() {
                 : "text-slate-500 hover:text-slate-900 hover:bg-slate-200"
             )}
           >
-            <tab.icon size={16} />
+            <tab.icon size={14} />
             {tab.label}
           </button>
         ))}
@@ -61,15 +62,136 @@ export function SiteContentCMS() {
           {activeTab === 'faq' && <FAQManager key="faq" />}
           {activeTab === 'team' && <TeamManager key="team" />}
           {activeTab === 'testimonials' && <TestimonialManager key="testimonials" />}
+          {activeTab === 'settings' && <SiteSettingsManager key="settings" />}
         </AnimatePresence>
       </div>
     </div>
   );
 }
 
+function SiteSettingsManager() {
+  const [settings, setSettings] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchSettings() {
+      const { data } = await supabase.from('site_contents').select('*').eq('id', 'site_settings').single();
+      if (data) {
+        setSettings(data.content);
+      } else {
+        setSettings({
+          phone: "07426566335",
+          email: "admin@thamessolutiontraining.co.uk",
+          address: "Capital House, Catford, London SE6 4AS",
+          facebook: "#",
+          twitter: "#",
+          instagram: "#",
+          linkedin: "#"
+        });
+      }
+      setLoading(false);
+    }
+    fetchSettings();
+  }, []);
+
+  async function handleSave(e: React.FormEvent) {
+    e.preventDefault();
+    const formData = new FormData(e.target as HTMLFormElement);
+    const newSettings: any = {};
+    formData.forEach((value, key) => {
+      newSettings[key] = value;
+    });
+
+    const { error } = await supabase.from('site_contents').upsert({
+      id: 'site_settings',
+      section: 'global',
+      content: newSettings,
+      updated_at: new Date().toISOString()
+    });
+
+    if (!error) alert('Settings updated successfully');
+  }
+
+  if (loading) return <div className="p-20 text-center text-brand-teal"><Clock className="animate-spin inline mr-2" /> Loading...</div>;
+
+  const fields = [
+    { name: 'phone', label: 'Contact Phone', type: 'text' },
+    { name: 'email', label: 'Contact Email', type: 'email' },
+    { name: 'address', label: 'Office Address', type: 'text' },
+    { name: 'facebook', label: 'Facebook URL', type: 'text' },
+    { name: 'twitter', label: 'Twitter URL', type: 'text' },
+    { name: 'instagram', label: 'Instagram URL', type: 'text' },
+    { name: 'linkedin', label: 'LinkedIn URL', type: 'text' },
+  ];
+
+  return (
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-8">
+      <div>
+        <h3 className="text-2xl font-bold text-slate-900 font-serif mb-2">Global Settings</h3>
+        <p className="text-sm text-slate-500 font-medium">Manage contact information and social media links across the site.</p>
+      </div>
+
+      <form onSubmit={handleSave} className="space-y-8">
+        <div className="bg-slate-50 p-10 rounded-[3rem] border border-slate-100 flex flex-col gap-8">
+           <div className="flex items-center gap-4 bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+             <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center transition-all", settings?.banner_active ? "bg-brand-teal text-white shadow-lg shadow-brand-teal/20" : "bg-slate-100 text-slate-400")}>
+               <Save size={20} />
+             </div>
+             <div className="flex-1">
+               <div className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Site-wide Notice Banner</div>
+               <div className="text-sm font-bold text-slate-900 mt-1">Status: {settings?.banner_active ? 'Active' : 'Inactive'}</div>
+             </div>
+             <label className="relative inline-flex items-center cursor-pointer">
+               <input 
+                 type="checkbox" 
+                 name="banner_active" 
+                 defaultChecked={settings?.banner_active} 
+                 className="sr-only peer"
+                 onChange={(e) => setSettings({ ...settings, banner_active: e.target.checked })}
+               />
+               <div className="w-14 h-8 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-brand-teal"></div>
+             </label>
+           </div>
+           
+           <div className="space-y-2">
+              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">Banner Message</label>
+              <input 
+                name="banner_text"
+                defaultValue={settings?.banner_text}
+                placeholder="e.g. Enrollment for Summer 2024 is now open! 🚀"
+                className="w-full p-5 bg-white border border-slate-100 rounded-2xl outline-none focus:border-brand-teal font-bold text-slate-900 shadow-sm"
+              />
+           </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 bg-slate-50 p-10 rounded-[3rem] border border-slate-100">
+          {fields.map(field => (
+            <div key={field.name} className="space-y-2">
+              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">{field.label}</label>
+              <input 
+                name={field.name}
+                type={field.type}
+                defaultValue={settings[field.name]}
+                className="w-full p-5 bg-white border border-slate-100 rounded-2xl outline-none focus:border-brand-teal font-bold text-slate-900 shadow-sm"
+              />
+            </div>
+          ))}
+          <div className="md:col-span-2 pt-6 flex justify-end">
+            <button type="submit" className="bg-brand-teal text-white px-12 py-5 rounded-2xl font-bold hover:bg-brand-accent transition-all flex items-center gap-3 shadow-xl shadow-brand-teal/20">
+              <Save size={20} />
+              Save Global Settings
+            </button>
+          </div>
+        </div>
+      </form>
+    </motion.div>
+  );
+}
+
 function PagesManager() {
   const [editingPage, setEditingPage] = useState<any>(null);
   const [siteContents, setSiteContents] = useState<any[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
     fetchSiteContents();
@@ -81,9 +203,9 @@ function PagesManager() {
   }
 
   const sections = [
-    { id: 'home_hero', title: 'Home Hero Section', section: 'home' },
-    { id: 'home_about', title: 'Home About Section', section: 'home' },
-    { id: 'about_page', title: 'About Page Content', section: 'about' },
+    { id: 'home_hero', title: 'Home Hero Section', section: 'home', fields: ['title', 'subtitle', 'cta_primary', 'cta_secondary'] },
+    { id: 'home_about', title: 'Home About Section', section: 'home', fields: ['title', 'description', 'cta_label', 'cta_link'] },
+    { id: 'about_page', title: 'About Page Content', section: 'about', fields: ['title', 'description', 'mission'] },
   ];
 
   async function handleSave() {
@@ -95,11 +217,35 @@ function PagesManager() {
         section: editingPage.section,
         content: editingPage.content,
         updated_at: new Date().toISOString()
-      } as any);
+      });
 
     if (!error) {
        setEditingPage(null);
        fetchSiteContents();
+    }
+  }
+
+  const updateField = (key: string, value: any) => {
+    setEditingPage({
+      ...editingPage,
+      content: {
+        ...editingPage.content,
+        [key]: value
+      }
+    });
+  };
+
+  async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>, key: string) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      setIsUploading(true);
+      const url = await uploadImage(file);
+      updateField(key, url);
+    } catch (err) {
+      alert('Upload failed');
+    } finally {
+      setIsUploading(false);
     }
   }
 
@@ -112,33 +258,39 @@ function PagesManager() {
     >
       <div className="flex justify-between items-center">
         <div>
-          <h3 className="text-2xl font-bold text-slate-900 font-serif mb-2">Manage Site Sections</h3>
-          <p className="text-sm text-slate-500 font-medium">Update the content of specific website sections.</p>
+          <h3 className="text-2xl font-bold text-slate-900 font-serif mb-2">Website Content</h3>
+          <p className="text-sm text-slate-500 font-medium">Easily update titles, descriptions and call-to-actions across your site.</p>
         </div>
       </div>
 
-      <div className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {sections.map((section) => {
           const currentData = siteContents.find(sc => sc.id === section.id);
           return (
-            <div key={section.id} className="bg-slate-50 p-6 rounded-[2rem] border border-slate-100 flex gap-6 items-center shadow-sm">
-               <div className="w-12 h-12 bg-brand-teal/10 rounded-xl flex items-center justify-center text-brand-teal shrink-0">
-                  <Layout size={20} />
+            <div key={section.id} className="bg-slate-50 p-8 rounded-[2.5rem] border border-slate-100 flex flex-col gap-6 shadow-sm group hover:border-brand-teal transition-all">
+               <div className="flex justify-between items-start">
+                 <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-brand-teal shrink-0 shadow-inner border border-slate-100 group-hover:scale-110 transition-transform">
+                    <Layout size={24} />
+                 </div>
+                 <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest bg-white px-3 py-1 rounded-full border border-slate-100">
+                    {section.section} page
+                 </div>
                </div>
                <div className="flex-1">
-                  <div className="font-bold text-slate-900 mb-1">{section.title}</div>
-                  <div className="text-xs text-slate-400 font-bold uppercase tracking-widest leading-none">
-                    {currentData ? `Last Updated: ${new Date(currentData.updated_at).toLocaleDateString()}` : 'No content set yet'}
+                  <div className="font-bold text-lg text-slate-900 mb-1 font-serif">{section.title}</div>
+                  <div className="text-[10px] text-slate-400 font-bold uppercase tracking-widest leading-none mb-6">
+                    {currentData ? `Modified: ${new Date(currentData.updated_at).toLocaleDateString()}` : 'No content set'}
                   </div>
+                  <p className="text-sm text-slate-500 font-medium line-clamp-2">
+                    {currentData?.content?.description || currentData?.content?.subtitle || 'Edit the visible text for this section.'}
+                  </p>
                </div>
-               <div className="flex gap-2">
-                  <button 
-                    onClick={() => setEditingPage({ ...section, content: currentData?.content || {} })}
-                    className="px-6 py-2.5 bg-white border border-slate-100 rounded-xl text-xs font-bold text-brand-teal hover:bg-brand-teal hover:text-white transition-all shadow-sm"
-                  >
-                    Edit Content
-                  </button>
-               </div>
+               <button 
+                 onClick={() => setEditingPage({ ...section, content: currentData?.content || {} })}
+                 className="w-full py-4 bg-white border border-slate-200 rounded-2xl text-xs font-black uppercase tracking-widest text-brand-teal hover:bg-brand-teal hover:text-white transition-all shadow-sm"
+               >
+                 Edit Section
+               </button>
             </div>
           );
         })}
@@ -155,41 +307,65 @@ function PagesManager() {
           <motion.div 
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            className="relative bg-white w-full max-w-4xl rounded-[3rem] p-12 shadow-3xl max-h-[80vh] flex flex-col"
+            className="relative bg-white w-full max-w-2xl rounded-[3rem] p-12 shadow-3xl max-h-[85vh] flex flex-col overflow-hidden"
           >
-            <div className="flex justify-between items-center mb-8">
-              <h2 className="text-2xl font-bold text-slate-900 font-serif">Editing: {editingPage.title}</h2>
-              <button onClick={() => setEditingPage(null)} className="p-2 bg-slate-50 rounded-full text-slate-400 hover:text-slate-900">
+            <div className="flex justify-between items-center mb-10">
+              <div>
+                <div className="text-[10px] font-black text-brand-teal uppercase tracking-widest mb-1 italic">CMS Content Editor</div>
+                <h2 className="text-3xl font-bold text-slate-900 font-serif">{editingPage.title}</h2>
+              </div>
+              <button onClick={() => setEditingPage(null)} className="p-3 bg-slate-50 rounded-full text-slate-400 hover:text-slate-900 transition-all">
                 <X size={24} />
               </button>
             </div>
             
-            <div className="flex-1 overflow-y-auto mb-8 pr-4 custom-scrollbar space-y-6">
-               <div className="p-6 bg-slate-50 rounded-2xl border border-slate-200">
-                  <p className="text-xs font-medium text-slate-500 mb-4">Edit the JSON object below to update section data like titles and descriptions.</p>
-                  <textarea 
-                    className="w-full h-80 p-6 bg-white border border-slate-200 rounded-xl outline-none focus:border-brand-teal font-mono text-sm"
-                    value={JSON.stringify(editingPage.content, null, 2)}
-                    onChange={(e) => {
-                      try {
-                        const parsed = JSON.parse(e.target.value);
-                        setEditingPage({ ...editingPage, content: parsed });
-                      } catch (err) {}
-                    }}
-                  />
-               </div>
+            <div className="flex-1 overflow-y-auto mb-10 pr-4 custom-scrollbar space-y-8 pb-10">
+               {editingPage.fields.map((field: string) => (
+                 <div key={field} className="space-y-2">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] pl-2">{field.replace(/_/g, ' ')}</label>
+                    {field.includes('description') || field.includes('subtitle') || field.includes('mission') ? (
+                      <textarea 
+                        className="w-full h-32 p-6 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:border-brand-teal font-bold text-slate-900 text-sm"
+                        value={editingPage.content[field] || ''}
+                        onChange={(e) => updateField(field, e.target.value)}
+                        placeholder={`Enter ${field.replace(/_/g, ' ')}...`}
+                      />
+                    ) : field.includes('image') ? (
+                      <div className="relative h-16 bg-slate-50 border border-slate-100 rounded-2xl flex items-center px-6 overflow-hidden">
+                        <ImageIcon className="text-brand-teal mr-4" size={20} />
+                        <span className="text-sm font-bold text-slate-500 truncate">
+                          {editingPage.content[field] ? 'Image Uploaded' : 'Upload Image'}
+                        </span>
+                        <input type="file" onChange={(e) => handleImageUpload(e, field)} className="absolute inset-0 opacity-0 cursor-pointer" accept="image/*" />
+                        {isUploading && <div className="absolute right-6 animate-spin text-brand-teal"><Clock size={16} /></div>}
+                        {editingPage.content[field] && (
+                          <div className="absolute right-6 w-10 h-10 rounded-lg overflow-hidden border-2 border-white shadow-sm">
+                            <img src={editingPage.content[field]} className="w-full h-full object-cover" />
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <input 
+                        className="w-full p-6 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:border-brand-teal font-bold text-slate-900 text-sm"
+                        value={editingPage.content[field] || ''}
+                        onChange={(e) => updateField(field, e.target.value)}
+                        placeholder={`Enter ${field.replace(/_/g, ' ')}...`}
+                      />
+                    )}
+                 </div>
+               ))}
             </div>
 
-            <div className="flex justify-end gap-4">
-              <button onClick={() => setEditingPage(null)} className="px-8 py-4 bg-slate-50 text-slate-500 rounded-2xl font-bold hover:bg-slate-100 transition-all border border-slate-100">
-                Cancel
+            <div className="flex justify-end gap-4 pt-8 border-t border-slate-100">
+              <button onClick={() => setEditingPage(null)} className="px-8 py-5 bg-slate-50 text-slate-500 rounded-2xl font-bold hover:bg-slate-100 transition-all border border-slate-100">
+                Discard Changes
               </button>
               <button 
                 onClick={handleSave}
-                className="px-12 py-4 bg-brand-teal text-white rounded-2xl font-bold hover:bg-brand-accent transition-all flex items-center gap-2 shadow-xl shadow-brand-teal/20"
+                className="px-14 py-5 bg-brand-teal text-white rounded-2xl font-bold hover:bg-brand-accent transition-all flex items-center gap-3 shadow-xl shadow-brand-teal/20"
               >
-                <Save size={18} />
-                Save to Section
+                <Save size={20} />
+                Publish Updates
               </button>
             </div>
           </motion.div>
@@ -219,14 +395,19 @@ function CourseManager() {
   async function handleSave(e: React.FormEvent) {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
+    const title = formData.get('title') as string;
+    const slug = editingCourse?.slug || title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    
     const courseData = {
-      title: formData.get('title'),
+      title,
+      slug,
       category: formData.get('category'),
       sub_category: formData.get('sub_category'),
       description: formData.get('description'),
       long_description: formData.get('long_description'),
       duration: formData.get('duration'),
       image_url: editingCourse?.image_url,
+      syllabus_url: editingCourse?.syllabus_url,
       outcomes: (formData.get('outcomes') as string)?.split('\n').filter(Boolean) || [],
       requirements: (formData.get('requirements') as string)?.split('\n').filter(Boolean) || [],
     };
@@ -247,13 +428,17 @@ function CourseManager() {
     }
   }
 
-  async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
+  async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>, type: 'image' | 'file') {
     const file = e.target.files?.[0];
     if (!file) return;
     try {
       setIsUploading(true);
-      const url = await uploadImage(file);
-      setEditingCourse({ ...editingCourse, image_url: url });
+      const url = await uploadImage(file); // uploadImage handles general files too
+      if (type === 'image') {
+        setEditingCourse({ ...editingCourse, image_url: url });
+      } else {
+        setEditingCourse({ ...editingCourse, syllabus_url: url });
+      }
     } catch (err) {
       alert('Upload failed');
     } finally {
@@ -331,60 +516,67 @@ function CourseManager() {
             animate={{ scale: 1, opacity: 1 }} 
             className="relative bg-white w-full max-w-2xl rounded-[3rem] p-12 shadow-3xl overflow-y-auto max-h-[90vh]"
           >
-            <h2 className="text-2xl font-bold text-slate-900 font-serif mb-8">{editingCourse.id ? 'Edit Course' : 'Add New Course'}</h2>
-            <form onSubmit={handleSave} className="space-y-6">
-              <div className="grid grid-cols-2 gap-6">
-                <div className="space-y-2 col-span-2">
+            <h2 className="text-3xl font-bold text-slate-900 font-serif mb-10">{editingCourse.id ? 'Edit Course Details' : 'Add New Course'}</h2>
+            <form onSubmit={handleSave} className="flex-1 overflow-y-auto mb-10 pr-4 custom-scrollbar space-y-8 pb-10">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-2 md:col-span-2">
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">Course Title</label>
-                  <input name="title" defaultValue={editingCourse.title} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-brand-teal font-bold" required />
+                  <input name="title" defaultValue={editingCourse.title} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4.5 outline-none focus:border-brand-teal font-bold text-slate-900" placeholder="e.g. Level 3 Diploma in Adult Care" required />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">Category</label>
-                  <select name="category" defaultValue={editingCourse.category || 'health-and-social-care'} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-brand-teal font-bold">
-                    <option value="health-and-social-care">Health & Social Care</option>
-                    <option value="assessor">Assessor Courses</option>
-                    <option value="functional-skills">Functional Skills</option>
-                    <option value="mandatory">Mandatory Training</option>
-                    <option value="care-certificate">Care Certificate</option>
-                  </select>
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">Category (Slug)</label>
+                  <input name="category" defaultValue={editingCourse.category || 'health-and-social-care'} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4.5 outline-none focus:border-brand-teal font-bold text-slate-900" />
                 </div>
                 <div className="space-y-2">
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">Sub-Category</label>
-                  <input name="sub_category" defaultValue={editingCourse.sub_category || editingCourse.level || ''} placeholder="e.g. Level 2 Qualifications" className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-brand-teal font-bold" />
+                  <input name="sub_category" defaultValue={editingCourse.sub_category || editingCourse.level || ''} placeholder="e.g. Level 2 Qualifications" className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4.5 outline-none focus:border-brand-teal font-bold text-slate-900" />
                 </div>
                 <div className="space-y-2">
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">Duration</label>
-                  <input name="duration" defaultValue={editingCourse.duration || '6 Months'} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-brand-teal font-bold" />
+                  <input name="duration" defaultValue={editingCourse.duration || '6 Months'} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4.5 outline-none focus:border-brand-teal font-bold text-slate-900" />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">Featured Image</label>
-                  <div className="relative h-14 bg-slate-50 border border-slate-100 rounded-2xl flex items-center px-6 overflow-hidden">
-                    <span className="text-sm font-bold text-slate-500 truncate">{editingCourse.image_url ? 'Image Updated' : 'No image uploaded'}</span>
-                    <input type="file" onChange={handleImageUpload} className="absolute inset-0 opacity-0 cursor-pointer" accept="image/*" />
-                    {isUploading && <div className="absolute right-4 animate-spin"><Clock size={16} /></div>}
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2 font-bold">Featured Media & Documents</label>
+                  <div className="grid grid-cols-1 gap-4">
+                    <div className="relative h-14 bg-slate-50 border border-slate-100 rounded-2xl flex items-center px-6 overflow-hidden group hover:border-brand-teal transition-all">
+                      <ImageIcon className="text-brand-teal mr-3" size={18} />
+                      <span className="text-sm font-bold text-slate-500 truncate">{editingCourse.image_url ? 'Thumbnail Ready' : 'Upload Thumbnail'}</span>
+                      <input type="file" onChange={(e) => handleFileUpload(e, 'image')} className="absolute inset-0 opacity-0 cursor-pointer" accept="image/*" />
+                      {isUploading && <div className="absolute right-4 animate-spin text-brand-teal"><Clock size={16} /></div>}
+                      {editingCourse.image_url && <div className="absolute right-12 w-8 h-8 rounded border-2 border-white shadow-sm overflow-hidden"><img src={editingCourse.image_url} className="w-full h-full object-cover" /></div>}
+                    </div>
+
+                    <div className="relative h-14 bg-slate-50 border border-slate-100 rounded-2xl flex items-center px-6 overflow-hidden group hover:border-brand-teal transition-all">
+                      <FileText className="text-brand-teal mr-3" size={18} />
+                      <span className="text-sm font-bold text-slate-500 truncate">{editingCourse.syllabus_url ? 'Syllabus Attached' : 'Upload Syllabus (PDF)'}</span>
+                      <input type="file" onChange={(e) => handleFileUpload(e, 'file')} className="absolute inset-0 opacity-0 cursor-pointer" accept=".pdf,.doc,.docx" />
+                      {isUploading && <div className="absolute right-4 animate-spin text-brand-teal"><Clock size={16} /></div>}
+                    </div>
                   </div>
                 </div>
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">Brief Description</label>
-                <textarea name="description" defaultValue={editingCourse.description} className="w-full h-24 bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-brand-teal font-bold" />
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">Brief Summary</label>
+                <textarea name="description" defaultValue={editingCourse.description} className="w-full h-28 bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-brand-teal font-bold text-slate-900" placeholder="A short catch-phrase or summary..." />
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">Detailed Course Overview (Long Description)</label>
-                <textarea name="long_description" defaultValue={editingCourse.long_description} className="w-full h-64 bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-brand-teal font-bold" />
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">Full Course Details</label>
+                <textarea name="long_description" defaultValue={editingCourse.long_description} className="w-full h-72 bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-brand-teal font-bold text-slate-900" placeholder="Detailed curriculum, depth and scope..." />
               </div>
-              <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">What You Will Learn (One per line)</label>
-                <textarea name="outcomes" defaultValue={editingCourse.outcomes?.join('\n')} className="w-full h-32 bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-brand-teal font-bold" />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">What You Will Learn (One per line)</label>
+                  <textarea name="outcomes" defaultValue={editingCourse.outcomes?.join('\n')} className="w-full h-40 bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-brand-teal font-bold text-slate-900" placeholder="Standard 1...\nStandard 2..." />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">Entry Requirements (One per line)</label>
+                  <textarea name="requirements" defaultValue={editingCourse.requirements?.join('\n')} className="w-full h-40 bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-brand-teal font-bold text-slate-900" placeholder="Basic English...\nAge 18+..." />
+                </div>
               </div>
-              <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">Requirements (One per line)</label>
-                <textarea name="requirements" defaultValue={editingCourse.requirements?.join('\n')} className="w-full h-32 bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 outline-none focus:border-brand-teal font-bold" />
-              </div>
-              <div className="flex justify-end gap-4 pt-6">
-                <button type="button" onClick={() => setEditingCourse(null)} className="px-8 py-4 text-slate-400 font-bold hover:bg-slate-50 rounded-2xl">Cancel</button>
-                <button type="submit" className="bg-brand-teal text-white px-10 py-4 rounded-2xl font-bold shadow-xl shadow-brand-teal/20 flex items-center gap-2">
-                  <Save size={18} />
+              <div className="flex justify-end gap-5 pt-10 border-t border-slate-100">
+                <button type="button" onClick={() => setEditingCourse(null)} className="px-10 py-5 bg-slate-50 text-slate-400 rounded-2xl font-bold hover:bg-slate-100 transition-all border border-slate-100">Discard Changes</button>
+                <button type="submit" className="bg-brand-teal text-white px-14 py-5 rounded-2xl font-bold hover:bg-brand-accent transition-all flex items-center gap-3 shadow-xl shadow-brand-teal/20">
+                  <Save size={20} />
                   {editingCourse.id ? 'Save Changes' : 'Create Course'}
                 </button>
               </div>

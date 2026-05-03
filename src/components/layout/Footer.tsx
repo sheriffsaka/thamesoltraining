@@ -1,9 +1,18 @@
 import { Link } from 'react-router-dom';
 import { Logo } from '@/src/components/ui/Logo';
 import { Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin } from 'lucide-react';
+import { useSiteSettings } from '@/src/hooks/useSiteSettings';
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
+  const { settings } = useSiteSettings();
+
+  const socialLinks = [
+    { Icon: Facebook, url: settings.facebook },
+    { Icon: Twitter, url: settings.twitter },
+    { Icon: Instagram, url: settings.instagram },
+    { Icon: Linkedin, url: settings.linkedin },
+  ];
 
   return (
     <footer className="bg-white text-slate-500 pt-24 pb-12 border-t border-slate-100">
@@ -15,14 +24,14 @@ export function Footer() {
               High-performance training and consultancy for professionals and institutions. Empowering individuals through excellence in London.
             </p>
             <div className="flex gap-4">
-              {[Facebook, Twitter, Instagram, Linkedin].map((Icon, i) => (
-                <a key={i} href="#" className="w-10 h-10 rounded-lg bg-slate-50 flex items-center justify-center hover:bg-brand-teal hover:text-white transition-all border border-slate-100 shadow-sm">
+              {socialLinks.map(({ Icon, url }, i) => (
+                <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-lg bg-slate-50 flex items-center justify-center hover:bg-brand-teal hover:text-white transition-all border border-slate-100 shadow-sm">
                   <Icon size={16} />
                 </a>
               ))}
             </div>
           </div>
- 
+          {/* ... */}
           <div>
             <h4 className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-900 mb-8">Navigation</h4>
             <ul className="space-y-5 text-[13px] font-bold">
@@ -50,15 +59,15 @@ export function Footer() {
             <ul className="space-y-6 text-[13px] font-bold">
               <li className="flex gap-4 text-slate-500">
                 <MapPin className="text-brand-teal shrink-0" size={18} />
-                <span className="leading-relaxed">Capital House, Catford, London SE6 4AS</span>
+                <span className="leading-relaxed">{settings.address}</span>
               </li>
               <li className="flex gap-4 text-slate-500">
                 <Phone className="text-brand-teal shrink-0" size={18} />
-                <span>07426566335</span>
+                <span>{settings.phone}</span>
               </li>
               <li className="flex gap-4 text-slate-500">
                 <Mail className="text-brand-teal shrink-0" size={18} />
-                <span>admin@thamessolutiontraining.co.uk</span>
+                <span className="break-all">{settings.email}</span>
               </li>
             </ul>
           </div>
