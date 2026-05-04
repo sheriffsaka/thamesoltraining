@@ -17,7 +17,7 @@ const categories = [
     title: 'Health & Social Care', 
     id: 'health-and-social-care',
     desc: 'Elite clinical and administrative training for modern healthcare sectors.', 
-    image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80&w=800' 
+    image: 'https://res.cloudinary.com/di7okmjsx/image/upload/v1777909848/Training_for_clinical_support_staff_3_rpetqk.jpg?auto=format&fit=crop&q=80&w=800' 
   },
   { 
     title: 'Assessor Courses', 
