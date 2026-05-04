@@ -54,9 +54,9 @@ export function ManageApplications() {
       }
 
       setApplications(prev => prev.map(app => app.id === id ? { ...app, ...updateData } : app));
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error updating status:', error);
-      alert('Update failed');
+      alert('Update failed: ' + (error?.message || 'Unknown error'));
     } finally {
       setIsUpdating(false);
     }

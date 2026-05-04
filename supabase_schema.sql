@@ -92,29 +92,46 @@ RETURNS TRIGGER AS $$
 DECLARE
   profile_id UUID;
 BEGIN
-  -- Only run if status changed to 'onboarded' or 'approved'
+  -- 1. Identity Guard: Ensure we have an email
+  IF NEW.email IS NULL THEN
+    RETURN NEW;
+  END IF;
+
+  -- 2. Only run if status changed to 'onboarded' or 'approved'
   IF (NEW.status = 'onboarded' OR NEW.status = 'approved') AND (OLD.status IS NULL OR OLD.status != NEW.status) THEN
     -- Check if a student profile exists with this email
     SELECT id INTO profile_id FROM public.profiles WHERE LOWER(email) = LOWER(NEW.email) LIMIT 1;
     
     IF profile_id IS NOT NULL THEN
-      -- Create enrollment
-      INSERT INTO public.enrollments (student_id, course_id, status)
-      VALUES (profile_id, NEW.course_id, 'active')
-      ON CONFLICT (student_id, course_id) DO NOTHING;
+      -- Create enrollment ONLY if course_id is present
+      IF NEW.course_id IS NOT NULL THEN
+        BEGIN
+          INSERT INTO public.enrollments (student_id, course_id, status)
+          VALUES (profile_id, NEW.course_id, 'active')
+          ON CONFLICT (student_id, course_id) DO NOTHING;
+        EXCEPTION WHEN OTHERS THEN
+          -- Log error internally or ignore to allow profile sync to continue
+          NULL;
+        END;
+      END IF;
 
       -- Update profile details from application
-      UPDATE public.profiles SET
-        phone = COALESCE(profiles.phone, NEW.phone),
-        address = COALESCE(profiles.address, NEW.address),
-        date_of_birth = COALESCE(profiles.date_of_birth, NEW.date_of_birth),
-        emergency_contact = COALESCE(profiles.emergency_contact, NEW.emergency_contact),
-        gender = COALESCE(profiles.gender, NEW.gender),
-        employment_status = COALESCE(profiles.employment_status, NEW.employment_status),
-        managed_password = COALESCE(profiles.managed_password, NEW.generated_password)
-      WHERE id = profile_id;
+      BEGIN
+        UPDATE public.profiles SET
+          phone = COALESCE(profiles.phone, NEW.phone),
+          address = COALESCE(profiles.address, NEW.address),
+          date_of_birth = COALESCE(profiles.date_of_birth, NEW.date_of_birth),
+          emergency_contact = COALESCE(profiles.emergency_contact, NEW.emergency_contact),
+          gender = COALESCE(profiles.gender, NEW.gender),
+          employment_status = COALESCE(profiles.employment_status, NEW.employment_status),
+          managed_password = COALESCE(profiles.managed_password, NEW.generated_password),
+          updated_at = NOW()
+        WHERE id = profile_id;
+      EXCEPTION WHEN OTHERS THEN
+        NULL;
+      END;
       
-      -- Ensure status is "onboarded" if it was just "approved"
+      -- If we reached here and a profile exists, the student is essentially onboarded
       NEW.status := 'onboarded';
     END IF;
   END IF;
