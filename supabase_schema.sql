@@ -43,28 +43,24 @@ BEGIN
     COALESCE(NEW.raw_user_meta_data->>'full_name', ''),
     NEW.email,
     CASE 
-      WHEN NEW.email IN ('thamestraining@outlook.com', 'sheriffdeenalade@gmail.com') THEN 'admin'
+      WHEN LOWER(NEW.email) IN ('thamestraining@outlook.com', 'sheriffdeenalade@gmail.com') THEN 'admin'
       ELSE 'student'
     END,
     NEW.raw_user_meta_data->>'password'
   )
   ON CONFLICT (id) DO UPDATE SET 
     email = EXCLUDED.email,
-    full_name = COALESCE(EXCLUDED.full_name, profiles.full_name);
+    full_name = CASE WHEN profiles.full_name = '' THEN EXCLUDED.full_name ELSE profiles.full_name END;
 
-  -- 2. Check for onboarded application
+  -- 2. Check for application (Case-insensitive)
+  -- We allow any status here, but will only auto-enroll if it's approved/onboarded
   SELECT * INTO app_record FROM public.applications 
-  WHERE email = NEW.email AND status IN ('approved', 'onboarded')
+  WHERE LOWER(email) = LOWER(NEW.email)
   ORDER BY created_at DESC
   LIMIT 1;
 
   IF app_record.id IS NOT NULL THEN
-    -- Auto enroll
-    INSERT INTO public.enrollments (student_id, course_id, status)
-    VALUES (NEW.id, app_record.course_id, 'active')
-    ON CONFLICT (student_id, course_id) DO NOTHING;
-    
-    -- Sync profile data from application if profile is empty
+    -- Sync profile data from application if profile is incomplete
     UPDATE public.profiles SET
       phone = COALESCE(profiles.phone, app_record.phone),
       address = COALESCE(profiles.address, app_record.address),
@@ -75,13 +71,61 @@ BEGIN
       managed_password = COALESCE(profiles.managed_password, app_record.generated_password)
     WHERE id = NEW.id;
 
-    -- Update application status to onboarded if it was just approved
-    UPDATE public.applications SET status = 'onboarded' WHERE id = app_record.id;
+    -- If application is already approved or onboarded, auto-enroll
+    IF app_record.status IN ('approved', 'onboarded') THEN
+      INSERT INTO public.enrollments (student_id, course_id, status)
+      VALUES (NEW.id, app_record.course_id, 'active')
+      ON CONFLICT (student_id, course_id) DO NOTHING;
+      
+      -- Ensure application is marked as onboarded
+      UPDATE public.applications SET status = 'onboarded' WHERE id = app_record.id;
+    END IF;
   END IF;
 
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Trigger for Applications: Handle case where admin onboards AFTER student has signed up
+CREATE OR REPLACE FUNCTION public.handle_application_onboarding()
+RETURNS TRIGGER AS $$
+DECLARE
+  profile_id UUID;
+BEGIN
+  -- Only run if status changed to 'onboarded' or 'approved'
+  IF (NEW.status = 'onboarded' OR NEW.status = 'approved') AND (OLD.status IS NULL OR OLD.status != NEW.status) THEN
+    -- Check if a student profile exists with this email
+    SELECT id INTO profile_id FROM public.profiles WHERE LOWER(email) = LOWER(NEW.email) LIMIT 1;
+    
+    IF profile_id IS NOT NULL THEN
+      -- Create enrollment
+      INSERT INTO public.enrollments (student_id, course_id, status)
+      VALUES (profile_id, NEW.course_id, 'active')
+      ON CONFLICT (student_id, course_id) DO NOTHING;
+
+      -- Update profile details from application
+      UPDATE public.profiles SET
+        phone = COALESCE(profiles.phone, NEW.phone),
+        address = COALESCE(profiles.address, NEW.address),
+        date_of_birth = COALESCE(profiles.date_of_birth, NEW.date_of_birth),
+        emergency_contact = COALESCE(profiles.emergency_contact, NEW.emergency_contact),
+        gender = COALESCE(profiles.gender, NEW.gender),
+        employment_status = COALESCE(profiles.employment_status, NEW.employment_status),
+        managed_password = COALESCE(profiles.managed_password, NEW.generated_password)
+      WHERE id = profile_id;
+      
+      -- Ensure status is "onboarded" if it was just "approved"
+      NEW.status := 'onboarded';
+    END IF;
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+DROP TRIGGER IF EXISTS on_application_updated ON public.applications;
+CREATE TRIGGER on_application_updated
+  BEFORE UPDATE ON public.applications
+  FOR EACH ROW EXECUTE PROCEDURE public.handle_application_onboarding();
 
 DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created
@@ -302,12 +346,11 @@ CREATE POLICY "Courses are viewable by everyone." ON public.courses FOR SELECT U
 DROP POLICY IF EXISTS "Admins can manage courses." ON public.courses;
 CREATE POLICY "Admins can manage courses." ON public.courses FOR ALL USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'));
 
--- Applications: Anyone can insert, admins can view
--- CRITICAL FIX: Explicitly allow INSERT for both anonymous and authenticated users
+-- Applications: Anyone can insert, admins can view and manage
 DROP POLICY IF EXISTS "Anyone can apply." ON public.applications;
 CREATE POLICY "Anyone can apply." ON public.applications FOR INSERT WITH CHECK (true);
-DROP POLICY IF EXISTS "Admins can view applications." ON public.applications;
-CREATE POLICY "Admins can view applications." ON public.applications FOR SELECT USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'));
+DROP POLICY IF EXISTS "Admins can manage applications." ON public.applications;
+CREATE POLICY "Admins can manage applications." ON public.applications FOR ALL USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'));
 
 -- Site Contents: Viewable by all, admins can manage
 DROP POLICY IF EXISTS "Site content is viewable by everyone." ON public.site_contents;
@@ -328,13 +371,52 @@ CREATE POLICY "FAQs are viewable by everyone." ON public.faqs FOR SELECT USING (
 DROP POLICY IF EXISTS "Testimonials are viewable by everyone." ON public.testimonials;
 CREATE POLICY "Testimonials are viewable by everyone." ON public.testimonials FOR SELECT USING (true);
 
--- Enrollments: Users view own
+-- Enrollments: Users view own, admins manage
 DROP POLICY IF EXISTS "Users can view own enrollments." ON public.enrollments;
 CREATE POLICY "Users can view own enrollments." ON public.enrollments FOR SELECT USING (auth.uid() = student_id);
+DROP POLICY IF EXISTS "Admins can manage enrollments." ON public.enrollments;
+CREATE POLICY "Admins can manage enrollments." ON public.enrollments FOR ALL USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'));
 
--- Enquiries: Anyone can insert
+-- Enquiries: Anyone can insert, admins manage
 DROP POLICY IF EXISTS "Anyone can send enquiries." ON public.enquiries;
 CREATE POLICY "Anyone can send enquiries." ON public.enquiries FOR INSERT WITH CHECK (true);
+DROP POLICY IF EXISTS "Admins can manage enquiries." ON public.enquiries;
+CREATE POLICY "Admins can manage enquiries." ON public.enquiries FOR ALL USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'));
+
+-- Notifications: Users view own
+ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can view own notifications." ON public.notifications;
+CREATE POLICY "Users can view own notifications." ON public.notifications FOR SELECT USING (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Admins can manage all notifications." ON public.notifications;
+CREATE POLICY "Admins can manage all notifications." ON public.notifications FOR ALL USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'));
+
+-- Automatic Notification Trigger for Applications
+CREATE OR REPLACE FUNCTION public.notify_on_application_status_change()
+RETURNS TRIGGER AS $$
+DECLARE
+  profile_id UUID;
+BEGIN
+  IF (NEW.status != OLD.status) AND (NEW.status IN ('approved', 'onboarded')) THEN
+    SELECT id INTO profile_id FROM public.profiles WHERE LOWER(email) = LOWER(NEW.email) LIMIT 1;
+    
+    IF profile_id IS NOT NULL THEN
+      INSERT INTO public.notifications (user_id, title, message, link)
+      VALUES (
+        profile_id,
+        'Application ' || NEW.status,
+        'Congratulations! Your application for ' || COALESCE(NEW.course_title, 'your course') || ' has been ' || NEW.status || '. You can now access your lessons.',
+        '/dashboard'
+      );
+    END IF;
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+DROP TRIGGER IF EXISTS tr_notify_on_application_status_change ON public.applications;
+CREATE TRIGGER tr_notify_on_application_status_change
+  AFTER UPDATE ON public.applications
+  FOR EACH ROW EXECUTE PROCEDURE public.notify_on_application_status_change();
 
 -- 9. Seed Data
 INSERT INTO public.categories (name, slug, icon, order_index) VALUES
