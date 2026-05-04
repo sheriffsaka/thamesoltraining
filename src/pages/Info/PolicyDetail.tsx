@@ -116,25 +116,25 @@ export function PolicyDetail() {
       quote: "Standardized guidelines for our professional partnership."
     },
     cookies: {
-      url: "https://images.unsplash.com/photo-1516321419614-e72288981442",
+      url: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b",
       alt: "Cookie Policy",
       tagline: "Digital Optimization",
       quote: "Enhancing your experience through intelligent browsing."
     },
     gdpr: {
-      url: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b",
+      url: "https://images.unsplash.com/photo-1563986768609-322da13575f3",
       alt: "Data Protection",
       tagline: "Regulatory Compliance",
       quote: "Commitment to the highest standards of data governance."
     },
     conduct: {
-      url: "https://images.unsplash.com/photo-1522071823995-f5387433842f",
+      url: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d",
       alt: "Code of Conduct",
       tagline: "Ethics & Integrity",
       quote: "Establishing a respectful and professional learning environment."
     },
     whistleblowing: {
-      url: "https://images.unsplash.com/photo-1588675646184-f5b0b0b0b2f1",
+      url: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85",
       alt: "Whistleblowing",
       tagline: "Accountability & Voice",
       quote: "Ensuring integrity through transparent reporting channels."
