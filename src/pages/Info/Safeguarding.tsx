@@ -70,24 +70,24 @@ export function Safeguarding() {
               </div>
             </div>
 
-            <div className="bg-slate-900 rounded-lg p-12 text-white shadow-2xl relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-brand-teal/10 rounded-full blur-3xl" />
-              <div className="relative z-10">
-                <h3 className="text-3xl font-bold mb-8 flex items-center gap-4 font-serif">
-                   <div className="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center text-brand-teal">
-                      <PhoneCall size={24} />
+            <div className="bg-rose-600 rounded-lg p-12 text-white shadow-2xl relative overflow-hidden border-4 border-rose-500 shadow-rose-600/30">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-12 translate-x-12" />
+              <div className="relative z-10 text-center lg:text-left">
+                <h3 className="text-4xl lg:text-5xl font-bold mb-8 flex items-center justify-center lg:justify-start gap-6 font-serif">
+                   <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center text-white shadow-inner">
+                      <PhoneCall size={32} />
                    </div>
                    Urgent Support
                 </h3>
-                <p className="text-slate-400 mb-10 font-medium text-lg italic">
-                  "If you have a concern about your safety or the safety of another student, please contact our Lead Safeguarding Officer immediately."
+                <p className="text-white/90 mb-10 font-bold text-xl leading-relaxed">
+                  "If you have an immediate concern about your safety or the safety of another student, please contact our Lead Safeguarding Officer without delay."
                 </p>
-                <div className="space-y-4">
-                  <a href="tel:07426566335" className="flex items-center justify-center gap-3 w-full bg-brand-teal text-white py-5 rounded-lg font-black uppercase tracking-widest text-xs transition-all hover:bg-brand-accent shadow-xl shadow-brand-teal/20">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <a href="tel:07426566335" className="flex items-center justify-center gap-3 w-full bg-white text-rose-600 py-6 rounded-xl font-black uppercase tracking-widest text-sm transition-all hover:scale-105 shadow-2xl">
                      Call: 07426566335
                   </a>
-                  <a href="mailto:safeguarding@thamessolution.com" className="flex items-center justify-center gap-3 w-full bg-white/5 border border-white/10 py-5 rounded-lg font-black uppercase tracking-widest text-xs text-white hover:bg-white/10 transition-all">
-                     Email Safeguarding
+                  <a href="mailto:admin@thamessolutiontraining.co.uk" className="flex items-center justify-center gap-3 w-full bg-rose-700 border border-rose-400 py-6 rounded-xl font-black uppercase tracking-widest text-sm text-white hover:bg-rose-800 transition-all">
+                     Email Admin
                   </a>
                 </div>
               </div>

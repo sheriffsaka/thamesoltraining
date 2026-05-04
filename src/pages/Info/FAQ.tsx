@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChevronDown, MessageCircle, HelpCircle, Search } from 'lucide-react';
 import { getFAQs } from '@/src/services/contentService';
@@ -128,9 +129,12 @@ export function FAQ() {
             <p className="text-slate-400 mb-10 max-w-md mx-auto font-medium">
               Our support team is available Monday through Friday to assist you with any inquiries.
             </p>
-            <button className="bg-brand-teal text-white px-12 py-5 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-brand-accent transition-all shadow-2xl shadow-brand-teal/20">
+            <Link 
+              to="/contact"
+              className="inline-block bg-brand-teal text-white px-12 py-5 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-brand-accent transition-all shadow-2xl shadow-brand-teal/20"
+            >
               Contact Support
-            </button>
+            </Link>
           </div>
         </div>
       </section>

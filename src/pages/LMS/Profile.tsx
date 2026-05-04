@@ -153,7 +153,7 @@ export function Profile() {
                   <input 
                     type="email" 
                     readOnly
-                    value="student@thames.com"
+                    value={profile.email || ''}
                     className="w-full bg-slate-50/50 border border-slate-100/50 rounded-2xl px-16 py-5 font-bold text-slate-400 outline-none cursor-not-allowed"
                   />
                 </div>

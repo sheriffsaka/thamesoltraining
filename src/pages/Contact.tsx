@@ -82,7 +82,7 @@ export function Contact() {
                   </div>
                   <div>
                     <h4 className="text-slate-900 font-bold mb-2 uppercase tracking-widest text-[10px]">Email</h4>
-                    <p className="text-slate-600 text-sm font-bold break-all">{settings.email}</p>
+                    <p className="text-slate-600 text-sm font-bold break-all">admin@thamessolutiontraining.co.uk</p>
                   </div>
                 </div>
                 {/* ... */}
@@ -116,7 +116,7 @@ export function Contact() {
                       </div>
                       <h2 className="text-3xl font-bold text-slate-900 mb-4 font-serif">Message Sent!</h2>
                       <p className="text-slate-600 mb-8 max-w-sm mx-auto font-medium">
-                        Thank you for reaching out. A member of our team will get back to you shortly.
+                        Thank you for reaching out. Your inquiry has been submitted and sent to admin@thamessolutiontraining.co.uk. A member of our team will get back to you shortly.
                       </p>
                       <button 
                         onClick={() => setFormStatus('idle')}
