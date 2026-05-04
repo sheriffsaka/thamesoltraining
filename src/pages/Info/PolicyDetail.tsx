@@ -102,33 +102,77 @@ export function PolicyDetail() {
   const displayTitle = cmsContent?.title || defaultPolicy.title;
   const displayContent = cmsContent?.content || defaultPolicy.content;
 
+  const policyImages: Record<string, { url: string; alt: string; tagline: string; quote: string }> = {
+    privacy: {
+      url: "https://images.unsplash.com/photo-1563986768609-322da13575f3",
+      alt: "Data Privacy",
+      tagline: "Confidentiality & Security",
+      quote: "Protecting your information with transparency and integrity."
+    },
+    terms: {
+      url: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85",
+      alt: "Terms of Service",
+      tagline: "Agreement & Compliance",
+      quote: "Standardized guidelines for our professional partnership."
+    },
+    cookies: {
+      url: "https://images.unsplash.com/photo-1516321419614-e72288981442",
+      alt: "Cookie Policy",
+      tagline: "Digital Optimization",
+      quote: "Enhancing your experience through intelligent browsing."
+    },
+    gdpr: {
+      url: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b",
+      alt: "Data Protection",
+      tagline: "Regulatory Compliance",
+      quote: "Commitment to the highest standards of data governance."
+    },
+    conduct: {
+      url: "https://images.unsplash.com/photo-1522071823995-f5387433842f",
+      alt: "Code of Conduct",
+      tagline: "Ethics & Integrity",
+      quote: "Establishing a respectful and professional learning environment."
+    },
+    whistleblowing: {
+      url: "https://images.unsplash.com/photo-1588675646184-f5b0b0b0b2f1",
+      alt: "Whistleblowing",
+      tagline: "Accountability & Voice",
+      quote: "Ensuring integrity through transparent reporting channels."
+    },
+  };
+
+  const currentPolicyImage = id ? policyImages[id] : null;
+
   return (
     <div className="bg-white min-h-screen pt-20">
-      <section className="py-24 relative overflow-hidden bg-slate-50">
-        <div className="absolute top-0 right-0 w-1/3 h-full bg-brand-teal/[0.03] -skew-x-12 translate-x-24" />
-        
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="flex items-center gap-3 text-brand-teal font-black uppercase tracking-[0.3em] text-[10px] mb-8">
-            <ShieldCheck size={16} />
-            <span>TMS Official Document</span>
-          </div>
-          <h1 className="text-4xl md:text-6xl font-bold text-slate-900 mb-10 font-serif tracking-tight leading-tight">
+      <section className="relative min-h-[50vh] flex items-center overflow-hidden border-b border-slate-100 bg-slate-900">
+        <div className="absolute inset-0 z-0">
+          <img 
+            src={`${currentPolicyImage?.url || "https://images.unsplash.com/photo-1497366811353-6870744d04b2"}?auto=format&fit=crop&q=80&w=2000`} 
+            alt={currentPolicyImage?.alt || "Policy Header"} 
+            className="w-full h-full object-cover opacity-60"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/40 to-transparent z-10" />
+        </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20">
+          <p className="text-brand-teal font-black uppercase tracking-[0.4em] text-xs mb-6">
+            {currentPolicyImage?.tagline || 'Governance & Compliance'}
+          </p>
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-5xl lg:text-8xl font-bold text-white mb-8 font-serif tracking-tighter leading-none"
+          >
             {displayTitle}
-          </h1>
-          <div className="flex flex-wrap gap-8 items-center text-slate-400 font-bold border-t border-slate-200 pt-10 mt-10">
-            <div className="flex items-center gap-3">
-              <Calendar size={18} className="text-slate-300" />
-              <span className="text-xs uppercase tracking-widest">Revised: {cmsContent?.updated_at ? new Date(cmsContent.updated_at).toLocaleDateString() : (defaultPolicy.lastUpdated || 'May 2024')}</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <User size={18} className="text-slate-300" />
-              <span className="text-xs uppercase tracking-widest">Owner: Compliance Dept</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <FileText size={18} className="text-slate-300" />
-              <span className="text-xs uppercase tracking-widest">Status: Active</span>
-            </div>
-          </div>
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-2xl text-slate-300 max-w-3xl font-serif leading-relaxed italic border-l-4 border-brand-teal pl-8"
+          >
+            "{currentPolicyImage?.quote || 'We are committed to maintaining the highest standards of professional conduct and operational transparency.'}"
+          </motion.p>
         </div>
       </section>
       

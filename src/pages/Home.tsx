@@ -131,12 +131,11 @@ export function Home() {
       {/* Hero Section */}
       <section className="relative min-h-[95vh] flex items-center pt-20 overflow-hidden border-b border-slate-100 bg-white">
         <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-white/20 backdrop-blur-[1px] z-10" />
           <AnimatePresence mode="wait">
             <motion.video
               key={currentSlide}
               initial={{ opacity: 0 }}
-              animate={{ opacity: 0.6 }}
+              animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 1.5 }}
               autoPlay
@@ -148,45 +147,48 @@ export function Home() {
               <source src={slide.video} type="video/mp4" />
             </motion.video>
           </AnimatePresence>
+          {/* Subtle gradient at the bottom for readability of stats/indicators */}
+          <div className="absolute inset-0 bg-gradient-to-r from-white/90 via-white/40 to-transparent z-10" />
         </div>
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 w-full">
+        <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 w-full">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
             <motion.div
               key={`content-${currentSlide}`}
               initial={{ opacity: 0, x: -30 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
+              className="max-w-xl"
             >
               <div className="w-20 h-1.5 bg-brand-teal mb-10" />
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="text-xs font-black text-brand-teal uppercase tracking-[0.5em] mb-6"
+                className="text-xs font-black text-brand-teal uppercase tracking-[0.5em] mb-6 drop-shadow-sm"
               >
                 {slide.subtitle}
               </motion.div>
-              <h1 className="text-6xl md:text-8xl font-bold leading-[1.05] mb-10 text-slate-900 tracking-tighter">
+              <h1 className="text-6xl md:text-8xl font-bold leading-[1.05] mb-10 text-slate-900 tracking-tighter drop-shadow-sm">
                 {slide.title.split(' ')[0]} <br/>
-                <span className="text-brand-teal italic font-serif">
+                <span className="text-brand-accent italic font-serif">
                   {slide.title.split(' ').slice(1).join(' ')}
                 </span>
               </h1>
-              <p className="text-xl text-slate-600 mb-12 leading-relaxed max-w-xl font-medium">
+              <p className="text-xl text-slate-700 mb-12 leading-relaxed font-medium drop-shadow-sm bg-white/10 backdrop-blur-[2px] p-4 -ml-4 rounded-xl">
                 {slide.desc}
               </p>
               <div className="flex flex-col sm:flex-row gap-6">
                 <Link
                   to={slide.link}
-                  className="bg-brand-teal text-white px-12 py-5 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-brand-accent transition-all flex items-center justify-center gap-3 group shadow-2xl shadow-brand-teal/20"
+                  className="bg-brand-teal text-white px-12 py-5 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-brand-accent transition-all flex items-center justify-center gap-3 group shadow-2xl shadow-brand-teal/30"
                 >
                   View Category
                   <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                 </Link>
                 <Link
                   to="/contact"
-                  className="bg-slate-50 border border-slate-100 text-slate-900 px-12 py-5 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-white transition-all text-center shadow-lg"
+                  className="bg-white/80 backdrop-blur-md border border-slate-200 text-slate-900 px-12 py-5 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-white transition-all text-center shadow-lg"
                 >
                   Book Consultation
                 </Link>
