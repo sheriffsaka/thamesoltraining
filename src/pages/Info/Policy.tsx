@@ -85,27 +85,28 @@ export function Policy() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
             <div>
-              <h2 className="text-4xl font-bold mb-10 font-serif tracking-tight">Accreditation & Quality</h2>
-              <p className="text-lg text-slate-400 leading-relaxed font-medium mb-10">
+              <h2 className="text-4xl font-bold mb-10 font-serif tracking-tight text-brand-teal">Accreditation & Quality</h2>
+              <p className="text-lg text-slate-300 leading-relaxed font-medium mb-10">
                 Thames Solution Training & Consultancy Ltd is an accredited provider for leading vocational qualifications. Our policies are robustly reviewed annually to ensure they reflect the latest legislative changes.
               </p>
-              <div className="flex border-t border-white/10 pt-8 mt-12">
-                <div className="text-slate-500 text-[10px] font-black uppercase tracking-widest">
+              <div className="flex border-t border-white/10 pt-8 mt-12 bg-white/5 p-4 rounded-lg">
+                <div className="text-brand-teal text-[10px] font-black uppercase tracking-widest">
                   Last Updated: Jan 2024
                 </div>
                 <div className="mx-6 text-white/10">|</div>
-                <div className="text-slate-500 text-[10px] font-black uppercase tracking-widest">
-                  Schedule: Jan 2025
+                <div className="text-brand-teal text-[10px] font-black uppercase tracking-widest">
+                  Next Review: Jan 2025
                 </div>
               </div>
             </div>
             
-            <div className="bg-white/5 border border-white/10 p-12 rounded-lg backdrop-blur-sm">
-              <h4 className="text-2xl font-bold mb-6 font-serif">Compliance Inquiry</h4>
-              <p className="text-slate-300 font-medium leading-relaxed mb-8">
-                If you have specific questions regarding our operational policies or governance structure, please contact our teams.
+            <div className="bg-white/5 border border-brand-teal/20 p-12 rounded-lg backdrop-blur-sm relative overflow-hidden group">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-brand-teal/10 rounded-full blur-3xl -translate-y-16 translate-x-16 group-hover:bg-brand-teal/20 transition-all" />
+              <h4 className="text-2xl font-bold mb-6 font-serif text-brand-teal">Compliance Inquiry</h4>
+              <p className="text-slate-200 font-medium leading-relaxed mb-8 relative z-10">
+                If you have specific questions regarding our operational policies or governance structure, please contact our teams for detailed clarification.
               </p>
-              <Link to="/contact" className="inline-block bg-brand-teal text-white px-10 py-5 rounded-lg font-black uppercase tracking-[0.2em] text-[10px] hover:bg-brand-accent transition-all shadow-xl">
+              <Link to="/contact" className="relative z-10 inline-block bg-brand-teal text-white px-10 py-5 rounded-lg font-black uppercase tracking-[0.2em] text-[10px] hover:bg-brand-accent transition-all shadow-xl shadow-brand-teal/20">
                 Contact Compliance
               </Link>
             </div>
