@@ -70,7 +70,7 @@ export function Safeguarding() {
               </div>
             </div>
 
-            <div className="bg-rose-600 rounded-lg p-12 text-white shadow-2xl relative overflow-hidden border-4 border-rose-500 shadow-rose-600/30">
+            <div className="bg-brand-teal rounded-lg p-12 text-white shadow-2xl relative overflow-hidden border-4 border-brand-accent shadow-brand-teal/30">
               <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-12 translate-x-12" />
               <div className="relative z-10 text-center lg:text-left">
                 <h3 className="text-4xl lg:text-5xl font-bold mb-8 flex items-center justify-center lg:justify-start gap-6 font-serif">
@@ -83,10 +83,10 @@ export function Safeguarding() {
                   "If you have an immediate concern about your safety or the safety of another student, please contact our Lead Safeguarding Officer without delay."
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <a href="tel:07426566335" className="flex items-center justify-center gap-3 w-full bg-white text-rose-600 py-6 rounded-xl font-black uppercase tracking-widest text-sm transition-all hover:scale-105 shadow-2xl">
+                  <a href="tel:07426566335" className="flex items-center justify-center gap-3 w-full bg-white text-brand-teal py-6 rounded-xl font-black uppercase tracking-widest text-sm transition-all hover:scale-105 shadow-2xl">
                      Call: 07426566335
                   </a>
-                  <a href="mailto:admin@thamessolutiontraining.co.uk" className="flex items-center justify-center gap-3 w-full bg-rose-700 border border-rose-400 py-6 rounded-xl font-black uppercase tracking-widest text-sm text-white hover:bg-rose-800 transition-all">
+                  <a href="mailto:admin@thamessolutiontraining.co.uk" className="flex items-center justify-center gap-3 w-full bg-brand-dark border border-brand-teal/40 py-6 rounded-xl font-black uppercase tracking-widest text-sm text-white hover:bg-black transition-all">
                      Email Admin
                   </a>
                 </div>

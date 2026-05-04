@@ -206,7 +206,7 @@ export function Navbar() {
               >
                 {link.children ? (
                   <button className={cn(
-                    "flex items-center gap-1.5 text-[15px] font-bold tracking-tight transition-all py-2 h-full font-serif",
+                    "flex items-center gap-1.5 text-[15px] font-bold tracking-tight transition-all py-2 h-full font-montserrat",
                     activeDropdown === link.name ? "text-brand-teal" : "text-slate-800 hover:text-brand-teal"
                   )}>
                     {link.name}
@@ -216,7 +216,7 @@ export function Navbar() {
                   <Link
                     to={link.path!}
                     className={cn(
-                      "text-[15px] font-bold tracking-tight transition-colors py-2 h-full flex items-center font-serif",
+                      "text-[15px] font-bold tracking-tight transition-colors py-2 h-full flex items-center font-montserrat",
                       location.pathname === link.path 
                         ? "text-brand-teal" 
                         : "text-slate-800 hover:text-brand-teal"
@@ -242,7 +242,7 @@ export function Navbar() {
                       {link.isHierarchical ? (
                         <>
                           {/* Categories (Level 1) */}
-                          <div className="w-[30%] bg-slate-50/50 border-r border-slate-100 py-6 font-serif">
+                          <div className="w-[30%] bg-slate-50/50 border-r border-slate-100 py-6 font-montserrat">
                             {link.children.map((section: any) => (
                               <div
                                 key={section.name}
@@ -260,7 +260,7 @@ export function Navbar() {
                                 )}
                               >
                                 <span className={cn(
-                                  "text-[16px] font-black leading-tight pr-4",
+                                  "text-[14px] font-bold leading-tight pr-4",
                                   activeSubMenu === section.name ? "text-brand-teal" : "text-slate-900"
                                 )}>
                                   {section.name}
@@ -292,7 +292,7 @@ export function Navbar() {
                                         activeDeepMenu === subCat.name ? "bg-slate-50 text-brand-teal" : "text-slate-700"
                                       )}
                                     >
-                                      <span className="text-[14px] font-bold font-serif leading-tight pr-4">
+                                      <span className="text-[13px] font-bold font-montserrat leading-tight pr-4">
                                         {subCat.name}
                                       </span>
                                       {subCat.items && subCat.items.length > 0 && <ChevronDown size={14} className="-rotate-90 opacity-40 group-hover:translate-x-1 transition-transform" />}
@@ -314,7 +314,7 @@ export function Navbar() {
                                   exit={{ opacity: 0, x: -10 }}
                                   className="space-y-8"
                                 >
-                                  <h4 className="text-[12px] font-black uppercase tracking-[0.4em] text-brand-teal mb-8 border-b border-slate-100 pb-4 inline-block font-serif">
+                                  <h4 className="text-[11px] font-black uppercase tracking-[0.4em] text-brand-teal mb-8 border-b border-slate-100 pb-4 inline-block font-montserrat">
                                     {activeSubMenu === 'Health and Social Care' ? activeDeepMenu : activeSubMenu}
                                   </h4>
                                   <div className={cn(
@@ -334,7 +334,7 @@ export function Navbar() {
                                         <Link
                                           key={course.name}
                                           to={course.path}
-                                          className="text-[16px] font-bold text-slate-700 hover:text-brand-teal transition-all leading-tight flex items-center gap-4 hover:translate-x-2 font-serif"
+                                          className="text-[14px] font-bold text-slate-700 hover:text-brand-teal transition-all leading-tight flex items-center gap-4 hover:translate-x-2 font-montserrat"
                                         >
                                           <div className="w-2 h-2 bg-brand-teal/20 rounded-full" />
                                           {course.name}
@@ -349,7 +349,7 @@ export function Navbar() {
                                         <Link
                                           key={course.name}
                                           to={course.path}
-                                          className="text-[16px] font-bold text-slate-700 hover:text-brand-teal transition-all leading-tight flex items-center gap-4 hover:translate-x-2 font-serif"
+                                          className="text-[14px] font-bold text-slate-700 hover:text-brand-teal transition-all leading-tight flex items-center gap-4 hover:translate-x-2 font-montserrat"
                                         >
                                           <div className="w-2 h-2 bg-brand-teal/20 rounded-full" />
                                           {course.name}
@@ -368,7 +368,7 @@ export function Navbar() {
                             <Link
                               key={child.name}
                               to={child.path}
-                              className="block px-8 py-5 text-[15px] font-bold text-slate-700 hover:bg-slate-50 hover:text-brand-teal rounded-lg transition-all font-serif"
+                              className="block px-8 py-5 text-[15px] font-bold text-slate-700 hover:bg-slate-50 hover:text-brand-teal rounded-lg transition-all font-montserrat"
                             >
                               {child.name}
                             </Link>
@@ -382,7 +382,7 @@ export function Navbar() {
             ))}
             <Link
               to="/login"
-              className="bg-brand-teal text-white px-10 py-3.5 rounded-lg text-[13px] font-bold uppercase tracking-[0.2em] hover:bg-brand-accent transition-all shadow-xl shadow-brand-teal/20 font-serif"
+              className="bg-brand-teal text-white px-10 py-3.5 rounded-lg text-[13px] font-bold uppercase tracking-[0.2em] hover:bg-brand-accent transition-all shadow-xl shadow-brand-teal/20 font-montserrat"
             >
               LMS Login
             </Link>

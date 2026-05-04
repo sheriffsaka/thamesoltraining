@@ -194,33 +194,6 @@ export function Home() {
                 </Link>
               </div>
             </motion.div>
-
-            {/* Slide Indicators / Navigation */}
-            <div className="hidden lg:flex flex-col gap-6 justify-self-end">
-              {slides.map((slide, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setCurrentSlide(idx)}
-                  className="group flex items-center gap-6 text-left transition-all"
-                >
-                  <div className={cn(
-                    "w-12 h-12 rounded-lg flex items-center justify-center font-black text-sm transition-all border",
-                    currentSlide === idx 
-                      ? "bg-brand-teal text-white border-brand-teal shadow-lg shadow-brand-teal/20" 
-                      : "bg-white text-slate-400 border-slate-100 group-hover:bg-slate-50 group-hover:shadow-lg"
-                  )}>
-                    0{idx + 1}
-                  </div>
-                  <div className={cn(
-                    "transition-all",
-                    currentSlide === idx ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4 pointer-events-none"
-                  )}>
-                    <div className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-teal">{slide.subtitle}</div>
-                    <div className="text-xs font-bold text-slate-900 uppercase">{slide.title}</div>
-                  </div>
-                </button>
-              ))}
-            </div>
           </div>
         </div>
 

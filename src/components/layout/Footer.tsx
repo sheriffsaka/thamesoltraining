@@ -33,8 +33,8 @@ export function Footer() {
           </div>
           {/* ... */}
           <div>
-            <h4 className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-900 mb-8">Navigation</h4>
-            <ul className="space-y-5 text-[13px] font-bold">
+            <h4 className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-900 mb-8 font-montserrat">Navigation</h4>
+            <ul className="space-y-5 text-[13px] font-bold font-montserrat">
               <li><Link to="/" className="hover:text-brand-teal transition-colors">Home</Link></li>
               <li><Link to="/about" className="hover:text-brand-teal transition-colors">About Us</Link></li>
               <li><Link to="/courses" className="hover:text-brand-teal transition-colors">Course Catalog</Link></li>
@@ -44,8 +44,8 @@ export function Footer() {
           </div>
  
           <div>
-            <h4 className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-900 mb-8">Support</h4>
-            <ul className="space-y-5 text-[13px] font-bold">
+            <h4 className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-900 mb-8 font-montserrat">Support</h4>
+            <ul className="space-y-5 text-[13px] font-bold font-montserrat">
               <li><Link to="/faqs" className="hover:text-brand-teal transition-colors">Our FAQs</Link></li>
               <li><Link to="/safeguarding" className="hover:text-brand-teal transition-colors">Safeguarding Hub</Link></li>
               <li><Link to="/prevent-duty" className="hover:text-brand-teal transition-colors">Prevent Duty</Link></li>
@@ -56,8 +56,8 @@ export function Footer() {
           </div>
  
           <div>
-            <h4 className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-900 mb-8">Contact</h4>
-            <ul className="space-y-6 text-[13px] font-bold">
+            <h4 className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-900 mb-8 font-montserrat">Contact</h4>
+            <ul className="space-y-6 text-[13px] font-bold font-montserrat">
               <li className="flex gap-4 text-slate-500">
                 <MapPin className="text-brand-teal shrink-0" size={18} />
                 <span className="leading-relaxed">{settings.address}</span>
@@ -74,11 +74,11 @@ export function Footer() {
           </div>
         </div>
  
-        <div className="pt-12 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-8 text-[11px] font-bold uppercase tracking-widest text-slate-400">
+        <div className="pt-12 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-8 text-[11px] font-bold uppercase tracking-widest text-slate-400 font-montserrat">
           <p>© {currentYear} Thames Solution Training & Consultancy Ltd.</p>
           <div className="flex gap-8">
-            <Link to="/privacy" className="hover:text-brand-teal transition-colors">Privacy Policy</Link>
-            <Link to="/terms" className="hover:text-brand-teal transition-colors">Terms of Service</Link>
+            <Link to="/privacy" className="hover:text-brand-teal transition-colors font-montserrat">Privacy Policy</Link>
+            <Link to="/terms" className="hover:text-brand-teal transition-colors font-montserrat">Terms of Service</Link>
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.4)]" />
               <span className="text-emerald-600/80">Secure Connection</span>
