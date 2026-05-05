@@ -23,6 +23,7 @@ export interface Database {
           emergency_contact: string | null
           employment_status: string | null
           managed_password: string | null
+          is_approved: boolean
           updated_at: string | null
         }
         Insert: {
@@ -31,6 +32,7 @@ export interface Database {
           email?: string | null
           role?: 'student' | 'instructor' | 'admin'
           avatar_url?: string | null
+          is_approved?: boolean
           phone?: string | null
           address?: string | null
           date_of_birth?: string | null
@@ -45,6 +47,7 @@ export interface Database {
           full_name?: string | null
           email?: string | null
           role?: 'student' | 'instructor' | 'admin'
+          is_approved?: boolean
           avatar_url?: string | null
           phone?: string | null
           address?: string | null
@@ -112,6 +115,38 @@ export interface Database {
           syllabus_url?: string | null
           instructor_id?: string | null
           is_published?: boolean
+          created_at?: string
+        }
+      }
+      lessons: {
+        Row: {
+          id: string
+          course_id: string
+          title: string
+          content: string | null
+          video_url: string | null
+          order_index: number
+          duration: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          course_id: string
+          title: string
+          content?: string | null
+          video_url?: string | null
+          order_index: number
+          duration?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          course_id?: string
+          title?: string
+          content?: string | null
+          video_url?: string | null
+          order_index?: number
+          duration?: string | null
           created_at?: string
         }
       }

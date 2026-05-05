@@ -51,7 +51,6 @@ export function Footer() {
               <li><Link to="/prevent-duty" className="hover:text-brand-teal transition-colors">Prevent Duty</Link></li>
               <li><Link to="/policy" className="hover:text-brand-teal transition-colors">Policy & Procedures</Link></li>
               <li><Link to="/login" className="hover:text-brand-teal transition-colors">Student Login</Link></li>
-              <li><Link to="/admin" className="text-brand-teal hover:text-brand-accent transition-colors">Admin Hub (CMS)</Link></li>
             </ul>
           </div>
  

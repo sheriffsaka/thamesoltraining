@@ -75,3 +75,18 @@ export async function getEnrollments(userId: string) {
 
   return data;
 }
+
+export async function getApplicationsByEmail(email: string) {
+  const { data, error } = await supabase
+    .from('applications')
+    .select('*')
+    .eq('email', email)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching applications:', error);
+    return [];
+  }
+
+  return data;
+}

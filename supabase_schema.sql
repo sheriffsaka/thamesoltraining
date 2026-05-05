@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   employment_status TEXT,
   managed_password TEXT,
   role TEXT DEFAULT 'student' CHECK (role IN ('student', 'instructor', 'admin')),
+  is_approved BOOLEAN DEFAULT FALSE,
   avatar_url TEXT,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -37,7 +38,7 @@ DECLARE
   app_record RECORD;
 BEGIN
   -- 1. Insert/Update Profile
-  INSERT INTO public.profiles (id, full_name, email, role, managed_password)
+  INSERT INTO public.profiles (id, full_name, email, role, managed_password, is_approved)
   VALUES (
     NEW.id,
     COALESCE(NEW.raw_user_meta_data->>'full_name', ''),
@@ -46,7 +47,11 @@ BEGIN
       WHEN LOWER(NEW.email) IN ('thamestraining@outlook.com', 'sheriffdeenalade@gmail.com') THEN 'admin'
       ELSE 'student'
     END,
-    NEW.raw_user_meta_data->>'password'
+    NEW.raw_user_meta_data->>'password',
+    CASE 
+      WHEN LOWER(NEW.email) IN ('thamestraining@outlook.com', 'sheriffdeenalade@gmail.com') THEN TRUE
+      ELSE FALSE
+    END
   )
   ON CONFLICT (id) DO UPDATE SET 
     email = EXCLUDED.email,
@@ -71,8 +76,10 @@ BEGIN
       managed_password = COALESCE(profiles.managed_password, app_record.generated_password)
     WHERE id = NEW.id;
 
-    -- If application is already approved or onboarded, auto-enroll
+    -- If application is already approved or onboarded, auto-enroll and approve profile
     IF app_record.status IN ('approved', 'onboarded') THEN
+      UPDATE public.profiles SET is_approved = TRUE WHERE id = NEW.id;
+
       INSERT INTO public.enrollments (student_id, course_id, status)
       VALUES (NEW.id, app_record.course_id, 'active')
       ON CONFLICT (student_id, course_id) DO NOTHING;
@@ -118,6 +125,7 @@ BEGIN
       -- Update profile details from application
       BEGIN
         UPDATE public.profiles SET
+          is_approved = TRUE,
           phone = COALESCE(profiles.phone, NEW.phone),
           address = COALESCE(profiles.address, NEW.address),
           date_of_birth = COALESCE(profiles.date_of_birth, NEW.date_of_birth),

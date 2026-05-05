@@ -25,24 +25,36 @@ export function Login() {
       setError(error.message);
       setLoading(false);
     } else {
-      // Fetch role
+      // Fetch role and approval status
       let { data: profile } = await supabase
         .from('profiles')
-        .select('role')
+        .select('role, is_approved')
         .eq('id', data.user.id)
         .single();
       
       // Bootstrap admin for the specific user email
       if (email === 'sheriffdeenalade@gmail.com' && (!profile || (profile as any).role !== 'admin')) {
-         await (supabase.from('profiles') as any).update({ role: 'admin' } as any).eq('id', data.user.id);
-         const { data: updatedProfile } = await (supabase.from('profiles') as any).select('role').eq('id', data.user.id).single();
+         await (supabase.from('profiles') as any).update({ role: 'admin', is_approved: true } as any).eq('id', data.user.id);
+         const { data: updatedProfile } = await (supabase.from('profiles') as any).select('role, is_approved').eq('id', data.user.id).single();
          profile = updatedProfile;
       }
 
       const role = (profile as any)?.role;
-      if (role === 'admin') navigate('/admin');
-      else if (role === 'instructor') navigate('/instructor');
-      else navigate('/dashboard');
+      const isApproved = (profile as any)?.is_approved;
+
+      if (role === 'admin') {
+        navigate('/admin');
+      } else if (role === 'instructor') {
+        navigate('/instructor');
+      } else {
+        if (!isApproved) {
+          setError('Your account is currently pending approval from an administrator. You will be able to access the portal once your application is approved.');
+          await supabase.auth.signOut();
+          setLoading(false);
+          return;
+        }
+        navigate('/dashboard');
+      }
     }
   };
 

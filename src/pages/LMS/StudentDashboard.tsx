@@ -1,43 +1,48 @@
-import { BookOpen, Clock, Calendar, ChevronRight, Award, MessageCircle, User } from 'lucide-react';
+import { BookOpen, Clock, Calendar, ChevronRight, Award, MessageCircle, FileText, CheckCircle } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/src/lib/supabase';
-import { getEnrollments } from '@/src/services/courseService';
+import { getEnrollments, getApplicationsByEmail } from '@/src/services/courseService';
 import { getAnnouncements } from '@/src/services/contentService';
 import { cn } from '@/src/lib/utils';
 
 export function StudentDashboard() {
   const navigate = useNavigate();
   const [enrollments, setEnrollments] = useState<any[]>([]);
+  const [applications, setApplications] = useState<any[]>([]);
   const [announcements, setAnnouncements] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [username, setUsername] = useState('John');
+  const [username, setUsername] = useState('');
+  const [profile, setProfile] = useState<any>(null);
 
   useEffect(() => {
     async function loadDashboardData() {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         // Fetch profile
-        const { data: profile } = await supabase
+        const { data: profileData } = await supabase
           .from('profiles')
-          .select('full_name')
+          .select('*')
           .eq('id', user.id)
           .single();
         
-        const profileData = profile as any;
+        setProfile(profileData);
         if (profileData?.full_name) {
           setUsername(profileData.full_name.split(' ')[0]);
         }
 
         // Parallel fetch
-        const [enrollData, announcementData] = await Promise.all([
+        const [enrollData, announcementData, appData] = await Promise.all([
           getEnrollments(user.id),
-          getAnnouncements()
+          getAnnouncements(),
+          getApplicationsByEmail(user.email || '')
         ]);
         
         setEnrollments(enrollData);
-        setAnnouncements(announcementData);
+        setAnnouncements(announcementData || []);
+        // Filter out onboarded applications since they are already in enrollments
+        setApplications(appData.filter((a: any) => a.status !== 'onboarded'));
       }
       setLoading(false);
     }
@@ -55,12 +60,50 @@ export function StudentDashboard() {
   return (
     <div className="space-y-10">
       <header>
-        <h1 className="text-4xl font-bold text-slate-900 mb-2 font-serif tracking-tight">Welcome back, {username}! 👋</h1>
-        <p className="text-slate-500 font-medium">You have {enrollments.length} active courses in your portfolio.</p>
+        <h1 className="text-4xl font-bold text-slate-900 mb-2 font-serif tracking-tight">Welcome back{username ? `, ${username}` : ''}! 👋</h1>
+        <p className="text-slate-500 font-medium">
+          {enrollments.length > 0 
+            ? `You have ${enrollments.length} active courses in your portfolio.`
+            : `You have ${applications.length} pending applications.`
+          }
+        </p>
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
         <div className="lg:col-span-2 space-y-10">
+          {/* Pending Applications */}
+          {applications.length > 0 && (
+            <section>
+              <div className="flex justify-between items-center mb-8">
+                <h2 className="text-2xl font-bold text-slate-900 font-serif">Your Applications</h2>
+              </div>
+              <div className="space-y-6">
+                {applications.map((app) => (
+                  <div key={app.id} className="bg-white rounded-[2.5rem] p-8 shadow-xl border border-slate-100 flex items-center justify-between">
+                    <div className="flex items-center gap-6">
+                      <div className="w-14 h-14 bg-brand-teal/5 rounded-2xl flex items-center justify-center text-brand-teal">
+                        <FileText size={28} />
+                      </div>
+                      <div>
+                        <h4 className="text-lg font-bold text-slate-900 font-serif">{app.course_title}</h4>
+                        <div className="flex items-center gap-4 text-xs text-slate-400 mt-1 font-bold uppercase tracking-widest">
+                          <span>Applied: {new Date(app.created_at).toLocaleDateString()}</span>
+                          <span className="text-slate-200">|</span>
+                          <span className={cn(
+                            "px-3 py-1 rounded-full",
+                            app.status === 'approved' ? "bg-emerald-50 text-emerald-600" : "bg-amber-50 text-amber-600"
+                          )}>
+                            {app.status}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
           {/* Active Courses */}
           <section>
             <div className="flex justify-between items-center mb-8">
@@ -143,26 +186,26 @@ export function StudentDashboard() {
 
         {/* Sidebar */}
         <div className="space-y-10">
-          {/* Achievements */}
+          {/* Profile Status */}
           <section className="bg-white rounded-[3rem] p-10 shadow-2xl border border-slate-100">
-            <h3 className="text-xl font-bold text-slate-900 mb-8 font-serif border-b border-slate-50 pb-4">Recent Achievements</h3>
+            <h3 className="text-xl font-bold text-slate-900 mb-8 font-serif border-b border-slate-50 pb-4">Account Status</h3>
             <div className="space-y-8">
               <div className="flex gap-5 group cursor-default">
-                <div className="w-14 h-14 rounded-2xl bg-amber-50 text-amber-500 flex items-center justify-center shrink-0 border border-amber-100 shadow-sm group-hover:scale-110 transition-transform">
-                  <Award size={28} />
+                <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-500 flex items-center justify-center shrink-0 border border-emerald-100 shadow-sm">
+                  <CheckCircle size={28} />
                 </div>
                 <div>
-                  <div className="font-bold text-slate-800 text-sm leading-tight mb-1 font-serif">Module 1 Mastered</div>
-                  <p className="text-xs text-slate-500 font-medium">Excellent score in Clinical Safety</p>
+                  <div className="font-bold text-slate-800 text-sm leading-tight mb-1 font-serif">Identity Verified</div>
+                  <p className="text-xs text-slate-500 font-medium">Email: {profile?.email}</p>
                 </div>
               </div>
               <div className="flex gap-5 group cursor-default">
-                <div className="w-14 h-14 rounded-2xl bg-blue-50 text-blue-500 flex items-center justify-center shrink-0 border border-blue-100 shadow-sm group-hover:scale-110 transition-transform">
+                <div className="w-14 h-14 rounded-2xl bg-brand-teal/5 text-brand-teal flex items-center justify-center shrink-0 border border-brand-teal/10 shadow-sm">
                   <BookOpen size={28} />
                 </div>
                 <div>
-                  <div className="font-bold text-slate-800 text-sm leading-tight mb-1 font-serif">Fast Learner</div>
-                  <p className="text-xs text-slate-500 font-medium">Completed 5 lessons in one day</p>
+                  <div className="font-bold text-slate-800 text-sm leading-tight mb-1 font-serif">Learning Access</div>
+                  <p className="text-xs text-slate-500 font-medium">{profile?.is_approved ? 'Full access granted' : 'Pending onboarding'}</p>
                 </div>
               </div>
             </div>
