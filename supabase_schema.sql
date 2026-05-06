@@ -36,28 +36,28 @@ CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
 DECLARE
   app_record RECORD;
+  is_admin_user BOOLEAN;
 BEGIN
-  -- 1. Insert/Update Profile
+  -- 1. Identify Admin
+  is_admin_user := LOWER(NEW.email) IN ('thamestraining@outlook.com', 'sheriffdeenalade@gmail.com');
+
+  -- 2. Insert/Update Profile (Idempotent)
   INSERT INTO public.profiles (id, full_name, email, role, managed_password, is_approved)
   VALUES (
     NEW.id,
     COALESCE(NEW.raw_user_meta_data->>'full_name', ''),
     NEW.email,
-    CASE 
-      WHEN LOWER(NEW.email) IN ('thamestraining@outlook.com', 'sheriffdeenalade@gmail.com') THEN 'admin'
-      ELSE 'student'
-    END,
+    CASE WHEN is_admin_user THEN 'admin' ELSE 'student' END,
     NEW.raw_user_meta_data->>'password',
-    CASE 
-      WHEN LOWER(NEW.email) IN ('thamestraining@outlook.com', 'sheriffdeenalade@gmail.com') THEN TRUE
-      ELSE FALSE
-    END
+    is_admin_user
   )
   ON CONFLICT (id) DO UPDATE SET 
     email = EXCLUDED.email,
-    full_name = CASE WHEN profiles.full_name = '' THEN EXCLUDED.full_name ELSE profiles.full_name END;
+    full_name = CASE WHEN profiles.full_name IS NULL OR profiles.full_name = '' THEN EXCLUDED.full_name ELSE profiles.full_name END,
+    role = CASE WHEN is_admin_user THEN 'admin' ELSE profiles.role END,
+    is_approved = CASE WHEN is_admin_user THEN TRUE ELSE profiles.is_approved END;
 
-  -- 2. Check for application (Case-insensitive)
+  -- 3. Check for application (Case-insensitive)
   -- We allow any status here, but will only auto-enroll if it's approved/onboarded
   SELECT * INTO app_record FROM public.applications 
   WHERE LOWER(email) = LOWER(NEW.email)
@@ -65,24 +65,32 @@ BEGIN
   LIMIT 1;
 
   IF app_record.id IS NOT NULL THEN
-    -- Sync profile data from application if profile is incomplete
-    UPDATE public.profiles SET
-      phone = COALESCE(profiles.phone, app_record.phone),
-      address = COALESCE(profiles.address, app_record.address),
-      date_of_birth = COALESCE(profiles.date_of_birth, app_record.date_of_birth),
-      emergency_contact = COALESCE(profiles.emergency_contact, app_record.emergency_contact),
-      gender = COALESCE(profiles.gender, app_record.gender),
-      employment_status = COALESCE(profiles.employment_status, app_record.employment_status),
-      managed_password = COALESCE(profiles.managed_password, app_record.generated_password)
-    WHERE id = NEW.id;
+    -- Sync profile data from application
+    BEGIN
+      UPDATE public.profiles SET
+        phone = COALESCE(phone, app_record.phone),
+        address = COALESCE(address, app_record.address),
+        date_of_birth = COALESCE(date_of_birth, app_record.date_of_birth),
+        emergency_contact = COALESCE(emergency_contact, app_record.emergency_contact),
+        gender = COALESCE(gender, app_record.gender),
+        employment_status = COALESCE(employment_status, app_record.employment_status),
+        managed_password = COALESCE(managed_password, app_record.generated_password),
+        -- Auto approve if the application is already approved/onboarded
+        is_approved = CASE WHEN app_record.status IN ('approved', 'onboarded') THEN TRUE ELSE is_approved END
+      WHERE id = NEW.id;
+    EXCEPTION WHEN OTHERS THEN
+      NULL;
+    END;
 
-    -- If application is already approved or onboarded, auto-enroll and approve profile
+    -- If application is already approved or onboarded, auto-enroll
     IF app_record.status IN ('approved', 'onboarded') THEN
-      UPDATE public.profiles SET is_approved = TRUE WHERE id = NEW.id;
-
-      INSERT INTO public.enrollments (student_id, course_id, status)
-      VALUES (NEW.id, app_record.course_id, 'active')
-      ON CONFLICT (student_id, course_id) DO NOTHING;
+      BEGIN
+        INSERT INTO public.enrollments (student_id, course_id, status)
+        VALUES (NEW.id, app_record.course_id, 'active')
+        ON CONFLICT (student_id, course_id) DO NOTHING;
+      EXCEPTION WHEN OTHERS THEN
+        NULL;
+      END;
       
       -- Ensure application is marked as onboarded
       UPDATE public.applications SET status = 'onboarded' WHERE id = app_record.id;
@@ -90,59 +98,76 @@ BEGIN
   END IF;
 
   RETURN NEW;
+EXCEPTION WHEN OTHERS THEN
+  RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- Trigger for Applications: Handle case where admin onboards AFTER student has signed up
+-- Trigger for Applications: Handle case where admin updates status
 CREATE OR REPLACE FUNCTION public.handle_application_onboarding()
 RETURNS TRIGGER AS $$
 DECLARE
   profile_id UUID;
 BEGIN
-  -- 1. Identity Guard: Ensure we have an email
+  -- 1. Identity Guard
   IF NEW.email IS NULL THEN
     RETURN NEW;
   END IF;
 
-  -- 2. Only run if status changed to 'onboarded' or 'approved'
+  -- 2. If status moves to 'approved' or 'onboarded'
   IF (NEW.status = 'onboarded' OR NEW.status = 'approved') AND (OLD.status IS NULL OR OLD.status != NEW.status) THEN
-    -- Check if a student profile exists with this email
+    -- Check if profile exists
     SELECT id INTO profile_id FROM public.profiles WHERE LOWER(email) = LOWER(NEW.email) LIMIT 1;
     
     IF profile_id IS NOT NULL THEN
-      -- Create enrollment ONLY if course_id is present
+      -- Create enrollment if course_id present
       IF NEW.course_id IS NOT NULL THEN
         BEGIN
           INSERT INTO public.enrollments (student_id, course_id, status)
           VALUES (profile_id, NEW.course_id, 'active')
           ON CONFLICT (student_id, course_id) DO NOTHING;
         EXCEPTION WHEN OTHERS THEN
-          -- Log error internally or ignore to allow profile sync to continue
           NULL;
         END;
       END IF;
 
-      -- Update profile details from application
+      -- Update profile: Important to set is_approved = TRUE
       BEGIN
         UPDATE public.profiles SET
           is_approved = TRUE,
-          phone = COALESCE(profiles.phone, NEW.phone),
-          address = COALESCE(profiles.address, NEW.address),
-          date_of_birth = COALESCE(profiles.date_of_birth, NEW.date_of_birth),
-          emergency_contact = COALESCE(profiles.emergency_contact, NEW.emergency_contact),
-          gender = COALESCE(profiles.gender, NEW.gender),
-          employment_status = COALESCE(profiles.employment_status, NEW.employment_status),
-          managed_password = COALESCE(profiles.managed_password, NEW.generated_password),
+          phone = COALESCE(phone, NEW.phone),
+          address = COALESCE(address, NEW.address),
+          date_of_birth = COALESCE(date_of_birth, NEW.date_of_birth),
+          emergency_contact = COALESCE(emergency_contact, NEW.emergency_contact),
+          gender = COALESCE(gender, NEW.gender),
+          employment_status = COALESCE(employment_status, NEW.employment_status),
+          managed_password = COALESCE(managed_password, NEW.generated_password),
           updated_at = NOW()
         WHERE id = profile_id;
       EXCEPTION WHEN OTHERS THEN
+        -- Log or ignore to allow application update to proceed
         NULL;
       END;
       
-      -- If we reached here and a profile exists, the student is essentially onboarded
+      -- Coerce status to onboarded if profile was found and updated
       NEW.status := 'onboarded';
     END IF;
   END IF;
+  
+  -- 3. If status is rejected, make sure profile is not approved
+  IF NEW.status = 'rejected' AND OLD.status != 'rejected' THEN
+    BEGIN
+      SELECT id INTO profile_id FROM public.profiles WHERE LOWER(email) = LOWER(NEW.email) LIMIT 1;
+      IF profile_id IS NOT NULL THEN
+        UPDATE public.profiles SET is_approved = FALSE WHERE id = profile_id;
+      END IF;
+    EXCEPTION WHEN OTHERS THEN
+      NULL;
+    END;
+  END IF;
+
+  RETURN NEW;
+EXCEPTION WHEN OTHERS THEN
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;

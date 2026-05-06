@@ -26,21 +26,59 @@ export function Login() {
       setLoading(false);
     } else {
       // Fetch role and approval status
-      let { data: profile } = await supabase
+      const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('role, is_approved')
         .eq('id', data.user.id)
         .single();
       
-      // Bootstrap admin for the specific user email
-      if (email === 'sheriffdeenalade@gmail.com' && (!profile || (profile as any).role !== 'admin')) {
-         await (supabase.from('profiles') as any).update({ role: 'admin', is_approved: true } as any).eq('id', data.user.id);
-         const { data: updatedProfile } = await (supabase.from('profiles') as any).select('role, is_approved').eq('id', data.user.id).single();
-         profile = updatedProfile;
+      if (profileError && profileError.code !== 'PGRST116') {
+        setError('Error accessing your profile. Please contact support.');
+        setLoading(false);
+        return;
       }
 
-      const role = (profile as any)?.role;
-      const isApproved = (profile as any)?.is_approved;
+      const userEmail = data.user.email?.toLowerCase() || '';
+      const adminEmails = ['thamestraining@outlook.com', 'sheriffdeenalade@gmail.com'];
+      const isAdminEmail = adminEmails.includes(userEmail);
+
+      let role = profile ? (profile as any).role : 'student';
+      let isApproved = profile ? (profile as any).is_approved : false;
+      
+      // Fallback for students: Check application status if profile is not yet approved
+      if (!isApproved && role === 'student') {
+        const { data: appData } = await supabase
+          .from('applications')
+          .select('status')
+          .eq('email', userEmail)
+          .in('status', ['approved', 'onboarded'])
+          .maybeSingle();
+
+        if (appData) {
+          isApproved = true;
+          // Sync it back to profile to avoid checking next time
+          await supabase.from('profiles').upsert({ 
+            id: data.user.id, 
+            is_approved: true,
+            email: userEmail
+          }, { onConflict: 'id' });
+        }
+      }
+
+      // Bootstrap or Fix Admin status
+      if (isAdminEmail) {
+         if (!profile || (profile as any).role !== 'admin' || !(profile as any).is_approved) {
+           await supabase.from('profiles').upsert({ 
+             id: data.user.id, 
+             role: 'admin', 
+             is_approved: true,
+             email: userEmail,
+             full_name: data.user.user_metadata?.full_name || ''
+           });
+         }
+         role = 'admin';
+         isApproved = true;
+      }
 
       if (role === 'admin') {
         navigate('/admin');
@@ -48,7 +86,7 @@ export function Login() {
         navigate('/instructor');
       } else {
         if (!isApproved) {
-          setError('Your account is currently pending approval from an administrator. You will be able to access the portal once your application is approved.');
+          setError('Your account is currently pending approval. If you recently signed up, please wait for an administrator to review your application.');
           await supabase.auth.signOut();
           setLoading(false);
           return;

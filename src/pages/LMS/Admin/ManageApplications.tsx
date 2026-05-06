@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FileText, Search, CheckCircle, XCircle, Eye, Loader2, X, MapPin, Phone, Mail, Calendar, User, Shield, Key, ExternalLink } from 'lucide-react';
 import { supabase } from '@/src/lib/supabase';
 import { motion, AnimatePresence } from 'motion/react';
+import { cn } from '@/src/lib/utils';
 
 export function ManageApplications() {
   const [applications, setApplications] = useState<any[]>([]);
@@ -72,31 +73,6 @@ export function ManageApplications() {
            email.includes(search) || 
            courseTitle.includes(search);
   });
-
-  async function onboardStudent(app: any) {
-    setIsUpdating(true);
-    try {
-      // The heavy lifting is now done by the DB trigger when the user signs up
-      // Admin just marks it as "onboarded" or "approved"
-      const { error } = await supabase
-        .from('applications')
-        .update({ status: 'onboarded' })
-        .eq('id', app.id);
-
-      if (error) throw error;
-      
-      // Update local state
-      setApplications(prev => prev.map(a => a.id === app.id ? { ...a, status: 'onboarded' } : a));
-      setSelectedApp(prev => prev ? { ...prev, status: 'onboarded' } : null);
-
-      alert('Application marked as onboarded! The student can now sign up with their email to claim their account and access their course.');
-    } catch (error) {
-      console.error('Onboarding error:', error);
-      alert('Onboarding failed: ' + (error instanceof Error ? error.message : 'Unknown error'));
-    } finally {
-      setIsUpdating(false);
-    }
-  }
 
   return (
     <div className="space-y-8">
@@ -364,7 +340,7 @@ export function ManageApplications() {
                         className="px-12 py-5 bg-brand-teal text-white rounded-2xl font-bold hover:bg-brand-accent transition-all flex items-center gap-3 shadow-xl shadow-brand-teal/20"
                       >
                         {isUpdating ? <Loader2 className="animate-spin" size={20} /> : <CheckCircle size={20} />}
-                        Approve Application
+                        Approve & Generate Password
                       </button>
                       <button 
                         onClick={() => updateStatus(selectedApp.id, 'rejected')}
@@ -375,14 +351,19 @@ export function ManageApplications() {
                       </button>
                     </>
                   )}
-                  {selectedApp.status === 'approved' && (
+                  {(selectedApp.status === 'approved' || selectedApp.status === 'onboarded') && (
                     <button 
-                      onClick={() => onboardStudent(selectedApp)}
-                      disabled={isUpdating}
-                      className="px-12 py-5 bg-slate-900 text-white rounded-2xl font-bold hover:bg-brand-teal transition-all flex items-center gap-3 shadow-xl shadow-slate-900/20"
+                      onClick={() => updateStatus(selectedApp.id, 'onboarded')}
+                      disabled={isUpdating || selectedApp.status === 'onboarded'}
+                      className={cn(
+                        "px-12 py-5 rounded-2xl font-bold transition-all flex items-center gap-3 shadow-xl shadow-slate-900/20",
+                        selectedApp.status === 'onboarded' 
+                          ? "bg-emerald-500 text-white cursor-default" 
+                          : "bg-slate-900 text-white hover:bg-brand-teal"
+                      )}
                     >
-                      {isUpdating ? <Loader2 className="animate-spin" size={20} /> : <ExternalLink size={20} />}
-                      Complete Onboarding
+                      {isUpdating ? <Loader2 className="animate-spin" size={20} /> : (selectedApp.status === 'onboarded' ? <CheckCircle size={20} /> : <ExternalLink size={20} />)}
+                      {selectedApp.status === 'onboarded' ? 'Onboarding Complete' : 'Grant Activation Now'}
                     </button>
                   )}
                 </div>
