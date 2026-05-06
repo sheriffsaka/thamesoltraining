@@ -30,12 +30,11 @@ export function Login() {
         .from('profiles')
         .select('role, is_approved')
         .eq('id', data.user.id)
-        .single();
+        .maybeSingle();
       
-      if (profileError && profileError.code !== 'PGRST116') {
-        setError('Error accessing your profile. Please contact support.');
-        setLoading(false);
-        return;
+      if (profileError) {
+        console.error('Profile fetch error:', profileError);
+        // Continue anyway for admins, they will be bootstrapped
       }
 
       const userEmail = data.user.email?.toLowerCase() || '';
@@ -47,37 +46,46 @@ export function Login() {
       
       // Fallback for students: Check application status if profile is not yet approved
       if (!isApproved && role === 'student') {
-        const { data: appData } = await supabase
-          .from('applications')
-          .select('status')
-          .eq('email', userEmail)
-          .in('status', ['approved', 'onboarded'])
-          .maybeSingle();
+        try {
+          const { data: appData } = await supabase
+            .from('applications')
+            .select('status')
+            .eq('email', userEmail)
+            .in('status', ['approved', 'onboarded'])
+            .maybeSingle();
 
-        if (appData) {
-          isApproved = true;
-          // Sync it back to profile to avoid checking next time
-          await supabase.from('profiles').upsert({ 
-            id: data.user.id, 
-            is_approved: true,
-            email: userEmail
-          }, { onConflict: 'id' });
+          if (appData) {
+            isApproved = true;
+            // Try to sync it back to profile
+            await supabase.from('profiles').upsert({ 
+              id: data.user.id, 
+              is_approved: true,
+              email: userEmail,
+              role: 'student'
+            }, { onConflict: 'id' });
+          }
+        } catch (err) {
+          console.error('Application fallback check error:', err);
         }
       }
 
       // Bootstrap or Fix Admin status
       if (isAdminEmail) {
-         if (!profile || (profile as any).role !== 'admin' || !(profile as any).is_approved) {
-           await supabase.from('profiles').upsert({ 
-             id: data.user.id, 
-             role: 'admin', 
-             is_approved: true,
-             email: userEmail,
-             full_name: data.user.user_metadata?.full_name || ''
-           });
-         }
-         role = 'admin';
-         isApproved = true;
+        try {
+          if (!profile || (profile as any).role !== 'admin' || !(profile as any).is_approved) {
+            await supabase.from('profiles').upsert({ 
+              id: data.user.id, 
+              role: 'admin', 
+              is_approved: true,
+              email: userEmail,
+              full_name: data.user.user_metadata?.full_name || ''
+            }, { onConflict: 'id' });
+          }
+        } catch (err) {
+          console.error('Admin bootstrap error:', err);
+        }
+        role = 'admin';
+        isApproved = true;
       }
 
       if (role === 'admin') {
